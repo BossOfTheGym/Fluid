@@ -13,10 +13,6 @@ private:
 
 
 public:
-	static void unbind();
-
-
-public:
 	ShaderProgram();
 
     ShaderProgram(const String& name);
@@ -40,6 +36,7 @@ public:
 
     void use() const;
 
+	void unbind() const;
 
 
 	void dispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ) const;

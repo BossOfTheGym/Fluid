@@ -49,17 +49,16 @@ public:
 
 	~Buffer();
 
+
 	Buffer& operator = (Buffer&& buffer);
 
 
 public:
-	void bind(Target target);
+	void bind(Target target) const;
 
-	void unbind(Target target);
+	void unbind(Target target) const;
 
 	void deleteBuffer();
-
-	void genBuffer();
 
 	void bufferData(GLsizeiptr pSize, const GLvoid* data, Usage pUsage);
 	

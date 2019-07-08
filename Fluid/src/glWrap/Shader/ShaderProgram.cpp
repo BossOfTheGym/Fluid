@@ -4,10 +4,7 @@
 //statics
 thread_local String ShaderProgram::INFO_LOG;
 
-void ShaderProgram::unbind()
-{
-	glUseProgram(Id::Empty);
-}
+
 
 
 //constructors & destructor
@@ -62,6 +59,11 @@ void ShaderProgram::link() const
 void ShaderProgram::use() const
 {
     glUseProgram(id());
+}
+
+void ShaderProgram::unbind() const
+{
+	glUseProgram(Id::Empty);
 }
 
 
