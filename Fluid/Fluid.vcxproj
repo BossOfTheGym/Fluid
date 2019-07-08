@@ -70,19 +70,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)src;D:\Херня\Fluid\Fluid\Fluid\libs\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)libs\inc;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Херня\Fluid\Fluid\Fluid\libs\lib\GLFW;D:\Херня\Fluid\Fluid\Fluid\libs\lib\GL;D:\Херня\Fluid\Fluid\Fluid\libs\lib\FreeImage;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)src;D:\Херня\Fluid\Fluid\Fluid\libs\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)libs\inc;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Херня\Fluid\Fluid\Fluid\libs\lib\GLFW;D:\Херня\Fluid\Fluid\Fluid\libs\lib\GL;D:\Херня\Fluid\Fluid\Fluid\libs\lib\FreeImage;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)src;D:\Херня\Fluid\Fluid\Fluid\libs\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)libs\inc;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Херня\Fluid\Fluid\Fluid\libs\lib\GLFW;D:\Херня\Fluid\Fluid\Fluid\libs\lib\GL;D:\Херня\Fluid\Fluid\Fluid\libs\lib\FreeImage;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)src;D:\Херня\Fluid\Fluid\Fluid\libs\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)libs\inc;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Херня\Fluid\Fluid\Fluid\libs\lib\GLFW;D:\Херня\Fluid\Fluid\Fluid\libs\lib\GL;D:\Херня\Fluid\Fluid\Fluid\libs\lib\FreeImage;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -94,7 +94,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableModules>true</EnableModules>
       <MinimalRebuild>true</MinimalRebuild>
-      <PrecompiledHeaderFile>Common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,7 +110,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableModules>true</EnableModules>
       <MinimalRebuild>true</MinimalRebuild>
-      <PrecompiledHeaderFile>Common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,7 +128,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableModules>true</EnableModules>
       <MinimalRebuild>true</MinimalRebuild>
-      <PrecompiledHeaderFile>Common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -145,7 +148,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableModules>true</EnableModules>
       <MinimalRebuild>true</MinimalRebuild>
-      <PrecompiledHeaderFile>Common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -154,6 +158,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\glWrap\Buffer\Buffer.cpp" />
+    <ClCompile Include="src\glWrap\Buffer\VertexArray.cpp" />
+    <ClCompile Include="src\glWrap\ID\Id.cpp" />
+    <ClCompile Include="src\glWrap\Shader\Shader.cpp" />
+    <ClCompile Include="src\glWrap\Shader\ShaderProgram.cpp" />
+    <ClCompile Include="src\glWrap\Texture\Texture2D.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

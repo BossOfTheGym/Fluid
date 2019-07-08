@@ -9,8 +9,8 @@ thread_local String Shader::INFO_LOG;
 
 //constructors
 Shader::Shader()
-	: mId(EMPTY)
-	, mType(Invalid)
+	: Id()
+	, m_type(Type::None)
 {}
 
 Shader::Shader(Type type, const String& location) : Shader()
@@ -34,18 +34,18 @@ Shader::~Shader()
 //operators
 Shader& Shader::operator = (Shader&& shader)
 {
-	if (this != &shader)
-	{
-		std::swap(mId, shader.mId);
-		std::swap(mType, shader.mType);
-	}
+	static_cast<Id&>(*this) = static_cast<Id&&>(shader);
+
+	std::swap(m_type, shader.m_type);
+
+	shader.resetShader();
 
     return *this;
 }
 
 
 //load functions
-int Shader::loadFromLocation(Type type, const String& location)
+bool Shader::loadFromLocation(Type type, const String& location)
 {
     IFStream file(location);
 
@@ -57,7 +57,7 @@ int Shader::loadFromLocation(Type type, const String& location)
     return loadFromStream(type, file);
 }
 
-int Shader::loadFromStream(Type type, IStream& inputStream)
+bool Shader::loadFromStream(Type type, IStream& inputStream)
 {
     String source;
     String line;
@@ -78,17 +78,12 @@ int Shader::loadFromStream(Type type, IStream& inputStream)
     return loadFromString(type, source);
 }
 
-int Shader::loadFromString(Type type, const String& source)
+bool Shader::loadFromString(Type type, const String& source)
 {
-    if (type == Type::Invalid)
-    {
-        return false;
-    }
+    static_cast<Id&>(*this) = glCreateShader(static_cast<GLenum>(type));
+    m_type = type;
 
-    mId   = glCreateShader(type);
-    mType = type;
-
-    if (mId == EMPTY)
+    if (!valid())
     {
         resetShader();
 
@@ -98,8 +93,8 @@ int Shader::loadFromString(Type type, const String& source)
     const GLchar* src = source.c_str();
     GLint size = source.size();
 
-    glShaderSource(mId, 1, &src, &size);
-    glCompileShader(mId);
+    glShaderSource(id(), 1, &src, &size);
+    glCompileShader(id());
 
     if (!compiled())
     {
@@ -113,24 +108,20 @@ int Shader::loadFromString(Type type, const String& source)
 //delete & reset
 void Shader::deleteShader()
 {
-    glDeleteShader(mId);
+    glDeleteShader(id());
 
     resetShader();
 }
 
 void Shader::resetShader()
 {
-    mId   = EMPTY;
-    mType = Type::Invalid;
+	resetId();
+
+    m_type = Type::None;
 }
 
 
 //checks
-bool Shader::valid() const
-{
-    return mId != EMPTY;
-}
-
 bool Shader::compiled() const
 {
     if(!valid())
@@ -139,7 +130,7 @@ bool Shader::compiled() const
     }
 
     GLint result;
-    glGetShaderiv(mId, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(id(), GL_COMPILE_STATUS, &result);
 
     return result == GL_TRUE;
 }
@@ -152,10 +143,10 @@ const String& Shader::infoLog() const
     GLint length;
     GLint returned;
 
-    glGetShaderiv(mId, GL_INFO_LOG_LENGTH, &length);
+    glGetShaderiv(id(), GL_INFO_LOG_LENGTH, &length);
     infoLog.resize(length);
 
-    glGetShaderInfoLog(mId, length, &returned, infoLog.data());
+    glGetShaderInfoLog(id(), length, &returned, infoLog.data());
     infoLog.resize(returned);
 
     return infoLog;
@@ -163,12 +154,7 @@ const String& Shader::infoLog() const
 
 
 //get & set
-GLuint Shader::id() const
-{
-    return mId;
-}
-
 Shader::Type Shader::type() const
 {
-    return mType;
+    return m_type;
 }

@@ -32,3 +32,8 @@ bool Id::valid() const
 	return m_id != Id::Empty;
 }
 
+void Id::resetId()
+{
+	m_id = Id::Empty;
+}
+

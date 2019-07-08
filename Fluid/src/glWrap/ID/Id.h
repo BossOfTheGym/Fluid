@@ -1,6 +1,8 @@
 #ifndef ID_h
 #define ID_h
 
+#include <Common.h>
+
 #include <glWrap/OpenGL.h>
 
 
@@ -31,12 +33,10 @@ public:
 
 	bool valid() const;
 
-
-private:
 	void resetId();
 
 
-protected:
+private:
 	GLuint m_id;
 };
 

@@ -6,18 +6,19 @@ thread_local String ShaderProgram::INFO_LOG;
 
 void ShaderProgram::unbind()
 {
-	glUseProgram(EMPTY);
+	glUseProgram(Id::Empty);
 }
+
 
 //constructors & destructor
 ShaderProgram::ShaderProgram()
-	: mId(EMPTY)
-	, mName("")
+	: Id()
+	, m_name("")
 {}
 
 ShaderProgram::ShaderProgram(const String& name) 
-    : mId(glCreateProgram())
-    , mName(name)
+    : Id(glCreateProgram())
+    , m_name(name)
 {}
 
 ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram)
@@ -35,10 +36,7 @@ ShaderProgram::~ShaderProgram()
 //operators
 ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram)
 {
-	if (this != &shaderProgram)
-	{
-		std::swap(mId, shaderProgram.mId);
-	}
+	static_cast<Id&>(*this) = static_cast<Id&&>(shaderProgram);
 
     return *this;
 }
@@ -47,52 +45,53 @@ ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram)
 //core functions
 void ShaderProgram::attachShader(const Shader& shader) const
 {
-    glAttachShader(mId, shader.id());
+    glAttachShader(id(), shader.id());
 }
 
 void ShaderProgram::detachShader(const Shader& shader) const
 {
-    glDetachShader(mId, shader.id());
+    glDetachShader(id(), shader.id());
 }
 
 
 void ShaderProgram::link() const
 {
-    glLinkProgram(mId);
+    glLinkProgram(id());
 }
 
 void ShaderProgram::use() const
 {
-    glUseProgram(mId);
+    glUseProgram(id());
 }
 
 
+//invoke compute shader(depends on openGL state, current program being in use)
 void ShaderProgram::dispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ) const
 {
 	glDispatchCompute(numGroupsX, numGroupsY, numGroupsZ);
 }
 
 
-//uniforms
+//uniforms(depends on openGL state, current program being in use)
 void ShaderProgram::setUniformMat4(GLint location, const Mat4& mat) const
 {
-    glUniformMatrix4dv(location, 1, GL_FALSE, glm::value_ptr(mat));
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void ShaderProgram::setUniformMat3(GLint location, const Mat3& mat) const
 {
-    glUniformMatrix3dv(location, 1, GL_FALSE, glm::value_ptr(mat));
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 
 void ShaderProgram::setUniformVec4(GLint location, const Vec4& vec) const
 {
-    glUniform4dv(location, 1, glm::value_ptr(vec));
+    glUniform4fv(location, 1, glm::value_ptr(vec));
 }
 
 void ShaderProgram::setUniformVec3(GLint location, const Vec3& vec) const
 {
-    glUniform3dv(location, 1, glm::value_ptr(vec));
+    glUniform3fv(location, 1, glm::value_ptr(vec));
 }
 
 
@@ -105,57 +104,46 @@ void ShaderProgram::setUniform1f(GLint location, double value) const
 //locations
 GLint ShaderProgram::getUniformLocation(const String& name) const
 {
-    return glGetUniformLocation(mId, name.c_str());
+    return glGetUniformLocation(id(), name.c_str());
 }
 
 GLint ShaderProgram::getAttributeLocation(const String& name) const
 {
-    return glGetAttribLocation(mId, name.c_str());
+    return glGetAttribLocation(id(), name.c_str());
 }
 
 
 //delete & reset
 void ShaderProgram::deleteProgram()
 {
-    glDeleteProgram(mId);
+    glDeleteProgram(id());
 
     resetProgram();
 }
 
 void ShaderProgram::resetProgram()
 {
-    mId = EMPTY;
-    mName = "";
+	resetId();
+
+    m_name = "";
 }
 
-
-
-//fake virtual
-const String& ShaderProgram::toString() const
-{
-    return mName;
-}
 
 //checks
-bool ShaderProgram::valid() const
-{
-    return mId != EMPTY;
-}
-
 bool ShaderProgram::linked() const
 {
     GLint result;
 
-    glGetProgramiv(mId, GL_LINK_STATUS, &result);
+    glGetProgramiv(id(), GL_LINK_STATUS, &result);
 
     return result == GL_TRUE;
 }
 
 
 //get
-GLuint ShaderProgram::id() const
+const String& ShaderProgram::name() const
 {
-    return mId;
+	return m_name;
 }
 
 

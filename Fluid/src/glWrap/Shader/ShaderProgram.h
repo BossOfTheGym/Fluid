@@ -2,11 +2,11 @@
 
 #include <Common.h>
 
-#include <glWrap/Consts.h>
+#include <glWrap/ID/Id.h>
 #include <glWrap/Shader/Shader.h>
 
 
-class ShaderProgram
+class ShaderProgram : public Id
 {
 private:
     static thread_local String INFO_LOG;
@@ -21,20 +21,16 @@ public:
 
     ShaderProgram(const String& name);
 
-    ShaderProgram(const ShaderProgram& shaderProgram) = delete;
-
     ShaderProgram(ShaderProgram&& shaderProgram);
 
 
     ~ShaderProgram();
 
 
-    ShaderProgram& operator = (const ShaderProgram& shaderProgram) = delete;
-
     ShaderProgram& operator = (ShaderProgram&& shaderProgram);
 
 
-
+public:
     void attachShader(const Shader& shader) const;
 
     void detachShader(const Shader& shader) const;
@@ -43,6 +39,7 @@ public:
     void link() const;
 
     void use() const;
+
 
 
 	void dispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ) const;
@@ -71,27 +68,20 @@ public:
     void deleteProgram();
 
 
-    bool valid() const;
-
     bool linked() const;
 
 
+	const String& name() const;
 
-    GLuint id() const;
-    
     const String& infoLog() const;
 
-
-    virtual const String& toString() const;
 
 private:
     void resetProgram();
 
 
 private:
-    GLuint mId;
-
-    String mName;
+    String m_name;
 };
 
 

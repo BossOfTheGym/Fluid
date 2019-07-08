@@ -5,7 +5,7 @@
 #include <glWrap/OpenGL.h>
 #include <glWrap/ID/Id.h>
 
-class Shader
+class Shader : public Id
 {
 private:
     static thread_local String INFO_LOG;
@@ -20,7 +20,7 @@ public:
         , Geometry       = GL_GEOMETRY_SHADER
         , Fragment       = GL_FRAGMENT_SHADER
 		, Compute        = GL_COMPUTE_SHADER
-        , Invalid        = 0
+        , None           = static_cast<GLenum>(0)
     };
 	   
 
@@ -29,29 +29,21 @@ public:
 
     Shader(Type type, const String& location);
 
-    Shader(const Shader& shader) = delete;
-
     Shader(Shader&& shader);
 
 
     ~Shader();
 
 
-    Shader& operator = (const Shader& shader) = delete;
-
     Shader& operator = (Shader&& shader);
 
 
+public:
     void deleteShader();
 
 
 
-    GLuint id() const;
-
     Type type() const;
-
-
-    bool valid() const;
 
     bool compiled() const;
 
@@ -63,16 +55,15 @@ private:
     void resetShader();
 
 
-    int loadFromLocation(Type type, const String& location);
+    bool loadFromLocation(Type type, const String& location);
 
-    int loadFromStream(Type type, IStream& inputStream);
+    bool loadFromStream(Type type, IStream& inputStream);
 
-    int loadFromString(Type type, const String& source);
+    bool loadFromString(Type type, const String& source);
 
 
 private:    
-    GLuint mId;
-    Type mType;
+    Type m_type;
 };
 
 
