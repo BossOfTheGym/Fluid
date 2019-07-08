@@ -2,15 +2,14 @@
 
 #include <Common.h>
 
-#include <glWrap/Consts.h>
+#include <glWrap/OpenGL.h>
+#include <glWrap/ID/Id.h>
 
 
-class Texture2D
+class Texture2D : public Id
 {
 public:
     static void active(GLenum texture);
-
-    static void unbind();
 
 
 public:
@@ -36,26 +35,23 @@ public:
     Texture2D& operator = (Texture2D&& tex);
 
 
+public:
     void bind() const;
 
+	void unbind() const;
+
+
     void texParameteri(GLenum name, GLint parameter) const;
-
-
-    GLuint getId() const;
 
 
     void deleteTexture();
 
 
 private:
-    int loadFromLocation(const String& location);
+    bool loadFromLocation(const String& location);
 
-    int loadFromData(int width, int height, const GLubyte* data);
+    bool loadFromData(int width, int height, const GLubyte* data);
 
 
     void resetTexture();
-
-
-private:
-    GLuint mId;
 };

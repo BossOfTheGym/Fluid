@@ -8,45 +8,43 @@ void Texture2D::active(GLenum texture)
     glActiveTexture(texture);
 }
 
-void Texture2D::unbind()
-{
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
 
 //constructors & destructor
+namespace
+{
+	Id genTexture()
+	{
+		GLuint textureId;
+		glGenTextures(1, &textureId);
+		
+		return textureId;
+	}
+}
+
 Texture2D::Texture2D()
-	:mId(EMPTY)
+	: Id()
 {}
 
 Texture2D::Texture2D(const String& location)
 {
-    GLint prevTexture;
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTexture);
+	static_cast<Id&>(*this) = genTexture();
 
-    glGenTextures(1, &mId);
-    glBindTexture(GL_TEXTURE_2D, mId);
-    if (mId == EMPTY || !loadFromLocation(location))
+	glBindTexture(GL_TEXTURE_2D, id());
+    if (!valid() || !loadFromLocation(location))
     {
         deleteTexture();
     }
-   
-    glBindTexture(GL_TEXTURE_2D, prevTexture);
 }
 
 Texture2D::Texture2D(int width, int height, const GLubyte* data)
 {
-    GLint prevTexture;
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTexture);
+	static_cast<Id&>(*this) = genTexture();
 
-    glGenTextures(1, &mId);
-    glBindTexture(GL_TEXTURE_2D, mId);
-    if (mId == EMPTY || !loadFromData(width, height, data))
+    glBindTexture(GL_TEXTURE_2D, id());
+    if (!valid() || !loadFromData(width, height, data))
     {
         deleteTexture();
     }
-
-    glBindTexture(GL_TEXTURE_2D, prevTexture);
 }
 
 
@@ -66,10 +64,7 @@ Texture2D::~Texture2D()
 //operators
 Texture2D& Texture2D::operator = (Texture2D&& texture)
 {
-	if (this != &texture)
-	{
-		std::swap(mId, texture.mId);
-	}
+	static_cast<Id&>(*this) = static_cast<Id&&>(texture);
 
     return *this;
 }
@@ -78,7 +73,12 @@ Texture2D& Texture2D::operator = (Texture2D&& texture)
 //core functions
 void Texture2D::bind() const
 {
-    glBindTexture(GL_TEXTURE_2D, mId);
+    glBindTexture(GL_TEXTURE_2D, id());
+}
+
+void Texture2D::unbind() const
+{
+	glBindTexture(GL_TEXTURE_2D, Id::Empty);
 }
 
 
@@ -88,24 +88,18 @@ void Texture2D::texParameteri(GLenum name, GLint parameter) const
 }
 
 
-//get & set
-GLuint Texture2D::getId() const
-{
-    return mId;
-}
-
-
 //delete
 void Texture2D::deleteTexture()
 {
-    glDeleteTextures(1, &mId);
+	GLuint textureId = id();
+    glDeleteTextures(1, &textureId);
 
     resetTexture();
 }
 
 
 //load
-int Texture2D::loadFromLocation(const String& location)
+bool Texture2D::loadFromLocation(const String& location)
 {
     FREE_IMAGE_FORMAT format = FreeImage_GetFileType(location.c_str(), 0);
     if (format == -1)
@@ -157,7 +151,7 @@ int Texture2D::loadFromLocation(const String& location)
     return true;
 }
 
-int Texture2D::loadFromData(int width, int height, const GLubyte* data)
+bool Texture2D::loadFromData(int width, int height, const GLubyte* data)
 {
     glTexImage2D(
         GL_TEXTURE_2D,
@@ -177,5 +171,5 @@ int Texture2D::loadFromData(int width, int height, const GLubyte* data)
 
 void Texture2D::resetTexture()
 {
-    mId = EMPTY;
+	resetId();
 }
