@@ -3,29 +3,29 @@
 
 #include <Common.h>
 
-#include <glWrap/Consts.h>
+#include <glWrap/OpenGl.h>
+#include <glWrap/ID/Id.h>
 
 
-class VertexArray
+class VertexArray : public Id
 {
 public:
 	VertexArray();
 
     VertexArray(GLsizei elements, GLsizei size, const Float* data);
 
-    VertexArray(const VertexArray& vertexBuffer) = delete;
     VertexArray(VertexArray&& vertexBuffer);
 
     ~VertexArray();
 
-    VertexArray& operator = (const VertexArray& vertexBuffer) = delete;
+
     VertexArray& operator = (VertexArray&& vertexBuffer);
 
 
-
+public:
     void bind() const;
 
-	void subData(GLintptr offset, GLsizeiptr size, const GLvoid* data);
+	void unbind() const;
 
     void setAttribPointer(GLuint index, GLint size, GLenum element, GLsizei stride, const void* offset);
 
@@ -50,13 +50,6 @@ private:
 
 
 private:
-    GLuint m_vertexArrayId;
-    GLuint m_arrayBufferId;
-	GLuint m_elementsBufferId;
-
-	//TODO
-	GLenum m_mode;
-
     GLsizei m_count;
 	GLsizei m_elements;
 };

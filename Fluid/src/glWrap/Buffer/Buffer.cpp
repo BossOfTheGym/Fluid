@@ -73,6 +73,11 @@ void Buffer::bufferData(GLsizeiptr size, const GLvoid* data, Usage usage)
 	glNamedBufferData(id(), size, data, static_cast<GLenum>(usage));
 }
 
+void Buffer::bufferSubData(GLintptr offset, GLsizei size, const GLvoid *data)
+{
+	glNamedBufferSubData(id(), offset, size, data);
+}
+
 void Buffer::deleteBuffer()
 {
 	glDeleteBuffers(1, &m_id);

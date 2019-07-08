@@ -62,6 +62,8 @@ public:
 
 	void bufferData(GLsizeiptr pSize, const GLvoid* data, Usage pUsage);
 	
+	void bufferSubData(GLintptr offset, GLsizei size, const GLvoid *data);
+
 	void bindBufferBase();
 
 	void bindBufferRange();
