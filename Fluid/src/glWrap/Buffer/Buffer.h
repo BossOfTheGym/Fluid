@@ -1,9 +1,9 @@
 #pragma once
 
-#include <glWrap/Consts.h>
+#include <glWrap/OpenGL.h>
+#include <glWrap/ID/Id.h>
 
-
-class Buffer
+class Buffer : public Id
 {
 public:
 	enum class Target : GLenum
@@ -22,7 +22,7 @@ public:
 		, TextureBuffer           = GL_TEXTURE_BUFFER
 		, TransformFeedbackBuffer = GL_TRANSFORM_FEEDBACK_BUFFER
 		, UniformBuffer           = GL_UNIFORM_BUFFER
-		, None                    = static_cast<GLenum>(EMPTY)
+		, None                    = static_cast<GLenum>(Id::Empty)
 	};
 
 	enum class Usage : GLenum
@@ -41,26 +41,22 @@ public:
 
 
 public:
-	static void bindBuffer(Target target, Buffer& buffer);
-
-	static void unbind();
-
-
-public:
 	Buffer();
 
-	Buffer(GLsizeiptr pSize, const GLvoid* data, Usage pUsage);
+	Buffer(GLsizeiptr size, const GLvoid* data, Usage usage);
 
-	Buffer(const Buffer&) = delete;
 	Buffer(Buffer&& buffer);
 
 	~Buffer();
 
-	Buffer& operator = (const Buffer&) = delete;
 	Buffer& operator = (Buffer&& buffer);
 
 
 public:
+	void bind(Target target);
+
+	void unbind(Target target);
+
 	void deleteBuffer();
 
 	void genBuffer();
@@ -77,14 +73,9 @@ public:
 	GLint64 getBufferParameter64v();
 
 
-	bool valid() const;
-
-
-	GLuint id() const;
-
 	GLsizei size() const;
 
-	GLenum usage() const;
+	Usage usage() const;
 
 
 private:
@@ -92,7 +83,6 @@ private:
 
 
 private:
-	GLuint     m_id;
-	GLsizei    m_size;
-	GLenum     m_usage;
+	GLsizei m_size;
+	Usage   m_usage;
 };

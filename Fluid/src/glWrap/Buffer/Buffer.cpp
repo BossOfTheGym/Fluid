@@ -1,38 +1,24 @@
 #include "Buffer.h"
 
 
-//statics
-void Buffer::bindBuffer(Target target, Buffer& buffer)
-{
-	glBindBuffer(static_cast<GLenum>(target), buffer.id());
-}
-
-void Buffer::unbind(Target target)
-{
-	glBindBuffer(static_cast<GLenum>(target), EMPTY);
-}
-
 
 //constructors & destructor
 Buffer::Buffer()
-	: m_id(EMPTY)
+	: Id()
 	, m_size(0)
 	, m_usage(Usage::None)
 {}
 
-Buffer::Buffer(GLsizeiptr pSize, const GLvoid* data, Usage pUsage)
+Buffer::Buffer(GLsizeiptr size, const GLvoid* data, Usage usage)
 	: Buffer()
 {
-	if (pUsage != Usage::None)
-	{
-		genBuffer();
-		bufferData(pTarget, pSize, data, pUsage);
-	}
+	genBuffer();
+	bufferData(size, data, usage);	
 }
 
 Buffer::Buffer(Buffer&& buffer)
 {
-	//TODO
+	*this = std::move(buffer);
 }
 
 Buffer::~Buffer()
@@ -41,15 +27,45 @@ Buffer::~Buffer()
 }
 
 
-//core
-void Buffer::genBuffer()
+//operators
+Buffer& Buffer::operator = (Buffer&& buffer)
 {
-	glGenBuffers(1, &m_id);
+	static_cast<Id&>(*this) = static_cast<Id&&>(buffer);
+
+	std::swap(m_size , buffer.m_size);
+	std::swap(m_usage, buffer.m_usage);
+
+	buffer.resetBuffer();
+
+	return *this;
 }
 
-void Buffer::bufferData(GLsizeiptr pSize, const GLvoid* data, Usage pUsage)
+
+//core
+void Buffer::bind(Target target)
 {
-	glNamedBufferData(m_id, size, data, static_cast<GLenum>(pUsage));
+	glBindBuffer(static_cast<GLenum>(target), id());
+}
+
+void Buffer::unbind(Target target)
+{
+	glBindBuffer(static_cast<GLenum>(target), Id::Empty);
+}
+
+void Buffer::genBuffer()
+{
+	GLuint bufferId;
+	glGenBuffers(1, &bufferId);
+
+	static_cast<Id&>(*this) = bufferId;
+}
+
+void Buffer::bufferData(GLsizeiptr size, const GLvoid* data, Usage usage)
+{
+	m_usage = usage;
+	m_size  = size;
+
+	glNamedBufferData(id(), size, data, static_cast<GLenum>(usage));
 }
 
 void Buffer::deleteBuffer()
@@ -57,6 +73,16 @@ void Buffer::deleteBuffer()
 	glDeleteBuffers(1, &m_id);
 
 	resetBuffer();
+}
+
+void Buffer::bindBufferBase()
+{
+	//TODO
+}
+
+void Buffer::bindBufferRange()
+{
+	//TODO
 }
 
 
@@ -76,7 +102,8 @@ GLint64 Buffer::getBufferParameter64v()
 //private
 void Buffer::resetBuffer()
 {
-	m_id     = EMPTY;
+	resetId();
+
 	m_usage  = Usage::None;
 	m_size = 0;
 }
@@ -84,22 +111,12 @@ void Buffer::resetBuffer()
 
 
 //get
-GLuint Buffer::id() const
-{
-	return m_id;
-}
-
 GLsizei Buffer::size() const
 {
 	return m_size;
 }
 
-GLenum Buffer::usage() const
+Buffer::Usage Buffer::usage() const
 {
 	return m_usage;
-}
-
-GLbitfield Buffer::flags() const
-{
-	return m_flags;
 }
