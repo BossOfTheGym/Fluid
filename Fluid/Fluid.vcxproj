@@ -160,22 +160,22 @@
   <ItemGroup>
     <ClCompile Include="src\Context\Context.cpp" />
     <ClCompile Include="src\glWrap\Buffer\Buffer.cpp" />
-    <ClCompile Include="src\glWrap\Buffer\VertexArray.cpp" />
     <ClCompile Include="src\glWrap\ID\Id.cpp" />
     <ClCompile Include="src\glWrap\Shader\Shader.cpp" />
     <ClCompile Include="src\glWrap\Shader\ShaderProgram.cpp" />
     <ClCompile Include="src\glWrap\Texture\Texture2D.cpp" />
+    <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\Context\Context.h" />
     <ClInclude Include="src\glWrap\Buffer\Buffer.h" />
-    <ClInclude Include="src\glWrap\Buffer\VertexArray.h" />
     <ClInclude Include="src\glWrap\ID\Id.h" />
     <ClInclude Include="src\glWrap\Shader\Shader.h" />
     <ClInclude Include="src\glWrap\Shader\ShaderProgram.h" />
     <ClInclude Include="src\glWrap\Texture\Texture2D.h" />
+    <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
