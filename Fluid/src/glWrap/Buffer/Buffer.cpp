@@ -80,7 +80,8 @@ void Buffer::bufferSubData(GLintptr offset, GLsizei size, const GLvoid *data)
 
 void Buffer::deleteBuffer()
 {
-	glDeleteBuffers(1, &m_id);
+	GLuint bufferId = id();
+	glDeleteBuffers(1, &bufferId);
 
 	resetBuffer();
 }
