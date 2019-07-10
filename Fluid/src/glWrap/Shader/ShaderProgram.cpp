@@ -8,14 +8,13 @@ thread_local String ShaderProgram::INFO_LOG;
 
 
 //constructors & destructor
-ShaderProgram::ShaderProgram()
-	: Id()
-	, m_name("")
-{}
-
-ShaderProgram::ShaderProgram(const String& name) 
+ShaderProgram::ShaderProgram(
+	  const String& name
+	, const ComputeInfo& computeInfo
+) 
     : Id(glCreateProgram())
     , m_name(name)
+	, m_computeInfo(computeInfo)
 {}
 
 ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram)
@@ -68,9 +67,13 @@ void ShaderProgram::unbind() const
 
 
 //invoke compute shader(depends on openGL state, current program being in use)
-void ShaderProgram::dispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ) const
+void ShaderProgram::dispatchCompute() const
 {
-	glDispatchCompute(numGroupsX, numGroupsY, numGroupsZ);
+	glDispatchCompute(
+		  m_computeInfo.m_numGroupsX
+		, m_computeInfo.m_numGroupsY
+		, m_computeInfo.m_numGroupsZ
+	);
 }
 
 
@@ -146,6 +149,16 @@ bool ShaderProgram::linked() const
 const String& ShaderProgram::name() const
 {
 	return m_name;
+}
+
+ShaderProgram::ComputeInfo& ShaderProgram::computeInfo()
+{
+	return m_computeInfo;
+}
+
+const ShaderProgram::ComputeInfo& ShaderProgram::computeInfo() const
+{
+	return m_computeInfo;
 }
 
 

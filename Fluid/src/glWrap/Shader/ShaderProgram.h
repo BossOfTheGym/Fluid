@@ -13,9 +13,19 @@ private:
 
 
 public:
-	ShaderProgram();
+	struct ComputeInfo
+	{
+		GLuint m_numGroupsX;
+		GLuint m_numGroupsY;
+		GLuint m_numGroupsZ;
+	};
 
-    ShaderProgram(const String& name);
+
+public:
+	ShaderProgram(
+		  const String& name = "Shader program"
+		, const ComputeInfo& computeInfo = ComputeInfo{0, 0, 0}
+	);
 
     ShaderProgram(ShaderProgram&& shaderProgram);
 
@@ -39,8 +49,7 @@ public:
 	void unbind() const;
 
 
-	void dispatchCompute(GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ) const;
-
+	void dispatchCompute() const;
 
 
     void setUniformMat4(GLint location, const Mat4& mat) const;
@@ -61,10 +70,10 @@ public:
     GLint getAttributeLocation(const String& name) const;
 
 
-
     void deleteProgram();
 
 
+public:
     bool linked() const;
 
 
@@ -73,12 +82,18 @@ public:
     const String& infoLog() const;
 
 
+	ComputeInfo& computeInfo();
+
+	const ComputeInfo& computeInfo() const;
+
+
 private:
     void resetProgram();
 
 
 private:
-    String m_name;
+    String      m_name;
+	ComputeInfo m_computeInfo;
 };
 
 
