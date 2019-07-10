@@ -177,6 +177,9 @@
     <ClInclude Include="src\glWrap\Texture\Texture2D.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\fluid.comp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
