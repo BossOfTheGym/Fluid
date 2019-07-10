@@ -13,7 +13,7 @@ namespace
 	}
 }
 
-VertexArray::VertexArray(const VertexArray::DrawInfo& info) 
+VertexArray::VertexArray(const DrawInfo& info) 
 	: Id(genVertexArray())
 	, m_info(info)
 {}
@@ -33,7 +33,6 @@ VertexArray::~VertexArray()
 //operators
 VertexArray& VertexArray::operator = (VertexArray&& vertexBuffer)
 {
-	//TODO
 	static_cast<Id&>(*this) = static_cast<Id&&>(vertexBuffer);
 
 	m_info = vertexBuffer.m_info;
@@ -69,17 +68,26 @@ void VertexArray::bind() const
 void VertexArray::unbind() const
 {
 	glBindVertexArray(Id::Empty);
-}
 
-void VertexArray::setAttribPointer(GLuint index, GLint size, GLenum element, GLsizei stride, const void* offset)
-{
-    glEnableVertexAttribArray(index);
-    glVertexAttribPointer(index, size, element, GL_FALSE, stride, offset);
+	glBindBuffer(static_cast<GLenum>(Target::ArrayBuffer)       , Id::Empty);
+	glBindBuffer(static_cast<GLenum>(Target::ElementArrayBuffer), Id::Empty);
 }
 
 void VertexArray::enableAttribArray(GLuint index)
 {
     glEnableVertexAttribArray(index);
+}
+
+void VertexArray::vertexAttribPointer(const PointerInfo& info)
+{
+	glVertexAttribPointer(
+		  info.m_index
+		, info.m_size
+		, static_cast<GLenum>(info.m_type)
+		, info.m_normalized
+		, info.m_stride
+		, info.m_pointer
+	);
 }
 
 void VertexArray::disableAttribPointer(GLuint index)
@@ -108,7 +116,23 @@ void VertexArray::drawElements() const
 
 
 //misc
+void VertexArray::setAttribPointer(const PointerInfo& info)
+{
+	enableAttribArray(info.m_index);
+	vertexAttribPointer(info);
+}
 
+void VertexArray::setAttribPointerInBuffer(const Buffer& buffer, const PointerInfo& info)
+{
+	buffer.bind(Target::ArrayBuffer);
+
+	setAttribPointer(info);
+}
+
+void VertexArray::setElementsBuffer(const Buffer& buffer)
+{
+	buffer.bind(Target::ElementArrayBuffer);
+}
 
 
 //get & set

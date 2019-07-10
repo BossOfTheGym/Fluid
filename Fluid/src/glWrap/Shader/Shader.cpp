@@ -10,10 +10,10 @@ thread_local String Shader::INFO_LOG;
 //constructors
 Shader::Shader()
 	: Id()
-	, m_type(Type::None)
+	, m_type(ShaderType::None)
 {}
 
-Shader::Shader(Type type, const String& location) : Shader()
+Shader::Shader(ShaderType type, const String& location) : Shader()
 {
     loadFromLocation(type, location);
 }
@@ -45,7 +45,7 @@ Shader& Shader::operator = (Shader&& shader)
 
 
 //load functions
-bool Shader::loadFromLocation(Type type, const String& location)
+bool Shader::loadFromLocation(ShaderType type, const String& location)
 {
     IFStream file(location);
 
@@ -57,7 +57,7 @@ bool Shader::loadFromLocation(Type type, const String& location)
     return loadFromStream(type, file);
 }
 
-bool Shader::loadFromStream(Type type, IStream& inputStream)
+bool Shader::loadFromStream(ShaderType type, IStream& inputStream)
 {
     String source;
     String line;
@@ -78,7 +78,7 @@ bool Shader::loadFromStream(Type type, IStream& inputStream)
     return loadFromString(type, source);
 }
 
-bool Shader::loadFromString(Type type, const String& source)
+bool Shader::loadFromString(ShaderType type, const String& source)
 {
     static_cast<Id&>(*this) = glCreateShader(static_cast<GLenum>(type));
     m_type = type;
@@ -117,7 +117,7 @@ void Shader::resetShader()
 {
 	resetId();
 
-    m_type = Type::None;
+    m_type = ShaderType::None;
 }
 
 
@@ -154,7 +154,7 @@ const String& Shader::infoLog() const
 
 
 //get & set
-Shader::Type Shader::type() const
+Shader::ShaderType Shader::type() const
 {
     return m_type;
 }

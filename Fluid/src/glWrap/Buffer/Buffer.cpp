@@ -127,7 +127,7 @@ GLsizei Buffer::size() const
 	return m_size;
 }
 
-Buffer::Usage Buffer::usage() const
+Usage Buffer::usage() const
 {
 	return m_usage;
 }
