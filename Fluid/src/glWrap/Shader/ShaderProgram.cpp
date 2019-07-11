@@ -170,10 +170,10 @@ const String& ShaderProgram::infoLog() const
     GLint length;
     GLint returned;
 
-    glGetProgramiv(mId, GL_INFO_LOG_LENGTH, &length);
+    glGetProgramiv(id(), GL_INFO_LOG_LENGTH, &length);
     infoLog.resize(length);
 
-    glGetProgramInfoLog(mId, length, &returned, infoLog.data());
+    glGetProgramInfoLog(id(), length, &returned, infoLog.data());
     infoLog.resize(returned);
 
     return infoLog;
