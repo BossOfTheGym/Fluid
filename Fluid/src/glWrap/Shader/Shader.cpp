@@ -13,9 +13,10 @@ Shader::Shader(ShaderType type)
 	, m_type(type)
 {}
 
-Shader::Shader(ShaderType type, const String& location) : Shader()
+Shader::Shader(ShaderType type, const String& source) : Shader(type)
 {
-    loadFromLocation(type, location);
+    shaderSource(source);
+	compileShader();
 }
 
 Shader::Shader(Shader&& shader)
@@ -30,7 +31,6 @@ Shader::~Shader()
     deleteShader();
 }
 
-
 //operators
 Shader& Shader::operator = (Shader&& shader)
 {
@@ -44,68 +44,20 @@ Shader& Shader::operator = (Shader&& shader)
 }
 
 
-//load functions
-bool Shader::loadFromLocation(ShaderType type, const String& location)
+//core functions
+void Shader::shaderSource(const String& source)
 {
-    IFStream file(location);
-
-    if (!file.is_open())
-    {
-        return false;
-    }
-
-    return loadFromStream(type, file);
-}
-
-bool Shader::loadFromStream(ShaderType type, IStream& inputStream)
-{
-    String source;
-    String line;
-
-    while (inputStream.good())
-    {
-        std::getline(inputStream, line);
-
-        source += line;
-        source += '\n';
-    }
-
-    if (!inputStream.eof())
-    {
-        return false;
-    }
-
-    return loadFromString(type, source);
-}
-
-bool Shader::loadFromString(ShaderType type, const String& source)
-{
-    static_cast<Id&>(*this) = glCreateShader(static_cast<GLenum>(type));
-    m_type = type;
-
-    if (!valid())
-    {
-        resetShader();
-
-        return false;
-    }
-
     const GLchar* src = source.c_str();
-    GLint size = source.size();
+    GLint size        = source.size();
 
     glShaderSource(id(), 1, &src, &size);
-    glCompileShader(id());
-
-    if (!compiled())
-    {
-        return false;
-    }
-
-    return true;
 }
 
+void Shader::compileShader()
+{
+	glCompileShader(id());
+}
 
-//delete & reset
 void Shader::deleteShader()
 {
     glDeleteShader(id());
@@ -135,7 +87,6 @@ bool Shader::compiled() const
     return result == GL_TRUE;
 }
 
-
 const String& Shader::infoLog() const
 {
     String& infoLog = Shader::INFO_LOG;
@@ -151,7 +102,6 @@ const String& Shader::infoLog() const
 
     return infoLog;
 }
-
 
 //get & set
 ShaderType Shader::type() const

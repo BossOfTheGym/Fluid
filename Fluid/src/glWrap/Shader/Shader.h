@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Common.h>
-
 #include <glWrap/OpenGL.h>
 #include <glWrap/ID/Id.h>
 
@@ -13,7 +11,7 @@ private:
 public:
 	Shader(ShaderType type = ShaderType::None);
 
-    Shader(ShaderType type, const String& location);
+    Shader(ShaderType type, const String& source);
 
     Shader(Shader&& shader);
 
@@ -25,10 +23,14 @@ public:
 
 
 public:
+	void shaderSource(const String& shader);
+
+	void compileShader();
+
     void deleteShader();
 
 
-
+public:
     ShaderType type() const;
 
     bool compiled() const;
@@ -39,13 +41,6 @@ public:
 
 private:
     void resetShader();
-
-
-    bool loadFromLocation(ShaderType type, const String& location);
-
-    bool loadFromStream(ShaderType type, IStream& inputStream);
-
-    bool loadFromString(ShaderType type, const String& source);
 
 
 private:    

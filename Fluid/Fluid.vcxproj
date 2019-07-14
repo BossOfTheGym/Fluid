@@ -166,6 +166,7 @@
     <ClCompile Include="src\glWrap\Texture\Texture.cpp" />
     <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ResourceLoaders\ShaderLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\glWrap\Shader\ShaderProgram.h" />
     <ClInclude Include="src\glWrap\Texture\Texture.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
+    <ClInclude Include="src\ResourceLoaders\ShaderLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\fluid.comp" />
