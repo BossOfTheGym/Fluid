@@ -86,14 +86,14 @@ void Buffer::deleteBuffer()
 	resetBuffer();
 }
 
-void Buffer::bindBufferBase()
+void Buffer::bindBufferBase(BufferTarget target, GLuint index)
 {
-	//TODO
+	glBindBufferBase(static_cast<GLenum>(target), index, id());
 }
 
-void Buffer::bindBufferRange()
+void Buffer::bindBufferRange(BufferTarget target, GLuint index, GLintptr offset, GLsizeiptr size)
 {
-	//TODO
+	glBindBufferRange(static_cast<GLenum>(target), index, id(), offset, size);
 }
 
 

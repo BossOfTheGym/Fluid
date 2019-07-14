@@ -30,9 +30,10 @@ public:
 	
 	void bufferSubData(GLintptr offset, GLsizei size, const GLvoid *data);
 
-	void bindBufferBase();
+	//only AtomicCounterBuffer, TransformFeedbackBuffer, UniformBuffer, ShaderStorageBuffer allowed
+	void bindBufferBase(BufferTarget target, GLuint index);
 
-	void bindBufferRange();
+	void bindBufferRange(BufferTarget target, GLuint index, GLintptr offset, GLsizeiptr size);
 
 
 	GLint getBufferParameteriv();
