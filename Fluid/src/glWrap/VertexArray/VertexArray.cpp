@@ -69,8 +69,8 @@ void VertexArray::unbind() const
 {
 	glBindVertexArray(Id::Empty);
 
-	glBindBuffer(static_cast<GLenum>(Target::ArrayBuffer)       , Id::Empty);
-	glBindBuffer(static_cast<GLenum>(Target::ElementArrayBuffer), Id::Empty);
+	glBindBuffer(static_cast<GLenum>(BufferTarget::ArrayBuffer)       , Id::Empty);
+	glBindBuffer(static_cast<GLenum>(BufferTarget::ElementArrayBuffer), Id::Empty);
 }
 
 void VertexArray::enableAttribArray(GLuint index)
@@ -124,14 +124,14 @@ void VertexArray::setAttribPointer(const PointerInfo& info)
 
 void VertexArray::setAttribPointerInBuffer(const Buffer& buffer, const PointerInfo& info)
 {
-	buffer.bind(Target::ArrayBuffer);
+	buffer.bind(BufferTarget::ArrayBuffer);
 
 	setAttribPointer(info);
 }
 
 void VertexArray::setElementsBuffer(const Buffer& buffer)
 {
-	buffer.bind(Target::ElementArrayBuffer);
+	buffer.bind(BufferTarget::ElementArrayBuffer);
 }
 
 

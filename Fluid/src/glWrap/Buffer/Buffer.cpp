@@ -18,10 +18,10 @@ namespace
 Buffer::Buffer()
 	: Id()
 	, m_size(0)
-	, m_usage(Usage::None)
+	, m_usage(BufferUsage::None)
 {}
 
-Buffer::Buffer(GLsizeiptr size, const GLvoid* data, Usage usage)
+Buffer::Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
 	: Buffer()
 {
 	static_cast<Id&>(*this) = genBuffer();
@@ -55,17 +55,17 @@ Buffer& Buffer::operator = (Buffer&& buffer)
 
 
 //core
-void Buffer::bind(Target target) const
+void Buffer::bind(BufferTarget target) const
 {
 	glBindBuffer(static_cast<GLenum>(target), id());
 }
 
-void Buffer::unbind(Target target) const
+void Buffer::unbind(BufferTarget target) const
 {
 	glBindBuffer(static_cast<GLenum>(target), Id::Empty);
 }
 
-void Buffer::bufferData(GLsizeiptr size, const GLvoid* data, Usage usage)
+void Buffer::bufferData(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
 {
 	m_usage = usage;
 	m_size  = size;
@@ -115,7 +115,7 @@ void Buffer::resetBuffer()
 {
 	resetId();
 
-	m_usage  = Usage::None;
+	m_usage  = BufferUsage::None;
 	m_size = 0;
 }
 
@@ -127,7 +127,7 @@ GLsizei Buffer::size() const
 	return m_size;
 }
 
-Usage Buffer::usage() const
+BufferUsage Buffer::usage() const
 {
 	return m_usage;
 }

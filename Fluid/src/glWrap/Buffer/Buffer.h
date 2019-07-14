@@ -9,7 +9,7 @@ public:
 public:
 	Buffer();
 
-	Buffer(GLsizeiptr size, const GLvoid* data, Usage usage);
+	Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage);
 
 	Buffer(Buffer&& buffer);
 
@@ -20,13 +20,13 @@ public:
 
 
 public:
-	void bind(Target target) const;
+	void bind(BufferTarget target) const;
 
-	void unbind(Target target) const;
+	void unbind(BufferTarget target) const;
 
 	void deleteBuffer();
 
-	void bufferData(GLsizeiptr pSize, const GLvoid* data, Usage pUsage);
+	void bufferData(GLsizeiptr pSize, const GLvoid* data, BufferUsage pUsage);
 	
 	void bufferSubData(GLintptr offset, GLsizei size, const GLvoid *data);
 
@@ -42,7 +42,7 @@ public:
 
 	GLsizei size() const;
 
-	Usage usage() const;
+	BufferUsage usage() const;
 
 
 private:
@@ -51,5 +51,5 @@ private:
 
 private:
 	GLsizei m_size;
-	Usage   m_usage;
+	BufferUsage   m_usage;
 };
