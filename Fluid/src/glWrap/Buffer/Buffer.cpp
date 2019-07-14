@@ -96,6 +96,10 @@ void Buffer::bindBufferRange(BufferTarget target, GLuint index, GLintptr offset,
 	glBindBufferRange(static_cast<GLenum>(target), index, id(), offset, size);
 }
 
+void Buffer::unbindBufferBase(BufferTarget target, GLuint index)
+{
+	glBindBufferBase(static_cast<GLenum>(target), index, Id::Empty);
+}
 
 GLint Buffer::getBufferParameteriv()
 {

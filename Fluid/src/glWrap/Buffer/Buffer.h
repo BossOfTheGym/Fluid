@@ -35,6 +35,8 @@ public:
 
 	void bindBufferRange(BufferTarget target, GLuint index, GLintptr offset, GLsizeiptr size);
 
+	void unbindBufferBase(BufferTarget target, GLuint index);
+
 
 	GLint getBufferParameteriv();
 	
