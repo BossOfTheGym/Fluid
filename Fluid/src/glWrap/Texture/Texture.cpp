@@ -92,5 +92,10 @@ void Texture::deleteTexture()
 	GLuint textureId = id();
     glDeleteTextures(1, &textureId);
 
+	resetTexture();
+}
+
+void Texture::resetTexture()
+{
 	resetId();
 }

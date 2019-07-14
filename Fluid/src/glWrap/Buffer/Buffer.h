@@ -50,6 +50,6 @@ private:
 
 
 private:
-	GLsizei m_size;
+	GLsizei       m_size;
 	BufferUsage   m_usage;
 };

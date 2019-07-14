@@ -11,7 +11,7 @@ private:
     static thread_local String INFO_LOG;
 
 public:
-	Shader();
+	Shader(ShaderType type = ShaderType::None);
 
     Shader(ShaderType type, const String& location);
 

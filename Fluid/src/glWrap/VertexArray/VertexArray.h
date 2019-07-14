@@ -13,28 +13,28 @@ class VertexArray : public Id
 public:
 	struct DrawInfo
 	{
-		DrawMode m_drawMode;      // drawArrays
-		GLint    m_first;         // drawArrays
+		DrawMode drawMode;      // drawArrays
+		GLint    first;         // drawArrays
 
-		GLsizei  m_elementsCount; // both drawArrays & drawElements
+		GLsizei  elementsCount; // both drawArrays & drawElements
 
-		DataType m_indicesType;   // drawElements
-		GLvoid*  m_indices;       // drawElements
+		DataType indicesType;   // drawElements
+		GLvoid*  indices;       // drawElements
 	};
 
 	struct PointerInfo
 	{
-		GLuint    m_index;      // attribute index
-		GLint     m_size;       // number of components per attribute(1,2,3,4)
-		DataType  m_type;       // data type
-		GLboolean m_normalized; //
-		GLsizei   m_stride;     // byte offset between attributes 
-		GLvoid*   m_pointer;    // offset of the first element
+		GLuint    index;      // attribute index
+		GLint     size;       // number of components per attribute(1,2,3,4)
+		DataType  type;       // data type
+		GLboolean normalized; //
+		GLsizei   stride;     // byte offset between attributes 
+		GLvoid*   pointer;    // offset of the first element
 	};
 
 	
 public:
-	VertexArray(const DrawInfo& info);
+	VertexArray(const DrawInfo& info = DrawInfo{DrawMode::None, 0, 0, DataType::None, nullptr});
 
     VertexArray(VertexArray&& vertexBuffer);
 

@@ -16,7 +16,7 @@ namespace
 
 
 Buffer::Buffer()
-	: Id()
+	: Id(genBuffer())
 	, m_size(0)
 	, m_usage(BufferUsage::None)
 {}
@@ -48,7 +48,7 @@ Buffer& Buffer::operator = (Buffer&& buffer)
 	std::swap(m_size , buffer.m_size);
 	std::swap(m_usage, buffer.m_usage);
 
-	buffer.resetBuffer();
+	buffer.deleteBuffer();
 
 	return *this;
 }
@@ -118,7 +118,6 @@ void Buffer::resetBuffer()
 	m_usage  = BufferUsage::None;
 	m_size = 0;
 }
-
 
 
 //get

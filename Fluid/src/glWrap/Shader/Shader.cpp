@@ -8,9 +8,9 @@ thread_local String Shader::INFO_LOG;
 
 
 //constructors
-Shader::Shader()
-	: Id()
-	, m_type(ShaderType::None)
+Shader::Shader(ShaderType type)
+	: Id(glCreateShader(static_cast<GLenum>(type)))
+	, m_type(type)
 {}
 
 Shader::Shader(ShaderType type, const String& location) : Shader()
@@ -38,7 +38,7 @@ Shader& Shader::operator = (Shader&& shader)
 
 	std::swap(m_type, shader.m_type);
 
-	shader.resetShader();
+	shader.deleteShader();
 
     return *this;
 }
@@ -154,7 +154,7 @@ const String& Shader::infoLog() const
 
 
 //get & set
-Shader::ShaderType Shader::type() const
+ShaderType Shader::type() const
 {
     return m_type;
 }

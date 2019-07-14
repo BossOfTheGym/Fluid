@@ -5,8 +5,6 @@
 thread_local String ShaderProgram::INFO_LOG;
 
 
-
-
 //constructors & destructor
 ShaderProgram::ShaderProgram(
 	  const String& name
@@ -33,6 +31,8 @@ ShaderProgram::~ShaderProgram()
 ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram)
 {
 	static_cast<Id&>(*this) = static_cast<Id&&>(shaderProgram);
+
+	shaderProgram.deleteProgram();
 
     return *this;
 }

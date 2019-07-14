@@ -48,4 +48,8 @@ public:
 
 
     void deleteTexture();
+
+
+private:
+	void resetTexture();
 };

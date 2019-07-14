@@ -37,7 +37,7 @@ VertexArray& VertexArray::operator = (VertexArray&& vertexBuffer)
 
 	m_info = vertexBuffer.m_info;
 
-	vertexBuffer.resetArrayBuffer();
+	vertexBuffer.deleteArrayBuffer();
 
     return *this;
 }
@@ -81,12 +81,12 @@ void VertexArray::enableAttribArray(GLuint index)
 void VertexArray::vertexAttribPointer(const PointerInfo& info)
 {
 	glVertexAttribPointer(
-		  info.m_index
-		, info.m_size
-		, static_cast<GLenum>(info.m_type)
-		, info.m_normalized
-		, info.m_stride
-		, info.m_pointer
+		  info.index
+		, info.size
+		, static_cast<GLenum>(info.type)
+		, info.normalized
+		, info.stride
+		, info.pointer
 	);
 }
 
@@ -98,19 +98,19 @@ void VertexArray::disableAttribPointer(GLuint index)
 void VertexArray::drawArrays() const
 {
 	glDrawArrays(
-		static_cast<GLenum>(m_info.m_drawMode)
-		, m_info.m_first
-		, m_info.m_elementsCount
+		static_cast<GLenum>(m_info.drawMode)
+		, m_info.first
+		, m_info.elementsCount
 	);
 }
 
 void VertexArray::drawElements() const
 {
 	glDrawElements(
-		static_cast<GLenum>(m_info.m_drawMode)
-		, m_info.m_elementsCount
-		, static_cast<GLenum>(m_info.m_indicesType)
-		, m_info.m_indices
+		static_cast<GLenum>(m_info.drawMode)
+		, m_info.elementsCount
+		, static_cast<GLenum>(m_info.indicesType)
+		, m_info.indices
 	);
 }
 
@@ -118,7 +118,7 @@ void VertexArray::drawElements() const
 //misc
 void VertexArray::setAttribPointer(const PointerInfo& info)
 {
-	enableAttribArray(info.m_index);
+	enableAttribArray(info.index);
 	vertexAttribPointer(info);
 }
 
