@@ -5,22 +5,22 @@
 #include <GLFW/glfw3.h>
 
 
-class Context
+class Window
 {
 public:
 	static bool init(int width, int height, const String& name);
 
-	static Context* getContext();
+	static Window* getContext();
 
 	static void terminate();
 
 
 private:
-	static Context* sContext;
+	static Window* sContext;
 
 
 private:
-	Context();
+	Window();
 
 
 public:

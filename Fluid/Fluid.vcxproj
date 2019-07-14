@@ -158,19 +158,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Context\Context.cpp" />
     <ClCompile Include="src\glWrap\Buffer\Buffer.cpp" />
     <ClCompile Include="src\glWrap\ID\Id.cpp" />
+    <ClCompile Include="src\glWrap\OpenGL.cpp" />
     <ClCompile Include="src\glWrap\Shader\Shader.cpp" />
     <ClCompile Include="src\glWrap\Shader\ShaderProgram.cpp" />
     <ClCompile Include="src\glWrap\Texture\Texture.cpp" />
     <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShaderLoader.cpp" />
+    <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.h" />
-    <ClInclude Include="src\Context\Context.h" />
     <ClInclude Include="src\glWrap\Buffer\Buffer.h" />
     <ClInclude Include="src\glWrap\ID\Id.h" />
     <ClInclude Include="src\glWrap\OpenGL.h" />
@@ -179,6 +179,7 @@
     <ClInclude Include="src\glWrap\Texture\Texture.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
     <ClInclude Include="src\ResourceLoaders\ShaderLoader.h" />
+    <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\fluid.comp" />

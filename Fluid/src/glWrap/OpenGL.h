@@ -4,6 +4,13 @@
 #include <GL/glew.h>
 
 
+class OpenGL
+{
+public:
+	static bool initializeLoader();
+};
+
+
 enum class ShaderType : GLenum
 {
 	  Vertex         = GL_VERTEX_SHADER
