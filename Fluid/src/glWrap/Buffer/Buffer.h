@@ -6,7 +6,6 @@
 class Buffer : public Id
 {
 public:
-public:
 	Buffer();
 
 	Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage);
