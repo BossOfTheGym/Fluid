@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BUFFER_H
+#define BUFFER_H
 
 #include <glWrap/OpenGL.h>
 #include <glWrap/ID/Id.h>
@@ -42,7 +43,7 @@ public:
 	GLint64 getBufferParameter64v();
 
 
-	GLsizei size() const;
+	GLsizeiptr size() const;
 
 	BufferUsage usage() const;
 
@@ -52,6 +53,8 @@ private:
 
 
 private:
-	GLsizei       m_size;
+	GLsizeiptr    m_size;
 	BufferUsage   m_usage;
 };
+
+#endif

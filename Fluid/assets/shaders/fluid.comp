@@ -3,32 +3,120 @@
 //---built-ins---
 //in uvec3 gl_NumWorkGroups
 //in uvec3 gl_WorkGroupID
-//in uvec3 gl_LocalInvocationID
 //in uvec3 gl_GlobalInvocationID
-//in uint  glLocalInvocationIndex
-
-#define NUM_GROUPS_X 8
-#define NUM_GROUPS_Y 8
-#define NUM_GROUPS_Z 1
-
-layout(local_size_x = NUM_GROUPS_X, local_size_y = NUM_GROUPS_Y, local_size_z = NUM_GROUPS_Z) in;
-
-//---inputs---
-// 1.padded solution & function(shader buffer storage)
-// layout(std430, binding = 0) buffer solution
-//{};
-//
-//
-//
-
-//---outputs---
-//
-//
-//
-//
+//in uvec3 gl_LocalInvocationID
+//in uint  gl_LocalInvocationIndex
 
 
+//workgroup parameters
+#define NUM_GROUPS_X 16
+#define NUM_GROUPS_Y 16
+
+layout(local_size_x = NUM_GROUPS_X, local_size_y = NUM_GROUPS_Y) in;
+
+
+//coeficients of discretisized poisson equation(coefs both for bound and inner domain)
+//it's a cross template
+// y
+// ^        ____  
+// |   ____|_21_|____
+// |  |_10_|_11_|_12_|  -- used indices(later will be used for naming appropriate solution values)
+// |       |_01_|
+// 0------------------>x
+//
+struct CrossCoefficients
+{
+	           float c21;
+	float c10; float c11; float c12;
+	           float c01;
+};
+
+layout(std430, binding = 0) buffer equations
+{
+	CrossCoefficients coefficients[];			
+};
+
+//padded solution & function(image2D) + equations coefficients
+layout(binding = 0, rgba32f) uniform image2D solution; 
+layout(binding = 1, rgbs32f) uniform image2D function;
+
+
+//uniform to know what cell type is updated
+#define RED   0
+#define BLACK 1
+uniform uint uRedOrBlack;
+
+
+//solution method is chebyshev accelerated SSOR
+//relaxation parameter for solving poisson equation
+uniform float uOmega;
+
+
+//one invocation deals with 2x2 square
+//one invocation updates two cells(two red or two black cells)
+//(0 - start index computed as (2 * x, 2 * y) where x, y are the first components of gl_GlobalInvocationID)
+// ___ ___  ___ ___ 
+//|___|___||___|___|
+//|_0_|___||_0_|___|
+// ___ ___  ___ ___ 
+//|___|___||___|___|
+//|_0_|___||_0_|___|
+//
+// Ordering is the following:
+// ___ ___ 
+//|_B_|_R_|
+//|_R_|_B_|
+
+//cells' offsets                      Red          Black
+const ivec2  FIRST_CELL_OFFSETS[2] = {ivec2(0, 0), ivec2(1, 0)};
+const ivec2 SECOND_CELL_OFFSETS[2] = {ivec2(1, 1), ivec2(0, 1)};
+
+//update cell
+void redBlackStep(ivec2 index)
+{
+	//get equation coefs
+	CrossCoefficients equ = coefficients[index];
+
+	//get solution values for cross update
+	float s21 = imageLoad(solution, index + ivec2(+1,  0));
+	float s12 = imageLoad(solution, index + ivec2( 0, +1));
+	float s11 = imageLoad(solution, index                );
+	float s10 = imageLoad(solution, index + ivec2( 0, -1));
+	float s01 = imageLoad(solution, index + ivec2(-1,  0));
+
+	//get function value
+	float f = imageLoad(function, index);
+
+	//algorithm(accelerated SSOR)
+	float s11 = 
+	                      equ.c21 * s21
+		+ equ.c10 * s10 + equ.c11 * s11 + equ.c12 * s12;
+	                      equ.c01 * s01 
+}
+
+//y(padding)
+//^    ____________________________
+//|   |_0_|_0_|_0_|_0_|_0_|_0_|_0_|
+//|   |_0_|___|___|___|___|___|_0_|
+//|   |_0_|___|___|___|___|___|_0_|
+//|j+1|_0_|___|___|_x_|___|___|_0_|
+//|   |_0_|___|___|___|___|___|_0_|
+//|   |_0_|___|___|___|___|___|_0_|
+//|   |_0_|_0_|_0_|_0_|_0_|_0_|_0_|
+//|                i+1
+//0----------------------------------->x
 void main()
 {
+	//calculating real indices and work layout size
+	ivec2 indexVec = 2 * gl_GlobalInvocationID.xy;		
+	ivec2 workDims = 2 * gl_NumWorkGroups.xy * gl_WorkGroupSize.xy;
 
+	int paddedIndexFlat = (indexVec.y + 1) * (workDims.x + 2) + (indexVec.x + 1);
+
+	//get offsets of updated cell according to current cell type(red or black)
+	ivec2  firstCellOffset =  FIRST_CELL_OFFSETS[uRedOrBlack];
+	ivec2 secondCellOffset = SECOND_CELL_OFFSETS[uRedOrBlack];
+
+	redBlackStep(paddedIndexFlat + firstCellOffset );
+	redBlackStep(paddedIndexFlat + secondCellOffset);
 }

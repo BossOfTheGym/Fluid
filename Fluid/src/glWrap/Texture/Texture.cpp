@@ -71,6 +71,7 @@ void Texture::textureParameteri(TextureParameter name, GLint parameter)
 	glTextureParameteri(id(), static_cast<GLenum>(name), parameter);
 }
 
+
 void Texture::texImage2D(const Image2D_Data& data)
 {
 	glTexImage2D(

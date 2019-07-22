@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WINDOW_H
+#define WINDOW_H
 
 #include <Common.h>
 
@@ -30,3 +31,5 @@ public:
 public:
 	GLFWwindow* mWindow;
 };
+
+#endif

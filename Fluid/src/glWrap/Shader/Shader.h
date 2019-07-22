@@ -1,4 +1,7 @@
-#pragma once
+#ifndef SHADER_H
+#define SHADER_H
+
+#include <Common.h>
 
 #include <glWrap/OpenGL.h>
 #include <glWrap/ID/Id.h>
@@ -51,3 +54,5 @@ private:
 //aliases
 using ShaderShared = std::shared_ptr<Shader>;
 using ShaderWeak   = std::weak_ptr<Shader>;
+
+#endif

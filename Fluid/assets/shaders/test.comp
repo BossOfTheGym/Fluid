@@ -1,0 +1,12 @@
+#version 430 core
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+
+uvec2 offsets[4] = {uvec2(0, 0), uvec2(0, 1), uvec2(1, 0), uvec2(1, 1)};
+
+
+void main()
+{
+
+}

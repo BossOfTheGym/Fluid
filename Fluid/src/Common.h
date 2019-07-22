@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <iostream>
 #include <fstream>
@@ -46,3 +47,5 @@ using OStream = std::ostream;
 
 using IFStream = std::ifstream;
 using OFStream = std::ofstream;
+
+#endif

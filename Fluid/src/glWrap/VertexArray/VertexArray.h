@@ -1,10 +1,8 @@
-#pragma once
+#ifndef VERTEXARRAY_H
+#define VERTEXARRAY_H
 
-
-#include <Common.h>
 
 #include <glWrap/OpenGl.h>
-#include <glWrap/ID/Id.h>
 #include <glWrap/Buffer/Buffer.h>
 
 
@@ -83,3 +81,5 @@ private:
 private:
 	DrawInfo m_info;
 };
+
+#endif

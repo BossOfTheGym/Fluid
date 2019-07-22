@@ -125,7 +125,7 @@ void Buffer::resetBuffer()
 
 
 //get
-GLsizei Buffer::size() const
+GLsizeiptr Buffer::size() const
 {
 	return m_size;
 }

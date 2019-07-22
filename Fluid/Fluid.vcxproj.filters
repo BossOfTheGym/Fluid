@@ -15,7 +15,56 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\fluid.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\test.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\ShaderLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\OpenGL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Shader\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Shader\ShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\ID\Id.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\VertexArray\VertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Buffer\Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Texture\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceLoaders\ShaderLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\OpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\glWrap\Shader\Shader.cpp">
@@ -30,57 +79,11 @@
     <ClCompile Include="src\glWrap\Buffer\Buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\glWrap\Texture\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceLoaders\ShaderLoader.cpp">
+    <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Window\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\glWrap\OpenGL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\glWrap\Buffer\Buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\glWrap\ID\Id.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\glWrap\Shader\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\glWrap\Shader\ShaderProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\glWrap\VertexArray\VertexArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\glWrap\OpenGL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\glWrap\Texture\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceLoaders\ShaderLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Window\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\fluid.comp">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

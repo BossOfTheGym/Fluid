@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SHADERPROGRAM_H
+#define SHADERPROGRAM_H
+
 
 #include <Common.h>
 
@@ -100,3 +102,5 @@ private:
 //aliases
 using ShaderProgramShared = std::shared_ptr<ShaderProgram>;
 using ShaderProgramWeak   = std::weak_ptr<ShaderProgram>;
+
+#endif

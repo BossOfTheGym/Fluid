@@ -19,6 +19,8 @@ Id& Id::operator = (Id&& id)
 	std::swap(m_id, id.m_id);
 
 	id.resetId();
+
+	return *this;
 }
 
 //core
