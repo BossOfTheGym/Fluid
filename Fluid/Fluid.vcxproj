@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\glWrap\Buffer\Buffer.h" />
+    <ClInclude Include="src\glWrap\Framebuffer\Framebuffer.h" />
     <ClInclude Include="src\glWrap\ID\Id.h" />
     <ClInclude Include="src\glWrap\OpenGL.h" />
     <ClInclude Include="src\glWrap\Shader\Shader.h" />
@@ -181,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glWrap\Buffer\Buffer.cpp" />
+    <ClCompile Include="src\glWrap\Framebuffer\Framebuffer.cpp" />
     <ClCompile Include="src\glWrap\ID\Id.cpp" />
     <ClCompile Include="src\glWrap\OpenGL.cpp" />
     <ClCompile Include="src\glWrap\Shader\Shader.cpp" />
