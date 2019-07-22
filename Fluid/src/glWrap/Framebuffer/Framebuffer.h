@@ -7,6 +7,7 @@
 class Framebuffer : public Id
 {
 public:
+
 private:
 };
 

@@ -113,6 +113,12 @@ enum class BufferUsage : GLenum
 };
 
 
+
+enum class TextureUnit : GLenum
+{
+	Texture0 = GL_TEXTURE0
+};
+
 enum class TextureTarget : GLenum
 {
 	  Texture1D      = GL_TEXTURE_1D
@@ -217,5 +223,10 @@ enum class PixelFormat : GLint
 
 	, None = static_cast<GLint>(0)
 };
+
+
+
+enum class Attachment : GLenum
+{};
 
 #endif
