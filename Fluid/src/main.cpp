@@ -14,7 +14,7 @@ int main()
 	OpenGL::initializeLoader();
 
 	SimpleShaderLoader ssl;
-	Shader test = ssl.loadShader(ShaderType::Compute, "assets/shaders/test.comp");
+	Shader test = ssl.loadShader(ShaderType::Compute, "assets/shaders/fluid.comp");
 	std::cout << std::boolalpha << std::endl;
 	if(!test.compiled())
 	{ 

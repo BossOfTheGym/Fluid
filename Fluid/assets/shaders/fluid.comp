@@ -38,7 +38,7 @@ layout(std430, binding = 0) buffer equations
 
 //padded solution & function(image2D) + equations coefficients
 layout(binding = 0, rgba32f) uniform image2D solution; 
-layout(binding = 1, rgbs32f) uniform image2D function;
+layout(binding = 1, rgba32f) uniform image2D function;
 
 
 //uniform to know what cell type is updated
@@ -72,26 +72,31 @@ const ivec2  FIRST_CELL_OFFSETS[2] = {ivec2(0, 0), ivec2(1, 0)};
 const ivec2 SECOND_CELL_OFFSETS[2] = {ivec2(1, 1), ivec2(0, 1)};
 
 //update cell
-void redBlackStep(ivec2 index)
+void redBlackStep(ivec2 indexVec, int indexFlat)
 {
 	//get equation coefs
-	CrossCoefficients equ = coefficients[index];
+	CrossCoefficients equ = coefficients[indexFlat];
 
 	//get solution values for cross update
-	float s21 = imageLoad(solution, index + ivec2(+1,  0));
-	float s12 = imageLoad(solution, index + ivec2( 0, +1));
-	float s11 = imageLoad(solution, index                );
-	float s10 = imageLoad(solution, index + ivec2( 0, -1));
-	float s01 = imageLoad(solution, index + ivec2(-1,  0));
+	vec4 s21 = imageLoad(solution, indexVec + ivec2(+1,  0));
+	vec4 s12 = imageLoad(solution, indexVec + ivec2( 0, +1));
+	vec4 s11 = imageLoad(solution, indexVec                );
+	vec4 s10 = imageLoad(solution, indexVec + ivec2( 0, -1));
+	vec4 s01 = imageLoad(solution, indexVec + ivec2(-1,  0));
 
 	//get function value
-	float f = imageLoad(function, index);
+	vec4 f = imageLoad(function, indexVec);
 
 	//algorithm(accelerated SSOR)
-	float s11 = 
-	                      equ.c21 * s21
-		+ equ.c10 * s10 + equ.c11 * s11 + equ.c12 * s12;
-	                      equ.c01 * s01 
+	s11 =               
+	                    + equ.c21 * s21
+		+ equ.c10 * s10 + equ.c11 * s11 + equ.c12 * s12
+	                    + equ.c01 * s01
+	                    
+	                    + f;
+
+	//store back new value
+	imageStore(solution, indexVec, s11);
 }
 
 //y(padding)
@@ -107,16 +112,23 @@ void redBlackStep(ivec2 index)
 //0----------------------------------->x
 void main()
 {
-	//calculating real indices and work layout size
-	ivec2 indexVec = 2 * gl_GlobalInvocationID.xy;		
-	ivec2 workDims = 2 * gl_NumWorkGroups.xy * gl_WorkGroupSize.xy;
+	//extents of work
+	ivec2 extents = imageSize(solution); // image is padded 
 
-	int paddedIndexFlat = (indexVec.y + 1) * (workDims.x + 2) + (indexVec.x + 1);
+	//base index counting padding
+	ivec2 baseIndexVec = 2 * ivec2(gl_GlobalInvocationID.xy) + ivec2(1, 1);
 
 	//get offsets of updated cell according to current cell type(red or black)
 	ivec2  firstCellOffset =  FIRST_CELL_OFFSETS[uRedOrBlack];
 	ivec2 secondCellOffset = SECOND_CELL_OFFSETS[uRedOrBlack];
 
-	redBlackStep(paddedIndexFlat + firstCellOffset );
-	redBlackStep(paddedIndexFlat + secondCellOffset);
+	//first cell update
+	ivec2 indexVec  = baseIndexVec + firstCellOffset;
+	int   indexFlat = indexVec.y * extents.x + indexVec.x;
+	redBlackStep(indexVec, indexFlat);
+
+	//second cell update
+	indexVec  = baseIndexVec + secondCellOffset;
+	indexFlat = indexVec.y * extents.x + indexVec.x;
+	redBlackStep(indexVec, indexFlat);
 }
