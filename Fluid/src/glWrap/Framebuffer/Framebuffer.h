@@ -16,9 +16,9 @@ public:
 
 
 public:
-	void bindFramebuffer();
+	void bindFramebuffer(FramebufferTarget target);
 
-	void unbindFramebuffer();
+	void unbindFramebuffer(FramebufferTarget target);
 
 	void blitFramebuffer();
 
