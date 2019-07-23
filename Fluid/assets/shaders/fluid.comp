@@ -7,7 +7,7 @@
 layout(local_size_x = NUM_GROUPS_X, local_size_y = NUM_GROUPS_Y) in;
 
 
-//coeficients of discretisized poisson equation(coefs both for bound and inner domain)
+//coeficients of discretisized 2D poisson equation(coefs both for bound and inner domain)
 //it's a cross template
 // y
 // ^        ____  

@@ -7,6 +7,16 @@
 class Framebuffer : public Id
 {
 public:
+	struct Rectangle
+	{
+		GLint x0;
+		GLint y0;
+		GLint x1;
+		GLint y1;
+	};
+
+
+public:
 	Framebuffer();
 	Framebuffer(Framebuffer&& framebuffer);
 
@@ -16,11 +26,15 @@ public:
 
 
 public:
-	void bindFramebuffer(FramebufferTarget target);
+	void bindFramebuffer(FramebufferTarget target) const;
 
-	void unbindFramebuffer(FramebufferTarget target);
+	void unbindFramebuffer(FramebufferTarget target) const;
 
-	void blitFramebuffer();
+
+	FramebufferStatus checkNamedFramebufferStatus(FramebufferTarget target) const;
+
+	void blitNamedFramebuffer(const Framebuffer& src, const Rectangle& srcRect, const Rectangle& destRect);
+
 
 	void framebufferParameteri();
 
