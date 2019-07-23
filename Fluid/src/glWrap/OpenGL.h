@@ -225,8 +225,25 @@ enum class PixelFormat : GLint
 };
 
 
+enum class FramebufferTarget : GLenum
+{
+	  Framebuffer = GL_FRAMEBUFFER
+	, ReadBuffer  = GL_READ_BUFFER
+	, DrawBuffer  = GL_DRAW_BUFFER
 
-enum class Attachment : GLenum
-{};
+	, None = static_cast<GLenum>(0)
+};
+
+enum class FramebufferAttachment : GLenum
+{
+	  Depth        = GL_DEPTH_ATTACHMENT
+	, Stencil      = GL_STENCIL_ATTACHMENT
+	, DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT
+};
+
+enum class FrameBufferColorAttachment : GLenum
+{
+	Color = GL_COLOR_ATTACHMENT0
+};
 
 #endif

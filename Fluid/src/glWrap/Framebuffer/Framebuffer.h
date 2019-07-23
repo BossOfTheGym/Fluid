@@ -7,8 +7,31 @@
 class Framebuffer : public Id
 {
 public:
+	Framebuffer();
+	Framebuffer(Framebuffer&& framebuffer);
 
-private:
+	~Framebuffer();
+
+	Framebuffer& operator = (Framebuffer&& framebuffer);
+
+
+public:
+	void bindFramebuffer();
+
+	void unbindFramebuffer();
+
+	void blitFramebuffer();
+
+	void framebufferParameteri();
+
+	void framebufferTexture();
+
+	void framebufferTextureLayer();
+
+	void drawBuffer();
+
+
+	void deleteFramebuffer();
 };
 
 #endif
