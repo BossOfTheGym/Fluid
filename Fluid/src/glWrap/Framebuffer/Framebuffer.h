@@ -3,6 +3,8 @@
 
 #include <glWrap/OpenGL.h>
 #include <glWrap/ID/Id.h>
+#include <glWrap/Texture/Texture.h>
+
 
 class Framebuffer : public Id
 {
@@ -14,6 +16,9 @@ public:
 		GLint x1;
 		GLint y1;
 	};
+
+public:
+	static Framebuffer sDEFAULT;
 
 
 public:
@@ -33,16 +38,22 @@ public:
 
 	FramebufferStatus checkNamedFramebufferStatus(FramebufferTarget target) const;
 
-	void blitNamedFramebuffer(const Framebuffer& src, const Rectangle& srcRect, const Rectangle& destRect);
+	void blitNamedFramebuffer(
+		  const Rectangle& destRect
+		, const Framebuffer& src
+		, const Rectangle& srcRect
+		, GLbitfield mask
+		, FramebufferFilter filter
+	);
 
 
-	void framebufferParameteri();
+	void namedFramebufferParameteri(FramebufferParameteri name, GLint value);
 
-	void framebufferTexture();
+	void namedFramebufferTexture(FramebufferAttachment attachment, const Texture& texture, GLint level);
 
-	void framebufferTextureLayer();
+	void framebufferTextureLayer(FramebufferAttachment attachment, const Texture& texture, GLint level, GLint layer);
 
-	void drawBuffer();
+	void namedDrawBuffers(GLsizei count, const FramebufferAttachment* bufs); // TODO
 
 
 	void deleteFramebuffer();

@@ -114,7 +114,9 @@ enum class BufferUsage : GLenum
 
 
 
-enum class TextureUnit : GLenum
+using TextureUnit = GLenum; // can have many so it can't be wrapped in enum class
+
+enum class TextureUnitBase : GLenum
 {
 	Texture0 = GL_TEXTURE0
 };
@@ -225,6 +227,7 @@ enum class PixelFormat : GLint
 };
 
 
+
 enum class FramebufferTarget : GLenum
 {
 	  Framebuffer = GL_FRAMEBUFFER
@@ -234,7 +237,9 @@ enum class FramebufferTarget : GLenum
 	, None = static_cast<GLenum>(0)
 };
 
-enum class FramebufferAttachment : GLenum
+using FramebufferAttachment = GLenum; // can have many so it can't be wrapped in enum class
+
+enum class FramebufferDepthStencilAttachment : GLenum
 {
 	  Depth        = GL_DEPTH_ATTACHMENT
 	, Stencil      = GL_STENCIL_ATTACHMENT
@@ -256,6 +261,21 @@ enum class FramebufferStatus : GLenum
 	, Unsupported            = GL_FRAMEBUFFER_UNSUPPORTED
 	, IncompleteMultisample  = GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE
 	, IncompleteLayerTargets = GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS
+};
+
+enum class FramebufferFilter : GLenum
+{
+	  Nearest = GL_NEAREST
+	, Linear  = GL_LINEAR
+};
+
+enum class FramebufferParameteri : GLenum
+{
+	  DefaultWidth                = GL_FRAMEBUFFER_DEFAULT_WIDTH
+	, DefaultHeight               = GL_FRAMEBUFFER_DEFAULT_HEIGHT
+	, DefaultLayers               = GL_FRAMEBUFFER_DEFAULT_LAYERS
+	, DefaultSamples              = GL_FRAMEBUFFER_DEFAULT_SAMPLES
+	, DefaultFixedSampleLocations = GL_FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS
 };
 
 #endif
