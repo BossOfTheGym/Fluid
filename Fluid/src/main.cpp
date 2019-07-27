@@ -14,10 +14,13 @@ int main()
 	OpenGL::initializeLoader();
 
 	SimpleShaderLoader ssl;
-	Shader test = ssl.loadShader(ShaderType::Compute, "assets/shaders/fluid.comp");
-	std::cout << std::boolalpha << std::endl;
-	if(!test.compiled())
+	Shader test = ssl.loadShader(ShaderType::Compute, "assets/shaders/poissonSolver.comp");
+	if(test.compiled())
 	{ 
+		std::cout << "Compiled" << std::endl;
+	}
+	else
+	{
 		std::cout << test.infoLog() << std::endl;
 	}
 

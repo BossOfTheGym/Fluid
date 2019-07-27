@@ -91,3 +91,8 @@ void Framebuffer::namedDrawBuffers(GLsizei count, const FramebufferAttachment* b
 {
 	//TODO
 }
+
+void Framebuffer::deleteFramebuffer()
+{
+	//TODO
+}
