@@ -4,6 +4,7 @@
 #include <Common.h>
 #include <glWrap/Shader/Shader.h>
 
+
 class SimpleShaderLoader
 {
 public:

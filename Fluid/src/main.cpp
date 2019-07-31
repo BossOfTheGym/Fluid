@@ -3,7 +3,7 @@
 
 #include <glWrap/OpenGL.h>
 #include <Window/Window.h>
-#include <ResourceLoaders/ShaderLoader.h>
+#include <ResourceLoaders/ShaderLoaders/ShaderLoader.h>
 
 namespace fs = std::filesystem;
 
