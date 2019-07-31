@@ -19,7 +19,7 @@ Shader::Shader(ShaderType type, const String& source) : Shader(type)
 	compileShader();
 }
 
-Shader::Shader(Shader&& shader)
+Shader::Shader(Shader&& shader) : Id()
 {
 	*this = std::move(shader);
 }

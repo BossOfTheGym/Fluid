@@ -17,7 +17,7 @@ namespace
 Texture::Texture() : Id(genTexture())
 {}
 
-Texture::Texture(Texture&& texture)
+Texture::Texture(Texture&& texture) : Id()
 {
 	*this = std::move(texture);
 }

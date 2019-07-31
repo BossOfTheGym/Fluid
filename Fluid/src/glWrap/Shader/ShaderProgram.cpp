@@ -15,7 +15,7 @@ ShaderProgram::ShaderProgram(
 	, m_computeInfo(computeInfo)
 {}
 
-ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram)
+ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram) : Id()
 {
 	*this = std::move(shaderProgram);
 }

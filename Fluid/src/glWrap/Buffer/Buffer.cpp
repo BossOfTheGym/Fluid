@@ -29,7 +29,7 @@ Buffer::Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
 	bufferData(size, data, usage);	
 }
 
-Buffer::Buffer(Buffer&& buffer)
+Buffer::Buffer(Buffer&& buffer) : Id()
 {
 	*this = std::move(buffer);
 }

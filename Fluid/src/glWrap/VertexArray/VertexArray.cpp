@@ -18,7 +18,7 @@ VertexArray::VertexArray(const DrawInfo& info)
 	, m_info(info)
 {}
 
-VertexArray::VertexArray(VertexArray&& vertexBuffer)
+VertexArray::VertexArray(VertexArray&& vertexBuffer) : Id()
 {
 	*this = std::move(vertexBuffer);
 }
