@@ -57,6 +57,9 @@ public:
 
 
 	void deleteFramebuffer();
+
+private:
+	void resetFramebuffer();
 };
 
 #endif

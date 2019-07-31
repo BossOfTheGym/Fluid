@@ -19,14 +19,24 @@ Framebuffer Framebuffer::sDEFAULT = createDefaultFramebuffer();
 
 
 //constructors & destructor
-Framebuffer::Framebuffer()
+namespace
 {
-	//TODO
+	Id createFramebuffer()
+	{
+		GLuint framebufferId;
+
+		glCreateFramebuffers(1, &framebufferId);
+
+		return framebufferId;
+	}
 }
 
-Framebuffer::Framebuffer(Framebuffer&& buffer)
+Framebuffer::Framebuffer() : Id(createFramebuffer())
+{}
+
+Framebuffer::Framebuffer(Framebuffer&& buffer) : Id()
 {
-	//TODO
+	*this = std::move(buffer);
 }
 
 Framebuffer::~Framebuffer()
@@ -37,7 +47,7 @@ Framebuffer::~Framebuffer()
 //operators
 Framebuffer& Framebuffer::operator = (Framebuffer&& buffer)
 {
-	//TODO
+	static_cast<Id&>(*this) = static_cast<Id&&>(buffer);
 
 	return *this;
 }
@@ -45,19 +55,18 @@ Framebuffer& Framebuffer::operator = (Framebuffer&& buffer)
 //core functions
 void Framebuffer::bindFramebuffer(FramebufferTarget target) const
 {
-	//TODO
+	glBindFramebuffer(static_cast<GLenum>(target), id());
 }
 
+//doesn't require object's state
 void Framebuffer::unbindFramebuffer(FramebufferTarget target) const
 {
-	//TODO
+	glBindFramebuffer(static_cast<GLenum>(target), Id::Empty);
 }
 
 FramebufferStatus Framebuffer::checkNamedFramebufferStatus(FramebufferTarget target) const
 {
-	//TODO
-
-	return FramebufferStatus::Complete;
+	return FramebufferStatus{glCheckNamedFramebufferStatus(id(), static_cast<GLenum>(target))};
 }
 
 void Framebuffer::blitNamedFramebuffer(
@@ -68,18 +77,27 @@ void Framebuffer::blitNamedFramebuffer(
 	, FramebufferFilter filter
 )
 {
-	//TODO
+	auto& [srcX0, srcY0, srcX1, srcY1] = srcRect;
+	auto& [destX0, destY0, destX1, destY1] = destRect;
+
+	glBlitNamedFramebuffer(
+		src.id(), id()
+		, srcX0, srcY0, srcX1, srcY1
+		, destX0, destY0, destX1, destY1
+		, mask
+		, static_cast<GLenum>(filter)
+	);
 }
 
 
 void Framebuffer::namedFramebufferParameteri(FramebufferParameteri name, GLint value)
 {
-	//TODO
+	glNamedFramebufferParameteri(id(), static_cast<GLenum>(name), value);
 }
 
 void Framebuffer::namedFramebufferTexture(FramebufferAttachment attachment, const Texture& texture, GLint level)
 {
-	//TODO
+	glNamedFramebufferTexture(id(), static_cast<GLenum>(attachment), texture.id(), level);
 }
 
 void Framebuffer::framebufferTextureLayer(FramebufferAttachment attachment, const Texture& texture, GLint level, GLint layer)
@@ -89,10 +107,17 @@ void Framebuffer::framebufferTextureLayer(FramebufferAttachment attachment, cons
 
 void Framebuffer::namedDrawBuffers(GLsizei count, const FramebufferAttachment* bufs)
 {
-	//TODO
+	glNamedFramebufferDrawBuffers(id(), count, static_cast<const GLenum*>(bufs));
 }
 
 void Framebuffer::deleteFramebuffer()
 {
-	//TODO
+	GLuint framebufferID = id();
+
+	glDeleteFramebuffers(1, &framebufferID);
+}
+
+void Framebuffer::resetFramebuffer()
+{
+	resetId();
 }
