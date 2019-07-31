@@ -17,9 +17,9 @@ private:
 public:
 	struct ComputeInfo
 	{
-		GLuint m_numGroupsX;
-		GLuint m_numGroupsY;
-		GLuint m_numGroupsZ;
+		GLuint m_numGroupsX = static_cast<GLuint>(0);
+		GLuint m_numGroupsY = static_cast<GLuint>(0);
+		GLuint m_numGroupsZ = static_cast<GLuint>(0);
 	};
 
 

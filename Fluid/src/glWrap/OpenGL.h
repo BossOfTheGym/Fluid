@@ -11,6 +11,12 @@ public:
 };
 
 
+enum class GLBool : GLboolean
+{
+	  True  = GL_TRUE
+	, False = GL_FALSE
+};
+
 enum class ShaderType : GLenum
 {
 	  Vertex         = GL_VERTEX_SHADER

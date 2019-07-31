@@ -11,10 +11,10 @@ class Framebuffer : public Id
 public:
 	struct Rectangle
 	{
-		GLint x0;
-		GLint y0;
-		GLint x1;
-		GLint y1;
+		GLint x0 = static_cast<GLint>(0);
+		GLint y0 = static_cast<GLint>(0);
+		GLint x1 = static_cast<GLint>(0);
+		GLint y1 = static_cast<GLint>(0);
 	};
 
 public:
