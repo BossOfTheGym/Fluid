@@ -9,15 +9,15 @@ class Texture : public Id
 public:
 	struct Image2D_Data
 	{
-		TextureTarget   target;
-		GLint           level;
-		InternalFormat  internalFormat;
-		GLsizei         width;
-		GLsizei         height;
+		TextureTarget   target         = TextureTarget::None;
+		GLint           level          = static_cast<GLint>(0);
+		InternalFormat  internalFormat = InternalFormat::None;
+		GLsizei         width          = static_cast<GLsizei>(0);
+		GLsizei         height         = static_cast<GLsizei>(0);
 		//border = 0
-		PixelDataFormat format;
-		DataType        type;
-		const GLvoid*   pixels;
+		PixelDataFormat format         = PixelDataFormat::None;
+		DataType        type           = DataType::None;
+		const GLvoid*   pixels         = nullptr;
 	};
 
 
@@ -41,6 +41,8 @@ public:
     void texParameteri(TextureTarget target, TextureParameter name, GLint parameter);
 
 	void textureParameteri(TextureParameter name, GLint parameter);
+
+	void textureParameterfv(TextureParameter name, const GLfloat* params);
 
 	void texImage2D(const Image2D_Data& data);
 

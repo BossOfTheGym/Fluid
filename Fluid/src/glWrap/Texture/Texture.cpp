@@ -71,11 +71,15 @@ void Texture::textureParameteri(TextureParameter name, GLint parameter)
 	glTextureParameteri(id(), static_cast<GLenum>(name), parameter);
 }
 
+void Texture::textureParameterfv(TextureParameter name, const GLfloat* params)
+{
+	glTextureParameterfv(id(), static_cast<GLenum>(name), params);
+}
 
 void Texture::texImage2D(const Image2D_Data& data)
 {
 	glTexImage2D(
-		static_cast<GLenum>(data.target)
+		  static_cast<GLenum>(data.target)
 		, data.level
 		, static_cast<GLint>(data.internalFormat)
 		, data.width

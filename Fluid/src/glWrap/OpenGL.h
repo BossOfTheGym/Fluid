@@ -229,6 +229,8 @@ enum class InternalFormat : GLint
 	, RGBA           = GL_RGBA
 	, DepthComponent = GL_DEPTH_COMPONENT
 	, DepthStencil   = GL_DEPTH_STENCIL
+
+	, None = static_cast<GLint>(0)
 };
 
 enum class PixelDataFormat : GLenum
