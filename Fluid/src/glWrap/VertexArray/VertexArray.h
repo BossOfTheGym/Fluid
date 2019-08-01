@@ -22,12 +22,12 @@ public:
 
 	struct PointerInfo
 	{
-		GLuint    index = static_cast<GLuint>(0);       // attribute index
-		GLint     size  = static_cast<GLint>(0);        // number of components per attribute(1,2,3,4)
-		DataType  type  = DataType::None;               // data type
-		GLBool    normalized = GLBool::True;            //
-		GLsizei   stride     = static_cast<GLsizei>(0); // byte offset between attributes 
-		GLvoid*   pointer    = nullptr;                 // offset of the first element
+		GLuint        index      = static_cast<GLuint>(0);  // attribute index
+		AttributeSize size       = AttributeSize::One;      // number of components per attribute(1,2,3,4)
+		DataType      type       = DataType::None;          // data type
+		GLBool        normalized = GLBool::True;            //
+		GLsizei       stride     = static_cast<GLsizei>(0); // byte offset between attributes 
+		GLvoid*       pointer    = nullptr;                 // offset of the first element
 	};
 
 	

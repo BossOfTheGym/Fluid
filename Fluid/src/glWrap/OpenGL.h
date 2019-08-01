@@ -17,6 +17,16 @@ enum class GLBool : GLboolean
 	, False = GL_FALSE
 };
 
+
+enum class AttributeSize : GLint
+{
+	  One   = 1
+	, Two   = 2
+	, Three = 3
+	, Four  = 4
+};
+
+
 enum class ShaderType : GLenum
 {
 	  Vertex         = GL_VERTEX_SHADER
@@ -32,7 +42,7 @@ enum class ShaderType : GLenum
 
 enum class DrawMode : GLenum
 {
-	Points                 = GL_POINTS
+	  Points                 = GL_POINTS
 
 	, LineStrip              = GL_LINE_STRIP
 	, LineLoop               = GL_LINE_LOOP

@@ -35,7 +35,7 @@ VertexArray QuadBuilder::buildShape()
 		m_vertexPositions
 		, {
 			  static_cast<GLuint>(VertexAttributes::Position)
-			, 2
+			, AttributeSize::Two
 		    , DataType::Float
 		    , GLBool::True
 		    , 0

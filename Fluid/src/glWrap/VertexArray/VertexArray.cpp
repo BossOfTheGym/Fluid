@@ -82,7 +82,7 @@ void VertexArray::vertexAttribPointer(const PointerInfo& info)
 {
 	glVertexAttribPointer(
 		  info.index
-		, info.size
+		, static_cast<GLint>(info.size)
 		, static_cast<GLenum>(info.type)
 		, static_cast<GLboolean>(info.normalized)
 		, info.stride
