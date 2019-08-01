@@ -177,7 +177,9 @@
     <ClInclude Include="src\glWrap\Shader\ShaderProgram.h" />
     <ClInclude Include="src\glWrap\Texture\Texture.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
+    <ClInclude Include="src\Render\Attributes.h" />
     <ClInclude Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.h" />
+    <ClInclude Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +193,7 @@
     <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.cpp" />
+    <ClCompile Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
