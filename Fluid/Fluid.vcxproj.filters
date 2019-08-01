@@ -62,6 +62,9 @@
     <ClInclude Include="src\Render\Attributes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -98,6 +101,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

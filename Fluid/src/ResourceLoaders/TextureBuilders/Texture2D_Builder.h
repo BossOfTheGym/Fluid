@@ -1,5 +1,5 @@
-#ifndef TEXTURE_BUILDER_H
-#define TEXTURE_BUILDER_H
+#ifndef TEXTURE_2D_BUILDER_H
+#define TEXTURE_2D_BUILDER_H
 
 
 #include <glWrap/Texture/Texture.h>
@@ -21,8 +21,6 @@ public:
 
 public:
 	Texture buildTexture();
-
-private:
 };
 
 #endif
