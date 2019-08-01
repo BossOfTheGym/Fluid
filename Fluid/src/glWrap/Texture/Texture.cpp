@@ -77,7 +77,7 @@ void Texture::texImage2D(const Image2D_Data& data)
 	glTexImage2D(
 		static_cast<GLenum>(data.target)
 		, data.level
-		, data.internalFormat
+		, static_cast<GLint>(data.internalFormat)
 		, data.width
 		, data.height
 		, 0 // border = 0

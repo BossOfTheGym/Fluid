@@ -9,15 +9,15 @@ class Texture : public Id
 public:
 	struct Image2D_Data
 	{
-		TextureTarget  target;
-		GLint          level;
-		GLint          internalFormat;
-		GLsizei        width;
-		GLsizei        height;
+		TextureTarget   target;
+		GLint           level;
+		InternalFormat  internalFormat;
+		GLsizei         width;
+		GLsizei         height;
 		//border = 0
-		PixelFormat    format;
-		DataType       type;
-		const GLvoid*  pixels;
+		PixelDataFormat format;
+		DataType        type;
+		const GLvoid*   pixels;
 	};
 
 

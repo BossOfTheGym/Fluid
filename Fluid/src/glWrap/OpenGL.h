@@ -221,7 +221,17 @@ enum class TextureParameterValue : GLint
 	, None = static_cast<GLint>(0)
 };
 
-enum class PixelFormat : GLint
+enum class InternalFormat : GLint
+{
+	  Red            = GL_RED
+	, RG             = GL_RG
+	, RGB            = GL_RGB
+	, RGBA           = GL_RGBA
+	, DepthComponent = GL_DEPTH_COMPONENT
+	, DepthStencil   = GL_DEPTH_STENCIL
+};
+
+enum class PixelDataFormat : GLenum
 {
 	  Red            = GL_RED
 	, RG             = GL_RG
