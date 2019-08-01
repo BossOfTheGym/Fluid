@@ -127,6 +127,8 @@ void VertexArray::setAttribPointerInBuffer(const Buffer& buffer, const PointerIn
 	buffer.bind(BufferTarget::ArrayBuffer);
 
 	setAttribPointer(info);
+
+	buffer.unbind(BufferTarget::ArrayBuffer);
 }
 
 void VertexArray::setElementsBuffer(const Buffer& buffer)
