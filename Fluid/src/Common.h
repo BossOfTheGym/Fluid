@@ -22,12 +22,13 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-const double PI   = static_cast<double>(acos(-1.0));
-const double PI_2 = static_cast<double>(2 * PI);
- 
-
 using UInt = unsigned int;
 using Float = float;
+
+
+const Float PI   = static_cast<Float>(acos(-1.0));
+const Float PI2  = static_cast<Float>(2.0 * PI);
+const Float PI_2 = static_cast<Float>(0.5 * PI);
 
 
 using Vec4 = glm::tvec4<Float>;
