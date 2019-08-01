@@ -1,7 +1,7 @@
 #include "QuadBuilder.h"
 
 #include <Common.h>
-
+#include <Render/Attributes.h>
 
 //constructor
 QuadBuilder::QuadBuilder()
@@ -32,8 +32,15 @@ VertexArray QuadBuilder::buildShape()
 
 	quadShape.bind();
 	quadShape.setAttribPointerInBuffer(
-		  m_vertexPosition
-		, {0, 2, DataType::Float, GLBool::True, 0, 0}
+		m_vertexPositions
+		, {
+			  static_cast<GLuint>(VertexAttributes::Position)
+			, 2
+		    , DataType::Float
+		    , GLBool::True
+		    , 0
+		    , 0
+		}
 	);
 	quadShape.unbind();
 

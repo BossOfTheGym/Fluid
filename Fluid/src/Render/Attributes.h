@@ -4,7 +4,7 @@
 #include <glWrap/OpenGL.h>
 
 
-enum class RenderAttributes : GLuint
+enum class VertexAttributes : GLuint
 {
 	Position = 0
 };
