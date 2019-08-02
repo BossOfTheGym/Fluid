@@ -12,7 +12,9 @@ private:
     static thread_local String INFO_LOG;
 
 public:
-	Shader(ShaderType type = ShaderType::None);
+	Shader();
+
+	Shader(ShaderType type);
 
     Shader(ShaderType type, const String& source);
 
@@ -26,6 +28,8 @@ public:
 
 
 public:
+	void createShader(ShaderType type);
+
 	void shaderSource(const String& shader);
 
 	void compileShader();

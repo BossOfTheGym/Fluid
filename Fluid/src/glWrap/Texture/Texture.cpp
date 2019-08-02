@@ -3,18 +3,7 @@
 
 
 //constructors & destructor
-namespace
-{
-	Id genTexture()
-	{
-		GLuint textureId;
-		glGenTextures(1, &textureId);
-		
-		return textureId;
-	}
-}
-
-Texture::Texture() : Id(genTexture())
+Texture::Texture() : Id()
 {}
 
 Texture::Texture(Texture&& texture) : Id()
@@ -41,6 +30,14 @@ Texture& Texture::operator = (Texture&& texture)
 
 
 //core functions
+void Texture::genTexture()
+{
+	GLuint textureId;
+	glGenTextures(1, &textureId);
+
+	static_cast<Id&>(*this) = textureId;
+}
+
 void Texture::bind(TextureTarget target) const
 {
     glBindTexture(static_cast<GLenum>(target), id());

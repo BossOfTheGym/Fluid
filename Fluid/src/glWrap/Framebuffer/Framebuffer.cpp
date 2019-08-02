@@ -2,36 +2,11 @@
 
 
 //statics
-namespace
-{
-	Framebuffer createDefaultFramebuffer()
-	{
-		Framebuffer result;
-
-		//framebuffer with empty(zero) id is always considered default
-		result.deleteFramebuffer();
-
-		return std::move(result);
-	}
-}
-
-//Framebuffer Framebuffer::sDEFAULT = createDefaultFramebuffer();
+Framebuffer Framebuffer::sDEFAULT = Framebuffer();
 
 
 //constructors & destructor
-namespace
-{
-	Id createFramebuffer()
-	{
-		GLuint framebufferId;
-
-		glCreateFramebuffers(1, &framebufferId);
-
-		return framebufferId;
-	}
-}
-
-Framebuffer::Framebuffer() : Id(createFramebuffer())
+Framebuffer::Framebuffer() : Id()
 {}
 
 Framebuffer::Framebuffer(Framebuffer&& buffer) : Id()
@@ -53,6 +28,15 @@ Framebuffer& Framebuffer::operator = (Framebuffer&& buffer)
 }
 
 //core functions
+void Framebuffer::createFramebuffer()
+{
+	GLuint framebufferId;
+
+	glCreateFramebuffers(1, &framebufferId);
+
+	static_cast<Id&>(*this) = framebufferId;
+}
+
 void Framebuffer::bindFramebuffer(FramebufferTarget target) const
 {
 	glBindFramebuffer(static_cast<GLenum>(target), id());

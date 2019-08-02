@@ -8,6 +8,11 @@ thread_local String Shader::INFO_LOG;
 
 
 //constructors
+Shader::Shader()
+	: Id()
+	, m_type(ShaderType::None)
+{}
+
 Shader::Shader(ShaderType type)
 	: Id(glCreateShader(static_cast<GLenum>(type)))
 	, m_type(type)
@@ -45,6 +50,13 @@ Shader& Shader::operator = (Shader&& shader)
 
 
 //core functions
+void Shader::createShader(ShaderType type)
+{
+	static_cast<Id&>(*this) = glCreateShader(static_cast<GLenum>(type));
+
+	m_type = type;
+}
+
 void Shader::shaderSource(const String& source)
 {
     const GLchar* src = source.c_str();

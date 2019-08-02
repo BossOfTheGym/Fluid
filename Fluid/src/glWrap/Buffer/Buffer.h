@@ -20,6 +20,8 @@ public:
 
 
 public:
+	void genBuffer();
+
 	void bind(BufferTarget target) const;
 
 	void unbind(BufferTarget target) const;

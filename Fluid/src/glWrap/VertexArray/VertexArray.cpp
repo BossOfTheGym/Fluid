@@ -13,6 +13,11 @@ namespace
 	}
 }
 
+VertexArray::VertexArray()
+	: Id()
+	, m_info{}
+{}
+
 VertexArray::VertexArray(const DrawInfo& info) 
 	: Id(genVertexArray())
 	, m_info(info)
@@ -60,6 +65,11 @@ void VertexArray::resetArrayBuffer()
 
 
 //core functions
+void VertexArray::genArray()
+{
+	static_cast<Id&>(*this) = genVertexArray();
+}
+
 void VertexArray::bind() const
 {
     glBindVertexArray(id());

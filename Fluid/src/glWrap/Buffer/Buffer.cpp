@@ -3,20 +3,8 @@
 
 
 //constructors & destructor
-namespace
-{
-	Id genBuffer()
-	{
-		GLuint bufferId;
-		glGenBuffers(1, &bufferId);
-
-		return bufferId;
-	}
-}
-
-
 Buffer::Buffer()
-	: Id(genBuffer())
+	: Id()
 	, m_size(0)
 	, m_usage(BufferUsage::None)
 {}
@@ -24,7 +12,7 @@ Buffer::Buffer()
 Buffer::Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
 	: Buffer()
 {
-	static_cast<Id&>(*this) = genBuffer();
+	genBuffer();
 
 	bufferData(size, data, usage);	
 }
@@ -55,6 +43,15 @@ Buffer& Buffer::operator = (Buffer&& buffer)
 
 
 //core
+void Buffer::genBuffer()
+{
+	GLuint bufferId;
+
+	glGenBuffers(1, &bufferId);
+
+	static_cast<Id&>(*this) = bufferId;
+}
+
 void Buffer::bind(BufferTarget target) const
 {
 	glBindBuffer(static_cast<GLenum>(target), id());

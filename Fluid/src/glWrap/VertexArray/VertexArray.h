@@ -25,13 +25,15 @@ public:
 		GLuint        index      = static_cast<GLuint>(0);  // attribute index
 		AttributeSize size       = AttributeSize::One;      // number of components per attribute(1,2,3,4)
 		DataType      type       = DataType::None;          // data type
-		GLBool        normalized = GLBool::True;            //
+		GLBool        normalized = GLBool::False;           //
 		GLsizei       stride     = static_cast<GLsizei>(0); // byte offset between attributes 
 		GLvoid*       pointer    = nullptr;                 // offset of the first element
 	};
 
 	
 public:
+	VertexArray();
+
 	VertexArray(const DrawInfo& info);
 
     VertexArray(VertexArray&& vertexBuffer);
@@ -43,6 +45,8 @@ public:
 
 
 public:
+	void genArray();
+
     void bind() const;
 
 	void unbind() const;

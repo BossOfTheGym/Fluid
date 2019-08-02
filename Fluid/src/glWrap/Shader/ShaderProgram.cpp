@@ -6,12 +6,15 @@ thread_local String ShaderProgram::INFO_LOG;
 
 
 //constructors & destructor
+ShaderProgram::ShaderProgram()
+	: Id()
+	, m_computeInfo{}
+{}
+
 ShaderProgram::ShaderProgram(
-	  const String& name
-	, const ComputeInfo& computeInfo
+	 const ComputeInfo& computeInfo
 ) 
     : Id(glCreateProgram())
-    , m_name(name)
 	, m_computeInfo(computeInfo)
 {}
 
@@ -39,6 +42,11 @@ ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram)
 
 
 //core functions
+void ShaderProgram::createProgram()
+{
+	static_cast<Id&>(*this) = glCreateProgram();
+}
+
 void ShaderProgram::attachShader(const Shader& shader) const
 {
     glAttachShader(id(), shader.id());
@@ -129,8 +137,6 @@ void ShaderProgram::deleteProgram()
 void ShaderProgram::resetProgram()
 {
 	resetId();
-
-    m_name = "";
 }
 
 
@@ -146,11 +152,6 @@ bool ShaderProgram::linked() const
 
 
 //get
-const String& ShaderProgram::name() const
-{
-	return m_name;
-}
-
 ShaderProgram::ComputeInfo& ShaderProgram::computeInfo()
 {
 	return m_computeInfo;

@@ -4,7 +4,7 @@
 #include <Render/Attributes.h>
 
 //constructor
-QuadBuilder::QuadBuilder()
+QuadBuilder::QuadBuilder() : m_vertexPositions()
 {
 	Vec2 vertices[6] = {
 		  Vec2{+1.0f, +1.0f}
@@ -16,6 +16,7 @@ QuadBuilder::QuadBuilder()
 		, Vec2{+1.0f, +1.0f}
 	};
 
+	m_vertexPositions.genBuffer();
 	m_vertexPositions.bufferData(sizeof(vertices), vertices, BufferUsage::StaticDraw);
 }
 

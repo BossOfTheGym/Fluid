@@ -18,11 +18,12 @@ public:
 	};
 
 public:
-	//static Framebuffer sDEFAULT;
+	static Framebuffer sDEFAULT;
 
 
 public:
 	Framebuffer();
+
 	Framebuffer(Framebuffer&& framebuffer);
 
 	~Framebuffer();
@@ -31,6 +32,8 @@ public:
 
 
 public:
+	void createFramebuffer();
+
 	void bindFramebuffer(FramebufferTarget target) const;
 
 	void unbindFramebuffer(FramebufferTarget target) const;

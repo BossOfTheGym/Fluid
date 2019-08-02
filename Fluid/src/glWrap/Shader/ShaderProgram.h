@@ -24,10 +24,9 @@ public:
 
 
 public:
-	ShaderProgram(
-		  const String& name = "Shader program"
-		, const ComputeInfo& computeInfo = ComputeInfo{0, 0, 0}
-	);
+	ShaderProgram();
+
+	ShaderProgram(const ComputeInfo& computeInfo);
 
     ShaderProgram(ShaderProgram&& shaderProgram);
 
@@ -39,6 +38,9 @@ public:
 
 
 public:
+	void createProgram();
+
+
     void attachShader(const Shader& shader) const;
 
     void detachShader(const Shader& shader) const;
@@ -79,8 +81,6 @@ public:
     bool linked() const;
 
 
-	const String& name() const;
-
     const String& infoLog() const;
 
 
@@ -94,7 +94,6 @@ private:
 
 
 private:
-    String      m_name;
 	ComputeInfo m_computeInfo;
 };
 

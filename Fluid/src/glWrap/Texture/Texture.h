@@ -32,6 +32,8 @@ public:
 
 
 public:
+	void genTexture();
+
     void bind(TextureTarget target) const;
 
 	void unbind(TextureTarget target) const;
@@ -45,7 +47,6 @@ public:
 	void textureParameterfv(TextureParameter name, const GLfloat* params);
 
 	void texImage2D(const Image2D_Data& data);
-
 
     void deleteTexture();
 
