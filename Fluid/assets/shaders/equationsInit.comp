@@ -32,7 +32,7 @@ layout(std430, binding = 0) buffer equations
 //solution & function(image2D) + equations coefficients
 layout(binding = 0, rgba32f) uniform image2D solution;
 layout(binding = 1, rgba32f) uniform image2D function;
-
+layout(binding = 2, rgba32f) uniform image2D weights;
 
 //step
 uniform vec2 uH;
@@ -46,7 +46,10 @@ void main()
 	ivec2 indexVec  = ivec2(gl_GlobalInvocationId);
 	ivec2 indexFlat = indexVec.y * extents.x + indexVec.x;
 
+	//values for initialization
+	//function & solution are all zeros
 	CrossCoefficients coefs;
+	vec4 weigth;
 
 	//precompute some coefficients(general)
 	float hx = uH.x;
@@ -64,6 +67,7 @@ void main()
 	coefs.c10 = hx2Inv; coefs.c11 = -2.0f * (hx2Inv + hy2Inv); coefs.c12 = hx2Inv;
 	                    coefs.c01 = hy2Inv;
 
+	weight = vec4(1.0f);
 
 	//coeeficients for bounds
 	float LRB = hy / (2.0f * hx2); //left-right  bound, common coefficient
@@ -74,24 +78,32 @@ void main()
 			             coefs.c21 =  hyInv;
 		coefs.c10 = LUB; coefs.c11 = -hyInv - 2.0f * LUB; coefs.c12 = LUB;
 		                 coefs.c01 =  0.0f;
+
+		weight = vec4(hy / 2.0f);
 	}
 	else if(indexVec.y == limits.y) //upper bound
 	{
 			              coefs.c21 =  0.0;
 		coefs.c10 = -LUB; coefs.c11 =  hyInv + 2.0f * LUB; coefs.c12 = -LUB;
 	    	              coefs.c01 = -hyInv;
+
+	    weight = vec4(-hy / 2.0f);
 	}
 	else if(indexVec.x == 0) // left bound
 	{
 			             coefs.c21 =  LRB;
 		coefs.c10 = 0.0; coefs.c11 = -hxInv - 2.0f * LRB; coefs.c12 = hxInv;
 		                 coefs.c01 =  LRB;
+
+	    weight = vec4(hx / 2.0f);
 	}
 	else if(indexVec.x == limits.x) // right bound
 	{
 			                coefs.c21 = -LRB;
 		coefs.c10 = -hxInv; coefs.c11 = hxInv + 2.0f * LRB; coefs.c12 = 0.0;
 		                    coefs.c01 = -LRB;
+
+	    weight = vec4(-hx / 2.0f);
 	}
 
 	//corners
@@ -102,25 +114,39 @@ void main()
 			             coefs.c21 =  CC;
 		coefs.c10 = 0.0; coefs.c11 = -hxInv - CC; coefs.c12 = hxInv;
 		                 coefs.c01 = 0.0;
+
+	    weight = vec4(hx / 2.0f);
 	}
 	if(indexVec == ivec2(limits.x, 0)) // right lower
 	{
 			                coefs.c21 = -CC;
 		coefs.c10 = -hxInv; coefs.c11 = hxInv + CC; coefs.c12 = 0.0;
 	                        coefs.c01 = 0.0;	
+
+	    weight = vec4(-hx / 2.0f);
 	}
 	if(indexVec == ivec2(limits.x, limits.y)) // right upper
 	{
 			                coefs.c21 = 0.0;
 		coefs.c10 = -hxInv; coefs.c11 = hxInv + CC; coefs.c12 = 0.0;
 		                    coefs.c01 = -CC;
+
+	    weight = vec4(-hx / 2.0f);
 	}
 	if(indexVec == ivec2(0, limits.y)) // left upper
 	{
 			             coefs.c21 = 0.0;
 		coefs.c10 = 0.0; coefs.c11 = -hxInv - CC; coefs.c12 = hxInv;
 		                 coefs.c01 = CC;
+
+	    weight = vec4(hx / 2.0f);
 	}
 
 	coefficients[indexFlat] = coefs;
+	imageStore(solution, vec4(0.0f), indexVec);
+	imageStore(function, vec4(0.0f), indexVec);
+	imageStore(weights , weigth    , indexVec);
+
+	memoryBarrierImage();
+	memoryBarrierBuffer();
 }

@@ -23,15 +23,20 @@ struct CrossCoefficients
 	           float c01;
 };
 
-layout(std430, binding = 0) buffer equations
+layout(binding = 0, std430) buffer equations
 {
 	CrossCoefficients coefficients[];			
 };
 
 //solution & function(image2D) + equations coefficients
+//derivative is zero on the boundaries, so we only require one coef(weight) for function
+//1     : for inner values
+//not 1 : for boundaries and corners
+//(to keep the second approximation order)
 layout(binding = 0, rgba32f) uniform image2D solution;
 layout(binding = 1, rgba32f) uniform image2D function;
 layout(binding = 2, rgba32f) uniform image2D boundaryWeights;
+
 //steps
 uniform vec2 uH;
 
@@ -64,6 +69,8 @@ uniform float uOmega = 1.0f;
 const ivec2  FIRST_CELL_OFFSETS[2] = {ivec2(0, 0), ivec2(1, 0)};
 const ivec2 SECOND_CELL_OFFSETS[2] = {ivec2(1, 1), ivec2(0, 1)};
 
+
+
 //update cell
 void redBlackStep(ivec2 indexVec, int indexFlat)
 {
@@ -79,16 +86,13 @@ void redBlackStep(ivec2 indexVec, int indexFlat)
 	vec4 s01 = imageLoad(solution, indexVec + ivec2(-1,  0));
 
 	//get function value
-	vec4 weight = imageLoad(boundary)
-	vec4 f = imageLoad(function, indexVec);
+	vec4 weight = imageLoad(boundaryWeights, indexVec)
+	vec4 f      = imageLoad(function, indexVec);
+
+	const float w = uOmega;
 
 	//algorithm(SOR)
-	s11 =               
-	                    + equ.c21 * s21
-		+ equ.c10 * s10 + equ.c11 * s11 + equ.c12 * s12
-	                    + equ.c01 * s01
-	                    
-	                    + f;
+	s11 = (1.0f - w) * s11 + w / equ.c11 * (-equ.c01 * s01 - equ.c10 * s10 - equ.c12 * s12 - equ.c21 * s21 + weight * f);
 
 	//store back new value(and test)
 	imageStore(solution, indexVec, s11);
@@ -116,4 +120,6 @@ void main()
 	indexVec  = baseIndexVec + secondCellOffset;
 	indexFlat = indexVec.y * extents.x + indexVec.x;
 	redBlackStep(indexVec, indexFlat);
+
+	memoryBarrierImage();
 }
