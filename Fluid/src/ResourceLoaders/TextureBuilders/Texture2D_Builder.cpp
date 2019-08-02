@@ -7,6 +7,8 @@ Texture Texture2D_Builder::buildTexture(const Texture::Image2D_Data& data, const
 
 	auto& [minFilter, magFilter, wrapModeS, wrapModeT, borderColor] = params;
 
+	tex.genTexture();
+
 	tex.bind(TextureTarget::Texture2D);
 
 	tex.texImage2D(data);
