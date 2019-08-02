@@ -13,8 +13,8 @@ Texture Texture2D_Builder::buildTexture(const Texture::Image2D_Data& data, const
 
 	tex.textureParameteri(TextureParameter::TextureMinFilter, static_cast<GLint>(minFilter));
 	tex.textureParameteri(TextureParameter::TextureMagFilter, static_cast<GLint>(magFilter));
-	tex.textureParameteri(TextureParameter::TextureWrapS, static_cast<GLint>(wrapModeS));
-	tex.textureParameteri(TextureParameter::TextureWrapT, static_cast<GLint>(wrapModeT));
+	tex.textureParameteri(TextureParameter::TextureWrapS    , static_cast<GLint>(wrapModeS));
+	tex.textureParameteri(TextureParameter::TextureWrapT    , static_cast<GLint>(wrapModeT));
 
 	if (wrapModeS == TextureParameterValue::ClampToBorder || wrapModeT == TextureParameterValue::ClampToBorder)
 	{

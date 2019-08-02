@@ -28,7 +28,7 @@ public:
 	GLFWwindow* window() const;
 
 	
-public:
+private:
 	GLFWwindow* mWindow;
 };
 

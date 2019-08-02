@@ -18,7 +18,7 @@ public:
 	};
 
 public:
-	static Framebuffer sDEFAULT;
+	//static Framebuffer sDEFAULT;
 
 
 public:

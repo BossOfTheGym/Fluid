@@ -11,11 +11,11 @@ namespace
 		//framebuffer with empty(zero) id is always considered default
 		result.deleteFramebuffer();
 
-		return result;
+		return std::move(result);
 	}
 }
 
-Framebuffer Framebuffer::sDEFAULT = createDefaultFramebuffer();
+//Framebuffer Framebuffer::sDEFAULT = createDefaultFramebuffer();
 
 
 //constructors & destructor

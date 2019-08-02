@@ -8,21 +8,27 @@
 namespace fs = std::filesystem;
 
 
+void mainloop()
+{
+	GLFWwindow* window = Window::getContext()->window();
+
+	glfwShowWindow(window);
+	while (glfwWindowShouldClose(window))
+	{
+		glfwPollEvents();
+
+
+
+		glfwSwapBuffers(window);
+	}
+}
+
 int main()
 {
 	Window::init(100, 100, "window");
 	OpenGL::initializeLoader();
 
-	SimpleShaderLoader ssl;
-	Shader test = ssl.loadShader(ShaderType::Compute, "assets/shaders/poissonSolver.comp");
-	if(test.compiled())
-	{ 
-		std::cout << "Compiled" << std::endl;
-	}
-	else
-	{
-		std::cout << test.infoLog() << std::endl;
-	}
+	mainloop();
 
 	std::cin.get();
 
