@@ -166,6 +166,8 @@
   <ItemGroup>
     <None Include="assets\shaders\poissonSolver.comp" />
     <None Include="assets\shaders\equationsInit.comp" />
+    <None Include="assets\shaders\quad.frag" />
+    <None Include="assets\shaders\quad.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.h" />

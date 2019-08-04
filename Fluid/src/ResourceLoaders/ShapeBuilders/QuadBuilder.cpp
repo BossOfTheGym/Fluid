@@ -6,14 +6,14 @@
 //constructor
 QuadBuilder::QuadBuilder() : m_vertexPositions()
 {
-	Vec2 vertices[6] = {
-		  Vec2{+1.0f, +1.0f}
-		, Vec2{-1.0f, +1.0f}
-		, Vec2{-1.0f, -1.0f}
+	Vec3 vertices[6] = {
+		  Vec3{+1.0f, +1.0f, 0.0f}
+		, Vec3{-1.0f, +1.0f, 0.0f}
+		, Vec3{-1.0f, -1.0f, 0.0f}
 
-		, Vec2{-1.0f, -1.0f}
-		, Vec2{+1.0f, -1.0f}
-		, Vec2{+1.0f, +1.0f}
+		, Vec3{-1.0f, -1.0f, 0.0f}
+		, Vec3{+1.0f, -1.0f, 0.0f}
+		, Vec3{+1.0f, +1.0f, 0.0f}
 	};
 
 	m_vertexPositions.genBuffer();
@@ -36,7 +36,7 @@ VertexArray QuadBuilder::buildShape()
 		m_vertexPositions
 		, {
 			  static_cast<GLuint>(VertexAttributes::Position)
-			, AttributeSize::Two
+			, AttributeSize::Three
 		    , DataType::Float
 		    , GLBool::True
 		    , 0
