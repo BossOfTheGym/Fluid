@@ -44,7 +44,7 @@ public:
 		}
 		else
 		{
-			std::cout << "Failed to build program. Error: " << program.infoLog()/* << std::endl*/;
+			std::cout << "Failed to build program. " << program.infoLog()/* << std::endl*/;
 		}
 
 		return program;

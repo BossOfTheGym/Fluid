@@ -14,7 +14,7 @@ GLFWwindow* Window::window() const
 Window* Window::sContext = nullptr;
 
 
-bool Window::init(int width, int height, const String& name)
+bool Window::init(const CreationInfo& info)
 {
 	auto glfwErr = glfwInit();
 
@@ -23,18 +23,13 @@ bool Window::init(int width, int height, const String& name)
 		return false;
 	}
 
-	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-	glfwWindowHint(GLFW_DEPTH_BITS, 32);
-	glfwWindowHint(GLFW_STENCIL_BITS, 8);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
-	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	for (auto&[hint, value] : info.hints)
+	{
+		glfwWindowHint(hint, value);
+	}
 
 	Window::sContext = new Window();
-	Window::sContext->mWindow = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
+	Window::sContext->mWindow = glfwCreateWindow(info.width, info.height, info.name.c_str(), nullptr, nullptr);
 
 	glfwMakeContextCurrent(Window::sContext->mWindow);
 
@@ -45,6 +40,9 @@ void Window::terminate()
 {
 	glfwDestroyWindow(Window::sContext->mWindow);
 	glfwTerminate();
+
+	delete(Window::sContext);
+	sContext = nullptr;
 }
 
 Window* Window::getContext()

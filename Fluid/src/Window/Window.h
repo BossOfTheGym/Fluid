@@ -9,7 +9,24 @@
 class Window
 {
 public:
-	static bool init(int width, int height, const String& name);
+	struct Hint
+	{
+		int hint;
+		int value;
+	};
+
+	using Hints = std::vector<Hint>;
+
+	struct CreationInfo
+	{
+		int width;
+		int height;
+		String name;
+		Hints hints;
+	};
+
+public:
+	static bool init(const CreationInfo& info);
 
 	static Window* getContext();
 

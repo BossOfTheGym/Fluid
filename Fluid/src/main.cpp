@@ -88,7 +88,22 @@ void mainloop()
 
 int main()
 {
-	Window::init(400, 400, "window");
+	Window::init(
+		Window::CreationInfo{
+			  1200, 600, "window"
+			, Window::Hints{
+				  Window::Hint{GLFW_DOUBLEBUFFER, GLFW_TRUE}
+				, Window::Hint{GLFW_DEPTH_BITS, 32}
+				, Window::Hint{GLFW_STENCIL_BITS, 8}
+				, Window::Hint{GLFW_CONTEXT_VERSION_MAJOR, 4}
+				, Window::Hint{GLFW_CONTEXT_VERSION_MINOR, 5}
+				, Window::Hint{GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE}
+				, Window::Hint{GLFW_VISIBLE, GL_FALSE}
+				, Window::Hint{GLFW_RESIZABLE, GL_FALSE}
+		    }
+		}
+	);
+
 	OpenGL::initializeLoader();
 
 	mainloop();
