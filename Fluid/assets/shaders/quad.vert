@@ -1,6 +1,6 @@
 #version 450 core
 
-layout(location = 1) vec3 position in;
+layout(location = 0) in vec3 position;
 
 out VS_OUT
 {

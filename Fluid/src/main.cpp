@@ -39,8 +39,8 @@ Texture testTexture(Texture2D_Builder& builder)
 		for (int j = 0; j < 400; j++)
 		{
 			*iter = 1.0f; ++iter;
-			*iter = 0.5f; ++iter;
-			*iter = 0.0f; ++iter;
+			*iter = 1.0f; ++iter;
+			*iter =	1.0f; ++iter;
 			*iter = 1.0f; ++iter;
 		}
 	}
@@ -69,8 +69,9 @@ void mainloop()
 	QuadBuilder          quadBuilder;
 
 	//resources
-	VertexArray quad    = quadBuilder.buildShape();
-	Texture     texture = testTexture(textureBuilder);
+	VertexArray quad = quadBuilder.buildShape();
+
+	Texture texture = testTexture(textureBuilder);
 
 	Shader vert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/quad.vert");
 	Shader frag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
@@ -81,6 +82,14 @@ void mainloop()
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		quadProgram.use();
+
+		texture.active(static_cast<GLenum>(TextureUnitBase::Texture0));
+		texture.bind(TextureTarget::Texture2D);
+
+		quad.bind();
+		quad.drawArrays();
 
 		glfwSwapBuffers(window);
 	}
@@ -112,7 +121,6 @@ int main()
 
 
 	std::cout << "Execution finished" << std::endl;
-	std::cin.get();
 
 	return 0;
 }
