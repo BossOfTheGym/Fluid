@@ -2,12 +2,12 @@
 
 
 Window::Window()
-	: mWindow(nullptr)
+	: m_window(nullptr)
 {}
 
 GLFWwindow* Window::window() const
 {
-	return mWindow;
+	return m_window;
 }
 
 //statics
@@ -29,16 +29,17 @@ bool Window::init(const CreationInfo& info)
 	}
 
 	Window::sContext = new Window();
-	Window::sContext->mWindow = glfwCreateWindow(info.width, info.height, info.name.c_str(), nullptr, nullptr);
+	Window::sContext->m_info   = std::move(info);
+	Window::sContext->m_window = glfwCreateWindow(info.width, info.height, info.name.c_str(), nullptr, nullptr);
 
-	glfwMakeContextCurrent(Window::sContext->mWindow);
+	glfwMakeContextCurrent(Window::sContext->m_window);
 
 	return true;
 }
 
 void Window::terminate()
 {
-	glfwDestroyWindow(Window::sContext->mWindow);
+	glfwDestroyWindow(Window::sContext->m_window);
 	glfwTerminate();
 
 	delete(Window::sContext);
@@ -48,4 +49,9 @@ void Window::terminate()
 Window* Window::getContext()
 {
 	return Window::sContext;
+}
+
+const Window::CreationInfo& Window::info() const
+{
+	return m_info;
 }

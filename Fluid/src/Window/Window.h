@@ -11,18 +11,18 @@ class Window
 public:
 	struct Hint
 	{
-		int hint;
-		int value;
+		int hint  = 0;
+		int value = 0;
 	};
 
 	using Hints = std::vector<Hint>;
 
 	struct CreationInfo
 	{
-		int width;
-		int height;
-		String name;
-		Hints hints;
+		int width   = 0;
+		int height  = 0;
+		String name = "";
+		Hints hints = {};
 	};
 
 public:
@@ -44,9 +44,11 @@ private:
 public:
 	GLFWwindow* window() const;
 
+	const CreationInfo& info() const;
 	
 private:
-	GLFWwindow* mWindow;
+	GLFWwindow* m_window;
+	CreationInfo m_info;
 };
 
 #endif
