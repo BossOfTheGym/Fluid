@@ -6,7 +6,8 @@
 
 enum class VertexAttributes : GLuint
 {
-	Position = 0
+	  Position = 0
+	, Texture  = 1 
 };
 
 

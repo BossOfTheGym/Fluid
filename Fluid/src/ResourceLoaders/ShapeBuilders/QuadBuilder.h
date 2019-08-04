@@ -25,6 +25,7 @@ public:
 
 private:
 	Buffer m_vertexPositions;
+	Buffer m_textureCoords;
 };
 
 #endif

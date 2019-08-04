@@ -15,51 +15,65 @@
 namespace fs = std::filesystem;
 
 
-Texture testTexture(Texture2D_Builder& builder)
+Texture testTexture(Texture2D_Builder& builder, int width, int height, const Vec4& initColor = Vec4(0.0f, 0.0f, 0.0f, 1.0f))
 {
 	using Data   = Texture::Image2D_Data;
 	using Params = Texture2D_Builder::SamplingParameters;
 
+	const int CHANNELS = 4;
+
+
 	Data textureData = {
-		TextureTarget::Texture2D
+		  TextureTarget::Texture2D
 		, 0
 		, InternalFormat::RGBA
-		, 400
-		, 400
+		, width
+		, height
 		, PixelDataFormat::RGBA
 		, DataType::Float
 		, nullptr
 	};
 
-	std::vector<float> pixelData(400 * 400 * 4);
+	std::vector<float> pixelData(width * height * CHANNELS);
 
 	auto iter = pixelData.begin();
-	for (int i = 0; i < 400; i++)
+	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < 400; j++)
+		for (int j = 0; j < width; j++)
 		{
-			*iter = 1.0f; ++iter;
-			*iter = 1.0f; ++iter;
-			*iter =	1.0f; ++iter;
-			*iter = 1.0f; ++iter;
+			//auto red = static_cast<float>((j / 30 % 2 == (i / 30 % 2 == 1)));
+			*iter = initColor.r; ++iter;
+			*iter = initColor.g; ++iter;
+			*iter =	initColor.b; ++iter;
+			*iter = initColor.a; ++iter;
 		}
 	}
 
 	textureData.pixels = pixelData.data();
 
-	return builder.buildTexture(textureData, Params{});
+	return builder.buildTexture(
+		textureData
+		, Params{
+			  TextureParameterValue::Linear
+			, TextureParameterValue::Linear
+		    , TextureParameterValue::ClampToEdge
+		    , TextureParameterValue::ClampToEdge
+		}
+	);
 }
 
 void mainloop()
 {
 	//context
-	GLFWwindow* window = Window::getContext()->window();
+	decltype(auto) context = Window::getContext();
+	decltype(auto) window  = context->window();
+	decltype(auto) info    = context->info();
 
 	//set-ups
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
 
-	glViewport(0, 0, 300, 300);
+	glViewport(0, 0, info.width, info.height);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
 	//builders
@@ -71,12 +85,13 @@ void mainloop()
 	//resources
 	VertexArray quad = quadBuilder.buildShape();
 
-	Texture texture = testTexture(textureBuilder);
+	Texture texture = testTexture(textureBuilder, info.width, info.height);
 
 	Shader vert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/quad.vert");
 	Shader frag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
 	ShaderProgram quadProgram = shaderProgramBuilder.buildProgram(vert, frag);
 
+	//loop
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -102,12 +117,12 @@ int main()
 			  1200, 600, "window"
 			, Window::Hints{
 				  Window::Hint{GLFW_DOUBLEBUFFER, GLFW_TRUE}
-				, Window::Hint{GLFW_DEPTH_BITS, 32}
+				, Window::Hint{GLFW_DEPTH_BITS  , 32}
 				, Window::Hint{GLFW_STENCIL_BITS, 8}
 				, Window::Hint{GLFW_CONTEXT_VERSION_MAJOR, 4}
 				, Window::Hint{GLFW_CONTEXT_VERSION_MINOR, 5}
 				, Window::Hint{GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE}
-				, Window::Hint{GLFW_VISIBLE, GL_FALSE}
+				, Window::Hint{GLFW_VISIBLE  , GL_FALSE}
 				, Window::Hint{GLFW_RESIZABLE, GL_FALSE}
 		    }
 		}
