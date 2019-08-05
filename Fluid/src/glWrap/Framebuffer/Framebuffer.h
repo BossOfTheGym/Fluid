@@ -41,6 +41,7 @@ public:
 
 	FramebufferStatus checkNamedFramebufferStatus(FramebufferTarget target) const;
 
+
 	void blitNamedFramebuffer(
 		  const Rectangle& destRect
 		, const Framebuffer& src
@@ -54,9 +55,13 @@ public:
 
 	void namedFramebufferTexture(FramebufferAttachment attachment, const Texture& texture, GLint level);
 
+	void namedDrawBuffers(GLsizei count, const FramebufferAttachment* bufs); // TODO
+
+
 	void framebufferTextureLayer(FramebufferAttachment attachment, const Texture& texture, GLint level, GLint layer);
 
-	void namedDrawBuffers(GLsizei count, const FramebufferAttachment* bufs); // TODO
+
+	
 
 
 	void deleteFramebuffer();

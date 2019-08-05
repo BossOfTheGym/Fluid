@@ -94,6 +94,10 @@ void Framebuffer::namedDrawBuffers(GLsizei count, const FramebufferAttachment* b
 	glNamedFramebufferDrawBuffers(id(), count, static_cast<const GLenum*>(bufs));
 }
 
+
+
+
+
 void Framebuffer::deleteFramebuffer()
 {
 	GLuint framebufferID = id();

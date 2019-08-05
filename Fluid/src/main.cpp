@@ -34,14 +34,13 @@ Texture testTexture(Texture2D_Builder& builder, int width, int height, const Vec
 		, nullptr
 	};
 
-	std::vector<float> pixelData(width * height * CHANNELS);
+	std::vector<float> pixelData(static_cast<size_t>(width) * height * CHANNELS);
 
 	auto iter = pixelData.begin();
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
-			//auto red = static_cast<float>((j / 30 % 2 == (i / 30 % 2 == 1)));
 			*iter = initColor.r; ++iter;
 			*iter = initColor.g; ++iter;
 			*iter =	initColor.b; ++iter;
