@@ -98,19 +98,19 @@ void OpenGL::disablei(Capability parameter, CapabalityIndex index)
 }
 
 
-void frontFace(FrontFace mode)
+void OpenGL::frontFace(FrontFace mode)
 {
 	glFrontFace(static_cast<GLenum>(mode));
 }
 
 
-void polygonMode(Face face, PolygonMode mode)
+void OpenGL::polygonMode(Face face, PolygonMode mode)
 {
 	glPolygonMode(static_cast<GLenum>(face), static_cast<GLenum>(mode));
 }
 
 
-void viewport(GLint x, GLint y, GLsizei width, GLsizei height)
+void OpenGL::viewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
 	glViewport(x, y, width, height);
 }
