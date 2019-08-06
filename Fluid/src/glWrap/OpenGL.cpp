@@ -18,7 +18,7 @@ void OpenGL::blendEquation(BlendMode mode)
 	glBlendEquation(static_cast<GLenum>(mode));
 }
 
-void OpenGL::blendEquationi(BufferNumber number, BlendMode mode)
+void OpenGL::blendEquationi(BufferIndex number, BlendMode mode)
 {
 	glBlendEquationi(number, static_cast<GLenum>(mode));
 }
@@ -28,7 +28,7 @@ void OpenGL::blendEquationSeparate(BlendMode rgb, BlendMode alpha)
 	glBlendEquationSeparate(static_cast<GLenum>(rgb), static_cast<GLenum>(alpha));
 }
 
-void OpenGL::blendEquationSeparatei(BufferNumber number, BlendMode rgb, BlendMode alpha)
+void OpenGL::blendEquationSeparatei(BufferIndex number, BlendMode rgb, BlendMode alpha)
 {
 	glBlendEquationSeparatei(number, static_cast<GLenum>(rgb), static_cast<GLenum>(alpha));
 }
@@ -38,7 +38,7 @@ void OpenGL::blendFunc(BlendFactor srcFactor, BlendFactor dstFactor)
 	glBlendFunc(static_cast<GLenum>(srcFactor), static_cast<GLenum>(dstFactor));
 }
 
-void OpenGL::blendFunci(BufferNumber number, BlendFactor srcFactor, BlendFactor dstFactor)
+void OpenGL::blendFunci(BufferIndex number, BlendFactor srcFactor, BlendFactor dstFactor)
 {
 	glBlendFunci(number, static_cast<GLenum>(srcFactor), static_cast<GLenum>(dstFactor));
 }
@@ -53,7 +53,7 @@ void OpenGL::blendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFact
 	);
 }
 
-void OpenGL::blendFuncSeparatei(BufferNumber number, BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha)
+void OpenGL::blendFuncSeparatei(BufferIndex number, BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha)
 {
 	glBlendFuncSeparatei(
 		  number

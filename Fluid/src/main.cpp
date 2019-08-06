@@ -5,6 +5,8 @@
 #include <Common.h>
 
 #include <glWrap/OpenGL.h>
+#include <glWrap/Framebuffer/Framebuffer.h>
+
 #include <Window/Window.h>
 
 #include <ResourceLoaders/ShaderLoaders/ShaderLoader.h>
@@ -12,7 +14,6 @@
 #include <ResourceLoaders/TextureBuilders/Texture2D_Builder.h>
 #include <ResourceLoaders/ShaderProgramBuilders/ShaderProgramBuilder.h>
 
-namespace fs = std::filesystem;
 
 
 Texture testTexture(Texture2D_Builder& builder, int width, int height, const Vec4& initColor = Vec4(0.0f, 0.0f, 0.0f, 1.0f))
@@ -72,8 +73,7 @@ void mainloop()
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
 
-	glViewport(0, 0, info.width, info.height);
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	OpenGL::viewport(0, 0, info.width, info.height);
 
 	//builders
 	SimpleShaderLoader   shaderLoader;
@@ -90,12 +90,15 @@ void mainloop()
 	Shader frag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
 	ShaderProgram quadProgram = shaderProgramBuilder.buildProgram(vert, frag);
 
+	Framebuffer defaultBuffer = Framebuffer::default();
+	
 	//loop
+	defaultBuffer.clearColor(0.0f, 1.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		defaultBuffer.clear(ClearMask::Color);
 
 		quadProgram.use();
 

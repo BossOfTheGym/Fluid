@@ -4,55 +4,7 @@
 #include <GL/glew.h>
 
 
-struct OpenGL
-{
-	static bool initializeLoader();
-
-
-	//state management
-	static void blendColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
-
-	static void blendEquation(BlendMode mode);
-
-	static void blendEquationi(BufferNumber number, BlendMode mode);
-
-	static void blendEquationSeparate(BlendMode rgb, BlendMode alpha);
-
-	static void blendEquationSeparatei(BufferNumber number, BlendMode rgb, BlendMode alpha);
-
-	static void blendFunc(BlendFactor srcFactor, BlendFactor dstFactor);
-
-	static void blendFunci(BufferNumber number, BlendFactor srcFactor, BlendFactor dstFactor);
-
-	static void blendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
-
-	static void blendFuncSeparatei(BufferNumber number, BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
-
-
-	static void cullFace(Face mode);
-
-
-	static void depthFunc(DepthFunc func);
-
-
-	static void enable(Capability parameter);
-
-	static void enablei(Capability parameter, CapabalityIndex index);
-
-	static void disable(Capability parameter);
-
-	static void disablei(Capability parameter, CapabalityIndex index);
-
-
-	static void frontFace(FrontFace mode);
-
-
-	static void polygonMode(Face face, PolygonMode mode);
-
-
-	static void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
-};
-
+using BufferIndex = GLuint;
 
 enum class BlendMode : GLenum
 {
@@ -139,6 +91,57 @@ enum class PolygonMode : GLenum
 	, Line  = GL_LINE
 	, Fill  = GL_FILL
 };
+
+
+struct OpenGL
+{
+	static bool initializeLoader();
+
+
+	//state management
+	static void blendColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+
+	static void blendEquation(BlendMode mode);
+
+	static void blendEquationi(BufferIndex number, BlendMode mode);
+
+	static void blendEquationSeparate(BlendMode rgb, BlendMode alpha);
+
+	static void blendEquationSeparatei(BufferIndex number, BlendMode rgb, BlendMode alpha);
+
+	static void blendFunc(BlendFactor srcFactor, BlendFactor dstFactor);
+
+	static void blendFunci(BufferIndex number, BlendFactor srcFactor, BlendFactor dstFactor);
+
+	static void blendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
+
+	static void blendFuncSeparatei(BufferIndex number, BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
+
+
+	static void cullFace(Face mode);
+
+
+	static void depthFunc(DepthFunc func);
+
+
+	static void enable(Capability parameter);
+
+	static void enablei(Capability parameter, CapabalityIndex index);
+
+	static void disable(Capability parameter);
+
+	static void disablei(Capability parameter, CapabalityIndex index);
+
+
+	static void frontFace(FrontFace mode);
+
+
+	static void polygonMode(Face face, PolygonMode mode);
+
+
+	static void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
+};
+
 
 
 
