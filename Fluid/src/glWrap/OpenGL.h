@@ -4,10 +4,140 @@
 #include <GL/glew.h>
 
 
-class OpenGL
+struct OpenGL
 {
-public:
 	static bool initializeLoader();
+
+
+	//state management
+	static void blendColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+
+	static void blendEquation(BlendMode mode);
+
+	static void blendEquationi(BufferNumber number, BlendMode mode);
+
+	static void blendEquationSeparate(BlendMode rgb, BlendMode alpha);
+
+	static void blendEquationSeparatei(BufferNumber number, BlendMode rgb, BlendMode alpha);
+
+	static void blendFunc(BlendFactor srcFactor, BlendFactor dstFactor);
+
+	static void blendFunci(BufferNumber number, BlendFactor srcFactor, BlendFactor dstFactor);
+
+	static void blendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
+
+	static void blendFuncSeparatei(BufferNumber number, BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
+
+
+	static void cullFace(Face mode);
+
+
+	static void depthFunc(DepthFunc func);
+
+
+	static void enable(Capability parameter);
+
+	static void enablei(Capability parameter, CapabalityIndex index);
+
+	static void disable(Capability parameter);
+
+	static void disablei(Capability parameter, CapabalityIndex index);
+
+
+	static void frontFace(FrontFace mode);
+
+
+	static void polygonMode(Face face, PolygonMode mode);
+
+
+	static void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
+};
+
+
+enum class BlendMode : GLenum
+{
+	  Add             = GL_FUNC_ADD
+	, Subtract        = GL_FUNC_SUBTRACT
+	, ReverseSubtract = GL_FUNC_REVERSE_SUBTRACT
+	, Max             = GL_MAX
+	, Min             = GL_MIN
+};
+
+
+enum class BlendFactor : GLenum
+{
+	  Zero = GL_ZERO
+	, One  = GL_ONE
+
+	, SrcColor         = GL_SRC_COLOR
+	, OneMinusSrc      = GL_ONE_MINUS_SRC_COLOR
+	, SrcAlpha         = GL_SRC_ALPHA
+	, OneMinusSrcAlpha = GL_ONE_MINUS_SRC_ALPHA
+
+	, DstColor         = GL_DST_COLOR
+	, OneMinusDstColor = GL_ONE_MINUS_DST_COLOR
+	, DstAlpha         = GL_DST_ALPHA
+	, OneMinusDstAlpha = GL_ONE_MINUS_DST_ALPHA
+
+	, ConstantColor         = GL_CONSTANT_COLOR
+	, OneMinusConstant      = GL_ONE_MINUS_CONSTANT_COLOR
+	, ConstatntAlpha        = GL_CONSTANT_ALPHA
+	, OneMinusConstantAlpha = GL_ONE_MINUS_CONSTANT_ALPHA
+
+	, SrcAlphaSaturate = GL_SRC_ALPHA_SATURATE
+
+	, Src1Color         = GL_SRC1_COLOR
+	, OneMinusSrc1Color = GL_ONE_MINUS_SRC1_COLOR
+	, Src1Alpha         = GL_SRC1_ALPHA
+	, OneMinusSrc1Alpha = GL_ONE_MINUS_SRC1_ALPHA
+};
+
+
+enum class Face : GLenum
+{
+	  Front        = GL_FRONT
+	, Back         = GL_BACK
+	, FrontAndBack = GL_FRONT_AND_BACK
+};
+
+
+enum class DepthFunc : GLenum
+{
+	  Never        = GL_NEVER
+	, Always       = GL_ALWAYS
+	, Less         = GL_LESS
+	, Equal        = GL_EQUAL
+	, LessEqual    = GL_LEQUAL
+	, Greater      = GL_GREATER
+	, GreaterEqual = GL_GEQUAL
+	, NotEqual     = GL_NOTEQUAL
+};
+
+
+using CapabalityIndex = GLuint;
+
+enum class Capability : GLenum
+{
+	  Blend     = GL_BLEND
+	, CullFace  = GL_CULL_FACE
+	, DepthTest = GL_DEPTH_TEST
+	, Scissor   = GL_SCISSOR_TEST
+	, Stencil   = GL_STENCIL_TEST
+};
+
+
+enum class FrontFace : GLenum
+{
+	  Clockwise        = GL_CW
+	, CounterClockwise = GL_CCW
+};
+
+
+enum class PolygonMode : GLenum
+{
+	  Point = GL_POINT
+	, Line  = GL_LINE
+	, Fill  = GL_FILL
 };
 
 
