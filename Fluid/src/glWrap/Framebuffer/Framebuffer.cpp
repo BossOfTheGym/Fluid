@@ -2,7 +2,11 @@
 
 
 //statics
-Framebuffer Framebuffer::sDEFAULT = Framebuffer();
+Framebuffer Framebuffer::default()
+{
+	//return empty framebuffer(zero id always belongs to default)
+	return Framebuffer();
+}
 
 
 //constructors & destructor
@@ -57,7 +61,7 @@ void Framebuffer::blitNamedFramebuffer(
 	  const Rectangle& destRect
 	, const Framebuffer& src
 	, const Rectangle& srcRect
-	, GLbitfield mask
+	, BlitMask mask
 	, FramebufferFilter filter
 )
 {
@@ -66,9 +70,9 @@ void Framebuffer::blitNamedFramebuffer(
 
 	glBlitNamedFramebuffer(
 		src.id(), id()
-		, srcX0, srcY0, srcX1, srcY1
+		, srcX0 , srcY0 , srcX1 , srcY1
 		, destX0, destY0, destX1, destY1
-		, mask
+		, static_cast<GLbitfield>(mask)
 		, static_cast<GLenum>(filter)
 	);
 }
@@ -89,13 +93,58 @@ void Framebuffer::framebufferTextureLayer(FramebufferAttachment attachment, cons
 	//TODO
 }
 
-void Framebuffer::namedDrawBuffers(GLsizei count, const FramebufferAttachment* bufs)
+
+void Framebuffer::namedClearBufferfv(FramebufferClearBufferfv buffer, BufferNumber drawBuffer, GLfloat* value)
 {
-	glNamedFramebufferDrawBuffers(id(), count, static_cast<const GLenum*>(bufs));
+	glClearNamedFramebufferfv(id(), static_cast<GLenum>(buffer), drawBuffer, value);
+}
+
+void Framebuffer::namedClearBufferiv(FramebufferClearBufferiv buffer, BufferNumber drawBuffer, const GLint* value)
+{
+	glClearNamedFramebufferiv(id(), static_cast<GLenum>(buffer), drawBuffer, value);
+}
+
+void Framebuffer::namedClearBufferuiv(FramebufferClearBufferuiv buffer, BufferNumber drawBuffer, const GLuint* value)
+{
+	glClearNamedFramebufferuiv(id(), static_cast<GLenum>(buffer), drawBuffer, value);
+}
+
+void Framebuffer::namedClearBufferfi(FramebufferClearBufferfi buffer, BufferNumber drawBuffer, GLfloat depth, GLint stencil)
+{
+	glClearNamedFramebufferfi(id(), static_cast<GLenum>(buffer), drawBuffer, depth, stencil);
 }
 
 
+void Framebuffer::clear(ClearMask mask)
+{
+	glClear(static_cast<GLbitfield>(mask));
+}
 
+void Framebuffer::clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
+{
+	glClearColor(red, green, blue, alpha);
+}
+
+void Framebuffer::clearDepth(GLfloat depth)
+{
+	glClearDepth(depth);
+}
+
+void Framebuffer::clearStencil(GLint stencil)
+{
+	glClearStencil(stencil);
+}
+
+
+void Framebuffer::namedDrawBuffer(DrawBuffer buffer)
+{
+	glNamedFramebufferDrawBuffer(id(), buffer);
+}
+
+void Framebuffer::namedDrawBuffers(GLsizei count, const DrawBuffer* bufs)
+{
+	glNamedFramebufferDrawBuffers(id(), count, static_cast<const GLenum*>(bufs));
+}
 
 
 void Framebuffer::deleteFramebuffer()

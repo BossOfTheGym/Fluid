@@ -11,11 +11,13 @@ public:
 };
 
 
+
 enum class GLBool : GLboolean
 {
 	  True  = GL_TRUE
 	, False = GL_FALSE
 };
+
 
 
 enum class AttributeSize : GLint
@@ -25,6 +27,7 @@ enum class AttributeSize : GLint
 	, Three = 3
 	, Four  = 4
 };
+
 
 
 enum class ShaderType : GLenum
@@ -38,6 +41,7 @@ enum class ShaderType : GLenum
 
 	, None           = static_cast<GLenum>(0)
 };
+
 
 
 enum class DrawMode : GLenum
@@ -71,6 +75,7 @@ enum class IndicesType : GLenum
 };
 
 
+
 enum class DataType : GLenum
 {
 	  Byte         = GL_BYTE
@@ -92,6 +97,7 @@ enum class DataType : GLenum
 
 	, None = static_cast<GLenum>(0)
 };
+
 
 
 enum class BufferTarget : GLenum
@@ -136,6 +142,7 @@ enum class TextureUnitBase : GLenum
 {
 	Texture0 = GL_TEXTURE0
 };
+
 
 enum class TextureTarget : GLenum
 {
@@ -205,7 +212,6 @@ enum class TextureParameter : GLenum
 	, None = static_cast<GLenum>(0)
 };
 
-//TODO
 enum class TextureParameterValue : GLint
 {
 	//Filter
@@ -258,12 +264,60 @@ enum class PixelDataFormat : GLenum
 
 enum class FramebufferTarget : GLenum
 {
-	  Framebuffer = GL_FRAMEBUFFER
-	, ReadBuffer  = GL_READ_BUFFER
-	, DrawBuffer  = GL_DRAW_BUFFER
+	  Framebuffer     = GL_FRAMEBUFFER
+	, ReadFramebuffer = GL_READ_FRAMEBUFFER
+	, DrawFramebuffer = GL_DRAW_FRAMEBUFFER
 
 	, None = static_cast<GLenum>(0)
 };
+
+
+enum class BlitMask : GLbitfield
+{
+	  Color   = GL_COLOR_BUFFER_BIT
+	, Depth   = GL_DEPTH_BUFFER_BIT
+	, Stencil = GL_STENCIL_BUFFER_BIT
+};
+
+
+enum class ClearMask : GLbitfield
+{
+	  Color   = GL_COLOR_BUFFER_BIT
+	, Depth   = GL_DEPTH_BUFFER_BIT
+	, Stencil = GL_STENCIL_BUFFER_BIT
+
+	, ColorDepth   = Color | Depth
+	, ColorStencil = Color | Stencil
+	, DepthStencil = Depth | Stencil
+
+	, ColorDepthStencil = Color | Depth | Stencil
+};
+
+
+enum class FramebufferClearBufferfv : GLenum
+{
+	    Color = GL_COLOR
+	  , Depth = GL_DEPTH
+};
+
+enum class FramebufferClearBufferiv : GLenum
+{
+	  Color   = GL_COLOR
+	, Stencil = GL_STENCIL
+};
+
+enum class FramebufferClearBufferuiv : GLenum
+{
+	Color = GL_COLOR
+};
+
+enum class FramebufferClearBufferfi : GLenum
+{
+	DepthStencil = GL_DEPTH_STENCIL
+};
+
+using BufferNumber = GLint;
+
 
 using FramebufferAttachment = GLenum; // can have many so it can't be wrapped in enum class
 
@@ -278,6 +332,30 @@ enum class FrameBufferColorAttachment : GLenum
 {
 	Color = GL_COLOR_ATTACHMENT0
 };
+
+
+using DrawBuffer = GLenum; // can have many so it can't be wrapped in enum class
+
+enum class DefaultDrawBuffer : GLenum
+{
+	  None         = GL_NONE
+	, FrontLeft    = GL_FRONT_LEFT
+	, FrontRight   = GL_FRONT_RIGHT
+	, BackLeft     = GL_BACK_LEFT
+	, BackRight    = GL_BACK_RIGHT
+	, Front        = GL_FRONT
+	, Back         = GL_BACK
+	, Left         = GL_LEFT
+	, Right        = GL_RIGHT
+	, FrontAndBack = GL_FRONT_AND_BACK
+};
+
+enum class FramebufferDrawBuffer : GLenum
+{
+	  None             = GL_NONE
+	, ColorAttachment0 = GL_COLOR_ATTACHMENT0
+};
+
 
 enum class FramebufferStatus : GLenum
 {

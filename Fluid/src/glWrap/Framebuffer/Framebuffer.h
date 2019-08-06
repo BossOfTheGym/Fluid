@@ -1,6 +1,7 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+
 #include <glWrap/OpenGL.h>
 #include <glWrap/ID/Id.h>
 #include <glWrap/Texture/Texture.h>
@@ -18,7 +19,7 @@ public:
 	};
 
 public:
-	static Framebuffer sDEFAULT;
+	static Framebuffer default();
 
 
 public:
@@ -32,6 +33,7 @@ public:
 
 
 public:
+	//depend
 	void createFramebuffer();
 
 	void bindFramebuffer(FramebufferTarget target) const;
@@ -46,7 +48,7 @@ public:
 		  const Rectangle& destRect
 		, const Framebuffer& src
 		, const Rectangle& srcRect
-		, GLbitfield mask
+		, BlitMask mask
 		, FramebufferFilter filter
 	);
 
@@ -55,15 +57,36 @@ public:
 
 	void namedFramebufferTexture(FramebufferAttachment attachment, const Texture& texture, GLint level);
 
-	void namedDrawBuffers(GLsizei count, const FramebufferAttachment* bufs); // TODO
-
 
 	void framebufferTextureLayer(FramebufferAttachment attachment, const Texture& texture, GLint level, GLint layer);
 
 
+	void namedClearBufferfv(FramebufferClearBufferfv buffer, BufferNumber drawBuffer, GLfloat* value);
+
+	void namedClearBufferiv(FramebufferClearBufferiv buffer, BufferNumber drawBuffer, const GLint* value);
+
+	void namedClearBufferuiv(FramebufferClearBufferuiv buffer, BufferNumber drawBuffer, const GLuint* value);
+	
+	void namedClearBufferfi(FramebufferClearBufferfi buffer, BufferNumber drawBuffer, GLfloat depth, GLint stencil);
+
+
+	//don't depend on object's state
+	void clear(ClearMask mask);
+
+	void clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+
+	void clearDepth(GLfloat depth);
+
+	void clearStencil(GLint stencil);
 	
 
+	//depend
+	void namedDrawBuffer(DrawBuffer buffer);
 
+	void namedDrawBuffers(GLsizei count, const DrawBuffer* bufs);
+
+
+	//depend
 	void deleteFramebuffer();
 
 private:
