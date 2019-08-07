@@ -13,10 +13,10 @@
 #include <ResourceLoaders/ShapeBuilders/QuadBuilder.h>
 #include <ResourceLoaders/TextureBuilders/Texture2D_Builder.h>
 #include <ResourceLoaders/ShaderProgramBuilders/ShaderProgramBuilder.h>
+#include <ResourceLoaders/FramebufferBuilders/SimpleFramebufferBuilder.h>
 
 
-
-Texture testTexture(Texture2D_Builder& builder, int width, int height, const Vec4& initColor = Vec4(0.0f, 0.0f, 0.0f, 1.0f))
+Texture testTexture(Texture2D_Builder& builder, int width, int height)
 {
 	using Data   = Texture::Image2D_Data;
 	using Params = Texture2D_Builder::SamplingParameters;
@@ -42,10 +42,10 @@ Texture testTexture(Texture2D_Builder& builder, int width, int height, const Vec
 	{
 		for (int j = 0; j < width; j++)
 		{
-			*iter = initColor.r; ++iter;
-			*iter = initColor.g; ++iter;
-			*iter =	initColor.b; ++iter;
-			*iter = initColor.a; ++iter;
+			*iter = static_cast<float>((i / 10 % 2 == (j / 10 % 2))); ++iter;
+			*iter = 0.5f; ++iter;
+			*iter =	1.0f; ++iter;
+			*iter = 1.0f; ++iter;
 		}
 	}
 
@@ -62,6 +62,46 @@ Texture testTexture(Texture2D_Builder& builder, int width, int height, const Vec
 	);
 }
 
+Texture colorAttachment(Texture2D_Builder& builder, int width, int height)
+{
+	return builder.buildTexture(
+		Texture::Image2D_Data{
+			  TextureTarget::Texture2D
+			, 0
+			, InternalFormat::RGBA
+			, width
+			, height
+			, PixelDataFormat::RGBA
+			, DataType::Float
+			, nullptr
+		}
+		, Texture2D_Builder::SamplingParameters{
+			  TextureParameterValue::Linear
+			, TextureParameterValue::Linear
+			, TextureParameterValue::ClampToEdge
+		    , TextureParameterValue::ClampToEdge
+		}
+	);
+}
+
+Texture depthAttachment(Texture2D_Builder& builder, int width, int height)
+{
+	return builder.buildTexture(
+		Texture::Image2D_Data{
+			  TextureTarget::Texture2D
+			, 0
+			, InternalFormat::DepthComponent
+			, width
+			, height
+			, PixelDataFormat::DepthComponent
+			, DataType::UnsignedByte
+			, nullptr
+		}
+		, Texture2D_Builder::SamplingParameters{}
+	);
+}
+
+
 void mainloop()
 {
 	//context
@@ -69,16 +109,19 @@ void mainloop()
 	decltype(auto) window  = context->window();
 	decltype(auto) info    = context->info();
 
+
 	//set-ups
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
 
 
 	//builders
-	SimpleShaderLoader   shaderLoader;
-	ShaderProgramBuilder shaderProgramBuilder;
-	Texture2D_Builder    textureBuilder;
-	QuadBuilder          quadBuilder;
+	SimpleShaderLoader       shaderLoader;
+	ShaderProgramBuilder     shaderProgramBuilder;
+	Texture2D_Builder        textureBuilder;
+	QuadBuilder              quadBuilder;
+	SimpleFramebufferBuilder framebufferBuilder;
+
 
 	//resources
 	VertexArray quad = quadBuilder.buildShape();
@@ -89,13 +132,22 @@ void mainloop()
 	Shader frag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
 	ShaderProgram quadProgram = shaderProgramBuilder.buildProgram(vert, frag);
 
+	Texture color = colorAttachment(textureBuilder, info.width, info.height);
+	Texture depth = depthAttachment(textureBuilder, info.width, info.height);
+	Framebuffer testBuffer = framebufferBuilder.buildFramebuffer(color, depth);
+
 	Framebuffer defaultBuffer = Framebuffer::default();
-	
+
 	//loop
 	//state set-ups
 	OpenGL::viewport(0, 0, info.width, info.height);
 
-	defaultBuffer.clearColor(0.0f, 1.0f, 0.0f, 1.0f);
+	testBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
+	testBuffer.clearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	testBuffer.clear(ClearMask::Color);
+
+	defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
+	defaultBuffer.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -113,6 +165,7 @@ void mainloop()
 		glfwSwapBuffers(window);
 	}
 }
+
 
 int main()
 {

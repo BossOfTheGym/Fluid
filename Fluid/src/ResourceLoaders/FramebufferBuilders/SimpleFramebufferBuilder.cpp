@@ -16,7 +16,11 @@ Framebuffer SimpleFramebufferBuilder::buildFramebuffer(const Texture& color, con
 		, depth
 		, 0
 	);
-	if (result.checkNamedFramebufferStatus() != FramebufferStatus::Complete)
+	if (result.checkNamedFramebufferStatus(FramebufferTarget::Framebuffer) == FramebufferStatus::Complete)
+	{
+		std::cout << "Successfully created framebuffer" << std::endl;
+	}
+	else
 	{
 		std::cout << "Failed to create framebuffer" << std::endl;
 	}
