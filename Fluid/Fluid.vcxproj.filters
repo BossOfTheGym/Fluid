@@ -27,6 +27,9 @@
     <None Include="assets\shaders\quad.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="assets\shaders\field.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.h">

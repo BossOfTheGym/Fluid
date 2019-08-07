@@ -1,6 +1,5 @@
 #version 450 core
 
-
 in VS_OUT
 {
 	in vec2 texCoords;
@@ -8,7 +7,7 @@ in VS_OUT
 
 out	vec4 color;
 
-uniform sampler2D testTexture;
+layout(binding = 0) uniform sampler2D testTexture;
 
 void main()
 {

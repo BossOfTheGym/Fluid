@@ -7,10 +7,10 @@ in VS_OUT
 
 out vec4 color;
 
-uniform sampler2D field;
-uniform sampler2D image;
+layout(binding = 0) uniform sampler2D image;
+layout(binding = 1) uniform sampler2D field;
 
 void main()
 {
-
+	
 }

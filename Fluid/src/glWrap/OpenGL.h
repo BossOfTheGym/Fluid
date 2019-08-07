@@ -269,13 +269,14 @@ enum class BufferUsage : GLenum
 
 
 
-using TextureUnit = GLenum; // can have many so it can't be wrapped in enum class
+using TextureActive = GLenum; // can have many so it can't be wrapped in enum class
 
-enum class TextureUnitBase : GLenum
+enum class TextureActiveBase : GLenum
 {
 	Texture0 = GL_TEXTURE0
 };
 
+using TextureUnit = GLuint;
 
 enum class TextureTarget : GLenum
 {

@@ -38,7 +38,9 @@ public:
 
 	void unbind(TextureTarget target) const;
 
-	void active(GLenum texture) const;
+	void active(TextureActive texture) const;
+
+	void bindToUnit(TextureUnit unit) const;
 
     void texParameteri(TextureTarget target, TextureParameter name, GLint parameter);
 

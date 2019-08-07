@@ -48,9 +48,14 @@ void Texture::unbind(TextureTarget target) const
 	glBindTexture(static_cast<GLenum>(target), Id::Empty);
 }
 
-void Texture::active(GLenum texture) const
+void Texture::active(TextureActive texture) const
 {
 	glActiveTexture(texture);
+}
+
+void Texture::bindToUnit(TextureUnit unit) const
+{
+	glBindTextureUnit(unit, id());
 }
 
 

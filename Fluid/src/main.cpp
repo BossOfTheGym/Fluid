@@ -124,6 +124,8 @@ void mainloop()
 
 
 	//resources
+	const TextureUnit TEST_TEXTURE = 0;
+
 	VertexArray quad = quadBuilder.buildShape();
 
 	Texture texture = testTexture(textureBuilder, info.width, info.height);
@@ -156,8 +158,7 @@ void mainloop()
 
 		quadProgram.use();
 
-		texture.active(static_cast<GLenum>(TextureUnitBase::Texture0));
-		texture.bind(TextureTarget::Texture2D);
+		texture.bindToUnit(TEST_TEXTURE);
 
 		quad.bind();
 		quad.drawArrays();
