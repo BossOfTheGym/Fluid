@@ -452,16 +452,16 @@ enum class FramebufferClearBufferfi : GLenum
 using BufferNumber = GLint;
 
 
-using FramebufferAttachment = GLenum; // can have many so it can't be wrapped in enum class
+using      FramebufferAttachment = GLenum; // can have many so it can't be wrapped in enum class
 
-enum class FramebufferDepthStencilAttachment : GLenum
+enum class FramebufferAttachmentDepthStencil : GLenum
 {
 	  Depth        = GL_DEPTH_ATTACHMENT
 	, Stencil      = GL_STENCIL_ATTACHMENT
 	, DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT
 };
 
-enum class FrameBufferColorAttachment : GLenum
+enum class FrameBufferAttachmentColor : GLenum
 {
 	Color = GL_COLOR_ATTACHMENT0
 };

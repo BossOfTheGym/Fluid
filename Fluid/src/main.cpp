@@ -73,7 +73,6 @@ void mainloop()
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
 
-	OpenGL::viewport(0, 0, info.width, info.height);
 
 	//builders
 	SimpleShaderLoader   shaderLoader;
@@ -93,6 +92,9 @@ void mainloop()
 	Framebuffer defaultBuffer = Framebuffer::default();
 	
 	//loop
+	//state set-ups
+	OpenGL::viewport(0, 0, info.width, info.height);
+
 	defaultBuffer.clearColor(0.0f, 1.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(window))
 	{
