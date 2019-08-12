@@ -2,8 +2,6 @@
 #define SHADER_PROGRAM_BUILDER_H
 
 #include <glWrap/Shader/ShaderProgram.h>
-#include <Utility/Apply.h>
-#include <Utility/Holder.h>
 
 class ShaderProgramBuilder
 {
