@@ -101,6 +101,28 @@ Texture depthAttachment(Texture2D_Builder& builder, int width, int height)
 	);
 }
 
+Texture fieldTexture(Texture2D_Builder& builder, int width, int height)
+{
+	return builder.buildTexture(
+		Texture::Image2D_Data{
+			TextureTarget::Texture2D
+			, 0
+		    , InternalFormat::RG
+			, width
+			, height
+			, PixelDataFormat::RG
+			, DataType::Float
+			, nullptr
+		}
+		, Texture2D_Builder::SamplingParameters{
+			  TextureParameterValue::Linear
+			, TextureParameterValue::Linear 
+		    , TextureParameterValue::ClampToEdge
+		    , TextureParameterValue::ClampToEdge
+		}
+	);
+}
+
 
 void mainloop()
 {
@@ -113,6 +135,7 @@ void mainloop()
 	//set-ups
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
 
 
 	//builders
@@ -126,16 +149,22 @@ void mainloop()
 	//resources
 	const TextureUnit TEST_TEXTURE = 0;
 
+	const TextureUnit IMAGE = 0;
+	const TextureUnit FIELD = 1;
+
 	VertexArray quad = quadBuilder.buildShape();
 
 	Texture texture = testTexture(textureBuilder, info.width, info.height);
 
-	Shader vert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/quad.vert");
-	Shader frag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
-	ShaderProgram quadProgram = shaderProgramBuilder.buildProgram(vert, frag);
+	Shader quadVert  = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/quad.vert");
+	Shader quadFrag  = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
+	Shader frameFrag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/field.frag");
+	ShaderProgram quadProgram  = shaderProgramBuilder.buildProgram(quadVert, quadFrag);
+	ShaderProgram frameProgram = shaderProgramBuilder.buildProgram(quadVert, frameFrag);
 
 	Texture color = colorAttachment(textureBuilder, info.width, info.height);
 	Texture depth = depthAttachment(textureBuilder, info.width, info.height);
+	Texture field = fieldTexture(textureBuilder, info.width, info.height);
 	Framebuffer testBuffer = framebufferBuilder.buildFramebuffer(color, depth);
 
 	Framebuffer defaultBuffer = Framebuffer::default();
@@ -154,11 +183,27 @@ void mainloop()
 	{
 		glfwPollEvents();
 
+		//test
+		testBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
+		testBuffer.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		testBuffer.clear(ClearMask::Color);
+
+		frameProgram.use();
+
+		texture.bindToUnit(IMAGE);
+		  field.bindToUnit(FIELD);
+
+		quad.bind();
+		quad.drawArrays();
+
+		//default
+		defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
+		defaultBuffer.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		defaultBuffer.clear(ClearMask::Color);
 
 		quadProgram.use();
 
-		texture.bindToUnit(TEST_TEXTURE);
+		color.bindToUnit(TEST_TEXTURE);
 
 		quad.bind();
 		quad.drawArrays();
@@ -172,7 +217,7 @@ int main()
 {
 	Window::init(
 		Window::CreationInfo{
-			  1200, 600, "window"
+			  1210, 610, "window"
 			, Window::Hints{
 				  Window::Hint{GLFW_DOUBLEBUFFER, GLFW_TRUE}
 				, Window::Hint{GLFW_DEPTH_BITS  , 32}
