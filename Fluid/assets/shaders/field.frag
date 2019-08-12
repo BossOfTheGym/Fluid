@@ -23,14 +23,14 @@ void main()
 	float len;
 
 	u = texCoords;
-	f = texture(field, u).xy;
+	//f = texture(field, u).xy;
 	
-	//f = u - vec2(0.5f);
-	//len = length(f);
-	//if(len > eps)
-	//{
-	//	f /= len;
-	//}
+	f = u - vec2(0.5f);
+	len = length(f);
+	if(len > eps)
+	{
+		f /= len;
+	}
 
 	u -= dt * f;
 

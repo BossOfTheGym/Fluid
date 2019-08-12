@@ -27,15 +27,7 @@ public:
 
 		program.createProgram();
 		
-		apply(
-			make_holder(
-				[&] (auto&& shader)
-				{
-					program.attachShader(shader);
-				}
-			)
-			, std::forward<Shaders>(shaders)...
-		);
+		(program.attachShader(shaders), ...);
 
 		program.link();
 		if (program.linked())
