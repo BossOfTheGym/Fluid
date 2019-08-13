@@ -101,28 +101,6 @@ Texture depthAttachment(Texture2D_Builder& builder, int width, int height)
 	);
 }
 
-Texture fieldTexture(Texture2D_Builder& builder, int width, int height)
-{
-	return builder.buildTexture(
-		Texture::Image2D_Data{
-			TextureTarget::Texture2D
-			, 0
-		    , InternalFormat::RG
-			, width
-			, height
-			, PixelDataFormat::RG
-			, DataType::Float
-			, nullptr
-		}
-		, Texture2D_Builder::SamplingParameters{
-			  TextureParameterValue::Linear
-			, TextureParameterValue::Linear 
-		    , TextureParameterValue::ClampToEdge
-		    , TextureParameterValue::ClampToEdge
-		}
-	);
-}
-
 
 void mainloop()
 {
@@ -162,10 +140,20 @@ void mainloop()
 	ShaderProgram quadProgram  = shaderProgramBuilder.buildProgram(quadVert, quadFrag);
 	ShaderProgram frameProgram = shaderProgramBuilder.buildProgram(quadVert, frameFrag);
 
-	Texture color = colorAttachment(textureBuilder, info.width, info.height);
-	Texture depth = depthAttachment(textureBuilder, info.width, info.height);
-	Texture field = fieldTexture(textureBuilder, info.width, info.height);
-	Framebuffer testBuffer = framebufferBuilder.buildFramebuffer(color, depth);
+	int curr = 0;
+	int prev = 0;
+	Texture color[2] = {
+		  std::move(texture)
+		, colorAttachment(textureBuilder, info.width, info.height)
+	};
+	Texture depth[2] = {
+		  depthAttachment(textureBuilder, info.width, info.height)
+		, depthAttachment(textureBuilder, info.width, info.height)
+	};
+	Framebuffer testBuffer[2] = {
+		  framebufferBuilder.buildFramebuffer(color[0], depth[0])
+		, framebufferBuilder.buildFramebuffer(color[1], depth[1])
+	};
 
 	Framebuffer defaultBuffer = Framebuffer::default();
 
@@ -173,40 +161,34 @@ void mainloop()
 	//state set-ups
 	OpenGL::viewport(0, 0, info.width, info.height);
 
-	testBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
-	testBuffer.clearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	testBuffer.clear(ClearMask::Color);
-
-	defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
-	defaultBuffer.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
+		//swap
+		prev = curr;
+		curr = !curr;
+
 		//test
-		testBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
-		testBuffer.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		testBuffer.clear(ClearMask::Color);
+		testBuffer[curr].bindFramebuffer(FramebufferTarget::Framebuffer);
+		testBuffer[curr].clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		testBuffer[curr].clear(ClearMask::Color);
 
 		frameProgram.use();
 
-		texture.bindToUnit(IMAGE);
-		  field.bindToUnit(FIELD);
+		color[prev].bindToUnit(IMAGE);
 
 		quad.bind();
 		quad.drawArrays();
 
 		//default
-		defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
-		defaultBuffer.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		defaultBuffer.clear(ClearMask::Color);
-
-		quadProgram.use();
-
-		color.bindToUnit(TEST_TEXTURE);
-
-		quad.bind();
-		quad.drawArrays();
+		defaultBuffer.blitNamedFramebuffer(
+			  Framebuffer::Rectangle{0, 0, info.width, info.height}
+			, testBuffer[curr]
+			, Framebuffer::Rectangle{0, 0, info.width, info.height}
+			, BlitMask::Color
+			, FramebufferFilter::Nearest
+		);
 
 		glfwSwapBuffers(window);
 	}
