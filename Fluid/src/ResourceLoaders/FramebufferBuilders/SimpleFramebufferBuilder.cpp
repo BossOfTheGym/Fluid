@@ -24,6 +24,8 @@ Framebuffer SimpleFramebufferBuilder::buildFramebuffer(const Texture& color, con
 	{
 		std::cout << "Failed to create framebuffer" << std::endl;
 	}
+	DrawBuffer buffer = static_cast<DrawBuffer>(FramebufferDrawBuffer::ColorAttachment0);
+	result.namedDrawBuffers(1, &buffer);
 
 	return result;
 }

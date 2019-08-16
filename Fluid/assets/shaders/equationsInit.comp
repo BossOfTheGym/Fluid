@@ -23,33 +23,57 @@ struct CrossCoefficients
 	           float c01;
 };
 
-layout(std430, binding = 0) buffer equations
+layout(binding = 0, std430) buffer coefficients
 {
-	CrossCoefficients coefficients[];			
+	CrossCoefficients data[];			
 };
 
-
 //solution & function(image2D) + equations coefficients
-layout(binding = 0, rgba32f) uniform image2D solution;
-layout(binding = 1, rgba32f) uniform image2D function;
-layout(binding = 2, rgba32f) uniform image2D weights;
+layout(binding = 3, std430) buffer boundaryWeights
+{
+	float data[];
+};
 
 //step
 uniform vec2 uH;
 
 //discrete approximation of the order O(h^2)
+int flattenPadded(ivec2 index, ivec2 extents)
+{
+	extents += ivec2(2, 2);
+	index   += ivec2(1, 1);
+
+	return extents.x * index.y + index.x;
+}
+
+int flatten(ivec2 index, ivec2 extents)
+{
+
+	return extents.x * index.y + index.x;	
+}
+
+void setCoefs(ivec2 index, ivec2 extents, CrossCoefficients value)
+{
+	coefficients.data[flatten(index, extents)] = value;
+}
+
+void setWeights(ivec2 index, ivec2 extents, float value)
+{
+	boundaryWeights.data[flattenPadded(index, extents)] = value;
+}
+
+
 void main()
 {
 	ivec2 extents = ivec2(gl_NumWorkGroups.xy * gl_WorkGroupSize.xy);
 	ivec2 limits  = extents - ivec2(1, 1);
 
 	ivec2 indexVec  = ivec2(gl_GlobalInvocationId);
-	ivec2 indexFlat = indexVec.y * extents.x + indexVec.x;
 
 	//values for initialization
 	//function & solution are all zeros
 	CrossCoefficients coefs;
-	vec4 weigth;
+	vec4 weight;
 
 	//precompute some coefficients(general)
 	float hx = uH.x;
@@ -67,7 +91,7 @@ void main()
 	coefs.c10 = hx2Inv; coefs.c11 = -2.0f * (hx2Inv + hy2Inv); coefs.c12 = hx2Inv;
 	                    coefs.c01 = hy2Inv;
 
-	weight = vec4(1.0f);
+	weight = 1.0f;
 
 	//coeeficients for bounds
 	float LRB = hy / (2.0f * hx2); //left-right  bound, common coefficient
@@ -79,7 +103,7 @@ void main()
 		coefs.c10 = LUB; coefs.c11 = -hyInv - 2.0f * LUB; coefs.c12 = LUB;
 		                 coefs.c01 =  0.0f;
 
-		weight = vec4(hy / 2.0f);
+		weight = hy / 2.0f;
 	}
 	else if(indexVec.y == limits.y) //upper bound
 	{
@@ -87,7 +111,7 @@ void main()
 		coefs.c10 = -LUB; coefs.c11 =  hyInv + 2.0f * LUB; coefs.c12 = -LUB;
 	    	              coefs.c01 = -hyInv;
 
-	    weight = vec4(-hy / 2.0f);
+	    weight = -hy / 2.0f;
 	}
 	else if(indexVec.x == 0) // left bound
 	{
@@ -95,7 +119,7 @@ void main()
 		coefs.c10 = 0.0; coefs.c11 = -hxInv - 2.0f * LRB; coefs.c12 = hxInv;
 		                 coefs.c01 =  LRB;
 
-	    weight = vec4(hx / 2.0f);
+	    weight = hx / 2.0f;
 	}
 	else if(indexVec.x == limits.x) // right bound
 	{
@@ -103,7 +127,7 @@ void main()
 		coefs.c10 = -hxInv; coefs.c11 = hxInv + 2.0f * LRB; coefs.c12 = 0.0;
 		                    coefs.c01 = -LRB;
 
-	    weight = vec4(-hx / 2.0f);
+	    weight = -hx / 2.0f;
 	}
 
 	//corners
@@ -115,7 +139,7 @@ void main()
 		coefs.c10 = 0.0; coefs.c11 = -hxInv - CC; coefs.c12 = hxInv;
 		                 coefs.c01 = 0.0;
 
-	    weight = vec4(hx / 2.0f);
+	    weight = hx / 2.0f;
 	}
 	if(indexVec == ivec2(limits.x, 0)) // right lower
 	{
@@ -123,7 +147,7 @@ void main()
 		coefs.c10 = -hxInv; coefs.c11 = hxInv + CC; coefs.c12 = 0.0;
 	                        coefs.c01 = 0.0;	
 
-	    weight = vec4(-hx / 2.0f);
+	    weight = -hx / 2.0f;
 	}
 	if(indexVec == ivec2(limits.x, limits.y)) // right upper
 	{
@@ -131,7 +155,7 @@ void main()
 		coefs.c10 = -hxInv; coefs.c11 = hxInv + CC; coefs.c12 = 0.0;
 		                    coefs.c01 = -CC;
 
-	    weight = vec4(-hx / 2.0f);
+	    weight = -hx / 2.0f;
 	}
 	if(indexVec == ivec2(0, limits.y)) // left upper
 	{
@@ -142,11 +166,6 @@ void main()
 	    weight = vec4(hx / 2.0f);
 	}
 
-	coefficients[indexFlat] = coefs;
-	imageStore(solution, vec4(0.0f), indexVec);
-	imageStore(function, vec4(0.0f), indexVec);
-	imageStore(weights , weigth    , indexVec);
-
-	memoryBarrierImage();
-	memoryBarrierBuffer();
+	  setCoefs(indexVec, extents, coefs);
+	setWeights(indexVec, extents, weight);
 }

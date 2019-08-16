@@ -42,10 +42,10 @@ Texture testTexture(Texture2D_Builder& builder, int width, int height)
 	{
 		for (int j = 0; j < width; j++)
 		{
-			*iter = static_cast<float>((i / 10 % 2 == (j / 10 % 2))); ++iter;
-			*iter = 0.5f; ++iter;
-			*iter =	1.0f; ++iter;
-			*iter = 1.0f; ++iter;
+			*iter = static_cast<float>((i / 32 % 2 == (j / 32 % 2))); ++iter;
+			*iter = 0.50f; ++iter;
+			*iter =	0.25f; ++iter;
+			*iter = 1.00f; ++iter;
 		}
 	}
 
@@ -143,7 +143,7 @@ void mainloop()
 	int curr = 0;
 	int prev = 0;
 	Texture color[2] = {
-		  std::move(texture)
+		  testTexture(textureBuilder, info.width, info.height)
 		, colorAttachment(textureBuilder, info.width, info.height)
 	};
 	Texture depth[2] = {
@@ -160,19 +160,30 @@ void mainloop()
 	//loop
 	//state set-ups
 	OpenGL::viewport(0, 0, info.width, info.height);
+	OpenGL::disable(Capability::DepthTest);
+
+	GLint timeLoc = quadProgram.getUniformLocation("t");
+	double t = glfwGetTime();
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
+		//default
+		defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
+		defaultBuffer.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		defaultBuffer.clearDepth(1.0f);
+		defaultBuffer.clear(ClearMask::ColorDepth);
+
 		//swap
 		prev = curr;
-		curr = !curr;
+		curr = (curr + 1) % 2;
 
 		//test
 		testBuffer[curr].bindFramebuffer(FramebufferTarget::Framebuffer);
 		testBuffer[curr].clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		testBuffer[curr].clear(ClearMask::Color);
+		testBuffer[curr].clearDepth(1.0f);
+		testBuffer[curr].clear(ClearMask::ColorDepth);
 
 		frameProgram.use();
 
@@ -181,15 +192,18 @@ void mainloop()
 		quad.bind();
 		quad.drawArrays();
 
-		//default
-		defaultBuffer.blitNamedFramebuffer(
-			  Framebuffer::Rectangle{0, 0, info.width, info.height}
-			, testBuffer[curr]
-			, Framebuffer::Rectangle{0, 0, info.width, info.height}
-			, BlitMask::Color
-			, FramebufferFilter::Nearest
-		);
+		//blit
+		defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
 
+		quadProgram.use();
+		quadProgram.setUniform1f(timeLoc, glfwGetTime() - t);
+
+		color[curr].bindToUnit(TEST_TEXTURE);
+
+		quad.bind();
+		quad.drawArrays();
+
+		//swap front/back
 		glfwSwapBuffers(window);
 	}
 }
@@ -199,7 +213,7 @@ int main()
 {
 	Window::init(
 		Window::CreationInfo{
-			  1210, 610, "window"
+			  1024, 1024, "window"
 			, Window::Hints{
 				  Window::Hint{GLFW_DOUBLEBUFFER, GLFW_TRUE}
 				, Window::Hint{GLFW_DEPTH_BITS  , 32}

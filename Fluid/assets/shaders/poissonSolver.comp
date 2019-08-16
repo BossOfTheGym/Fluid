@@ -23,9 +23,9 @@ struct CrossCoefficients
 	           float c01;
 };
 
-layout(binding = 0, std430) buffer equations
+layout(binding = 0, std430) buffer coefficients
 {
-	CrossCoefficients coefficients[];			
+	CrossCoefficients data[];			
 };
 
 //solution & function(image2D) + equations coefficients
@@ -33,12 +33,20 @@ layout(binding = 0, std430) buffer equations
 //1     : for inner values
 //not 1 : for boundaries and corners
 //(to keep the second approximation order)
-layout(binding = 0, rgba32f) uniform image2D solution;
-layout(binding = 1, rgba32f) uniform image2D function;
-layout(binding = 2, rgba32f) uniform image2D boundaryWeights;
+//all of them are padded
 
-//steps
-uniform vec2 uH;
+layout(binding = 1, std430) buffer solution
+{
+	vec2 data[];
+};
+layout(binding = 2, std430) buffer function
+{
+	vec2 data[];
+};
+layout(binding = 3, std430) buffer boundaryWeights
+{
+	float data[];
+};
 
 //uniform to know what cell type is updated
 #define RED   0
@@ -70,24 +78,70 @@ const ivec2  FIRST_CELL_OFFSETS[2] = {ivec2(0, 0), ivec2(1, 0)};
 const ivec2 SECOND_CELL_OFFSETS[2] = {ivec2(1, 1), ivec2(0, 1)};
 
 
+//flatten index(for padded)
+int flattenPadded(ivec2 index, ivec2 extents)
+{
+	extents += ivec2(2, 2);
+	index   += ivec2(1, 1);
+
+	return extents.x * index.y + index.x;
+}
+
+int flatten(ivec2 index, ivec2 extents)
+{
+
+	return extents.x * index.y + index.x;	
+}
+
+
+//get
+CrossCoefficients getCoefs(ivec2 index, ivec2 extents)
+{
+
+	return coefficients.data[flatten(index, extents)];
+}
+
+vec2 getSolution(ivec2 index, ivec2 extents)
+{
+
+	return solution.data[flattenPadded(index, extents)];
+}
+
+vec2 getFunction(ivec2 index, ivec2 extents)
+{
+
+	return function.data[flattenPadded(index, extents)];
+}
+
+float getWeight(ivec2 index, ivec2 extents)
+{
+
+	return boundaryWeights.data[flatten(index, extents)];
+}
+
+//set
+void setSolution(ivec2 index, ivec2 extents, vec2 value)
+{
+	
+	solution.data[flattenPadded(index, extents)] = value;
+}
 
 //update cell
-void redBlackStep(ivec2 indexVec, int indexFlat)
+void redBlackStep(ivec2 extents, ivec2 indexVec)
 {
 	//get equation coefs
-	CrossCoefficients equ  = coefficients[indexFlat];
-	CrossCoefficients test = equ;
+	CrossCoefficients equ = getCoefs(indexVec, extents));
 
 	//get solution values for cross update
-	vec4 s21 = imageLoad(solution, indexVec + ivec2(+1,  0));
-	vec4 s12 = imageLoad(solution, indexVec + ivec2( 0, +1));
-	vec4 s11 = imageLoad(solution, indexVec                );
-	vec4 s10 = imageLoad(solution, indexVec + ivec2( 0, -1));
-	vec4 s01 = imageLoad(solution, indexVec + ivec2(-1,  0));
+	vec2 s21 = getSolution(indexVec + ivec2(+1,  0), extents);
+	vec2 s10 = getSolution(indexVec + ivec2( 0, -1), extents);
+	vec2 s11 = getSolution(indexVec                , extents);
+	vec2 s12 = getSolution(indexVec + ivec2( 0, +1), extents);
+	vec2 s01 = getSolution(indexVec + ivec2(-1,  0), extents);
 
 	//get function value
-	vec4 weight = imageLoad(boundaryWeights, indexVec)
-	vec4 f      = imageLoad(function, indexVec);
+	float weight = getWeight(indexVec, extents)
+	vec2 f       = getFunction(indexVec, extents);
 
 	const float w = uOmega;
 
@@ -95,14 +149,13 @@ void redBlackStep(ivec2 indexVec, int indexFlat)
 	s11 = (1.0f - w) * s11 + w / equ.c11 * (-equ.c01 * s01 - equ.c10 * s10 - equ.c12 * s12 - equ.c21 * s21 + weight * f);
 
 	//store back new value(and test)
-	imageStore(solution, indexVec, s11);
+	setSolution(indexVec, extents, s11);
 }
-
 
 void main()
 {
 	//extents of work
-	ivec2 extents = imageSize(solution);
+	ivec2 extents = (2 * gl_NumWorkGroups * gl_WorkGroupSize).xy;
 
 	//base index counting padding
 	ivec2 baseIndexVec = 2 * ivec2(gl_GlobalInvocationID.xy);
@@ -112,14 +165,12 @@ void main()
 	ivec2 secondCellOffset = SECOND_CELL_OFFSETS[uRedOrBlack];
 
 	//first cell update
-	ivec2 indexVec  = baseIndexVec + firstCellOffset;
-	int   indexFlat = indexVec.y * extents.x + indexVec.x;
-	redBlackStep(indexVec, indexFlat);
+	ivec2 indexVec;
+
+	indexVec = baseIndexVec + firstCellOffset;
+	redBlackStep(xetents, indexVec);
 
 	//second cell update
 	indexVec  = baseIndexVec + secondCellOffset;
-	indexFlat = indexVec.y * extents.x + indexVec.x;
-	redBlackStep(indexVec, indexFlat);
-
-	memoryBarrierImage();
+	redBlackStep(extents, indexVec);
 }

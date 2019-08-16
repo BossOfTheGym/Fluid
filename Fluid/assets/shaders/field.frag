@@ -9,27 +9,19 @@ out vec4 color;
 
 layout(binding = 0) uniform sampler2D image;
 
-const float dt  = 0.001f;
-const float eps = 1e-6f;
-const float pi  = acos(-1.0f);
-const float pi2 = 2.0f * pi;
+const float dt  = 0.003f;
 
 void main()
 {
 	vec2 u;
 	vec2 f;
-	
-	float len;
 
 	u = texCoords;
 	
 	f = u - vec2(0.5f);
-	len = length(f);
-	if(len > eps)
-	{
-		f /= len;
-	}
-
+	f = normalize(f);
+	f = vec2(-f.y, f.x);
+	
 	u -= dt * f;
 
 	color = texture(image, u);

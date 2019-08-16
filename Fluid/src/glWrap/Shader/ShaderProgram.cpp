@@ -108,9 +108,9 @@ void ShaderProgram::setUniformVec3(GLint location, const Vec3& vec) const
 }
 
 
-void ShaderProgram::setUniform1f(GLint location, double value) const
+void ShaderProgram::setUniform1f(GLint location, Float value) const
 {
-    glUniform1d(location, value);
+    glUniform1f(location, value);
 }
 
 
