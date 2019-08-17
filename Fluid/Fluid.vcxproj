@@ -180,6 +180,8 @@
     <ClInclude Include="src\glWrap\Shader\ShaderProgram.h" />
     <ClInclude Include="src\glWrap\Texture\Texture.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
+    <ClInclude Include="src\misc\PingPongBufer.h" />
+    <ClInclude Include="src\misc\SomeTextureBuilders.h" />
     <ClInclude Include="src\Render\Attributes.h" />
     <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.h" />
     <ClInclude Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.h" />
@@ -200,7 +202,7 @@
     <ClCompile Include="src\glWrap\Texture\Texture.cpp" />
     <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.cpp" />
+    <ClCompile Include="src\misc\SomeTextureBuilders.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.cpp" />
     <ClCompile Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.cpp" />

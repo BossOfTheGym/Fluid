@@ -20,14 +20,14 @@ public:
 	Id(GLuint id);
 
 	Id(const Id&) = delete;
-	Id(Id&& id);
+	Id(Id&& id) noexcept(true);
 
 	Id& operator = (const Id&) = delete;
-	Id& operator = (Id&& id);
+	Id& operator = (Id&& id) noexcept(true);
 
 	~Id() = default;
 
-
+	
 public:
 	GLuint id() const;
 

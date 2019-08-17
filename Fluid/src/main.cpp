@@ -15,91 +15,8 @@
 #include <ResourceLoaders/ShaderProgramBuilders/ShaderProgramBuilder.h>
 #include <ResourceLoaders/FramebufferBuilders/SimpleFramebufferBuilder.h>
 
-
-Texture testTexture(Texture2D_Builder& builder, int width, int height)
-{
-	using Data   = Texture::Image2D_Data;
-	using Params = Texture2D_Builder::SamplingParameters;
-
-	const int CHANNELS = 4;
-
-
-	Data textureData = {
-		  TextureTarget::Texture2D
-		, 0
-		, InternalFormat::RGBA
-		, width
-		, height
-		, PixelDataFormat::RGBA
-		, DataType::Float
-		, nullptr
-	};
-
-	std::vector<float> pixelData(static_cast<size_t>(width) * height * CHANNELS);
-
-	auto iter = pixelData.begin();
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			*iter = static_cast<float>((i / 32 % 2 == (j / 32 % 2))); ++iter;
-			*iter = 0.50f; ++iter;
-			*iter =	0.25f; ++iter;
-			*iter = 1.00f; ++iter;
-		}
-	}
-
-	textureData.pixels = pixelData.data();
-
-	return builder.buildTexture(
-		textureData
-		, Params{
-			  TextureParameterValue::Linear
-			, TextureParameterValue::Linear
-		    , TextureParameterValue::ClampToEdge
-		    , TextureParameterValue::ClampToEdge
-		}
-	);
-}
-
-Texture colorAttachment(Texture2D_Builder& builder, int width, int height)
-{
-	return builder.buildTexture(
-		Texture::Image2D_Data{
-			  TextureTarget::Texture2D
-			, 0
-			, InternalFormat::RGBA
-			, width
-			, height
-			, PixelDataFormat::RGBA
-			, DataType::Float
-			, nullptr
-		}
-		, Texture2D_Builder::SamplingParameters{
-			  TextureParameterValue::Linear
-			, TextureParameterValue::Linear
-			, TextureParameterValue::ClampToEdge
-		    , TextureParameterValue::ClampToEdge
-		}
-	);
-}
-
-Texture depthAttachment(Texture2D_Builder& builder, int width, int height)
-{
-	return builder.buildTexture(
-		Texture::Image2D_Data{
-			  TextureTarget::Texture2D
-			, 0
-			, InternalFormat::DepthComponent
-			, width
-			, height
-			, PixelDataFormat::DepthComponent
-			, DataType::UnsignedByte
-			, nullptr
-		}
-		, Texture2D_Builder::SamplingParameters{}
-	);
-}
+#include <misc/SomeTextureBuilders.h>
+#include <misc/PingPongBufer.h>
 
 
 void mainloop()
@@ -117,12 +34,22 @@ void mainloop()
 
 
 	//builders
-	SimpleShaderLoader       shaderLoader;
-	ShaderProgramBuilder     shaderProgramBuilder;
-	Texture2D_Builder        textureBuilder;
-	QuadBuilder              quadBuilder;
-	SimpleFramebufferBuilder framebufferBuilder;
+	SimpleShaderLoader   shaderLoader;
+	ShaderProgramBuilder shaderProgramBuilder;
 
+	QuadBuilder quadBuilder;
+
+	Texture2D_Builder checkedTextureBuilder(misc::checkedTextureBuilder(info.width, info.height));
+
+	SimpleFramebufferBuilder framebufferBuilder(
+		  misc::checkedTextureBuilder(info.width, info.height)
+		, misc::depthTextureBuilder(info.width, info.height)
+	);
+
+	PingPongBuffer pingPongBuffer(
+		  framebufferBuilder.buildFramebuffer()
+		, framebufferBuilder.buildFramebuffer()
+	);
 
 	//resources
 	const TextureUnit TEST_TEXTURE = 0;
@@ -132,28 +59,22 @@ void mainloop()
 
 	VertexArray quad = quadBuilder.buildShape();
 
-	Texture texture = testTexture(textureBuilder, info.width, info.height);
+	Texture texture = checkedTextureBuilder.buildTexture();
 
 	Shader quadVert  = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/quad.vert");
 	Shader quadFrag  = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
 	Shader frameFrag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/field.frag");
+
 	ShaderProgram quadProgram  = shaderProgramBuilder.buildProgram(quadVert, quadFrag);
 	ShaderProgram frameProgram = shaderProgramBuilder.buildProgram(quadVert, frameFrag);
 
 	int curr = 0;
 	int prev = 0;
-	Texture color[2] = {
-		  testTexture(textureBuilder, info.width, info.height)
-		, colorAttachment(textureBuilder, info.width, info.height)
-	};
-	Texture depth[2] = {
-		  depthAttachment(textureBuilder, info.width, info.height)
-		, depthAttachment(textureBuilder, info.width, info.height)
-	};
-	Framebuffer testBuffer[2] = {
-		  framebufferBuilder.buildFramebuffer(color[0], depth[0])
-		, framebufferBuilder.buildFramebuffer(color[1], depth[1])
-	};
+
+	/*FramebufferResources testBuffer[2] = {
+		  framebufferBuilder.buildFramebuffer()
+		, framebufferBuilder.buildFramebuffer()
+	};*/
 
 	Framebuffer defaultBuffer = Framebuffer::default();
 
@@ -162,43 +83,46 @@ void mainloop()
 	OpenGL::viewport(0, 0, info.width, info.height);
 	OpenGL::disable(Capability::DepthTest);
 
-	GLint timeLoc = quadProgram.getUniformLocation("t");
-	double t = glfwGetTime();
-
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		//default
+		//swap
+		//prev = curr;
+		//curr = (curr + 1) % 2;
+		pingPongBuffer.swap();
+
+		//test
+		//testBuffer[curr].frame.bindFramebuffer(FramebufferTarget::Framebuffer);
+		//testBuffer[curr].frame.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//testBuffer[curr].frame.clearDepth(1.0f);
+		//testBuffer[curr].frame.clear(ClearMask::ColorDepth);
+		auto& [currFrame, currColor, currDepth] = pingPongBuffer.current();
+		auto& [prevFrame, prevColor, prevDepth] = pingPongBuffer.previous();
+
+		//currFrame.bindFramebuffer(FramebufferTarget::Framebuffer);
+		//currFrame.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//currFrame.clearDepth(1.0f);
+		//currFrame.clear(ClearMask::ColorDepth);
+
+		//frameProgram.use();
+
+		//testBuffer[prev].color.bindToUnit(IMAGE);
+		//currColor.bindToUnit(IMAGE);
+
+		//quad.bind();
+		//quad.drawArrays();
+
+		//blit
 		defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
 		defaultBuffer.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		defaultBuffer.clearDepth(1.0f);
 		defaultBuffer.clear(ClearMask::ColorDepth);
 
-		//swap
-		prev = curr;
-		curr = (curr + 1) % 2;
-
-		//test
-		testBuffer[curr].bindFramebuffer(FramebufferTarget::Framebuffer);
-		testBuffer[curr].clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		testBuffer[curr].clearDepth(1.0f);
-		testBuffer[curr].clear(ClearMask::ColorDepth);
-
-		frameProgram.use();
-
-		color[prev].bindToUnit(IMAGE);
-
-		quad.bind();
-		quad.drawArrays();
-
-		//blit
-		defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
-
 		quadProgram.use();
-		quadProgram.setUniform1f(timeLoc, glfwGetTime() - t);
 
-		color[curr].bindToUnit(TEST_TEXTURE);
+		//testBuffer[prev].color.bindToUnit(TEST_TEXTURE);
+		currColor.bindToUnit(TEST_TEXTURE);
 
 		quad.bind();
 		quad.drawArrays();

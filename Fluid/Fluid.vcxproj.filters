@@ -86,6 +86,12 @@
     <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\misc\PingPongBufer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\SomeTextureBuilders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -127,7 +133,7 @@
     <ClCompile Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.cpp">
+    <ClCompile Include="src\misc\SomeTextureBuilders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
