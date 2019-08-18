@@ -59,22 +59,12 @@ void mainloop()
 
 	VertexArray quad = quadBuilder.buildShape();
 
-	Texture texture = checkedTextureBuilder.buildTexture();
-
 	Shader quadVert  = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/quad.vert");
 	Shader quadFrag  = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/quad.frag");
 	Shader frameFrag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/field.frag");
 
 	ShaderProgram quadProgram  = shaderProgramBuilder.buildProgram(quadVert, quadFrag);
 	ShaderProgram frameProgram = shaderProgramBuilder.buildProgram(quadVert, frameFrag);
-
-	int curr = 0;
-	int prev = 0;
-
-	/*FramebufferResources testBuffer[2] = {
-		  framebufferBuilder.buildFramebuffer()
-		, framebufferBuilder.buildFramebuffer()
-	};*/
 
 	Framebuffer defaultBuffer = Framebuffer::default();
 
@@ -87,33 +77,27 @@ void mainloop()
 	{
 		glfwPollEvents();
 
-		//swap
-		//prev = curr;
-		//curr = (curr + 1) % 2;
+		//swap 
 		pingPongBuffer.swap();
 
-		//test
-		//testBuffer[curr].frame.bindFramebuffer(FramebufferTarget::Framebuffer);
-		//testBuffer[curr].frame.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//testBuffer[curr].frame.clearDepth(1.0f);
-		//testBuffer[curr].frame.clear(ClearMask::ColorDepth);
+		//set-ups
 		auto& [currFrame, currColor, currDepth] = pingPongBuffer.current();
 		auto& [prevFrame, prevColor, prevDepth] = pingPongBuffer.previous();
 
-		//currFrame.bindFramebuffer(FramebufferTarget::Framebuffer);
-		//currFrame.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//currFrame.clearDepth(1.0f);
-		//currFrame.clear(ClearMask::ColorDepth);
+		//field update
+		currFrame.bindFramebuffer(FramebufferTarget::Framebuffer);
+		currFrame.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		currFrame.clearDepth(1.0f);
+		currFrame.clear(ClearMask::ColorDepth);
 
-		//frameProgram.use();
+		frameProgram.use();
 
-		//testBuffer[prev].color.bindToUnit(IMAGE);
-		//currColor.bindToUnit(IMAGE);
+		prevColor.bindToUnit(IMAGE);
 
-		//quad.bind();
-		//quad.drawArrays();
+		quad.bind();
+		quad.drawArrays();
 
-		//blit
+		//final render
 		defaultBuffer.bindFramebuffer(FramebufferTarget::Framebuffer);
 		defaultBuffer.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		defaultBuffer.clearDepth(1.0f);
@@ -121,7 +105,6 @@ void mainloop()
 
 		quadProgram.use();
 
-		//testBuffer[prev].color.bindToUnit(TEST_TEXTURE);
 		currColor.bindToUnit(TEST_TEXTURE);
 
 		quad.bind();
