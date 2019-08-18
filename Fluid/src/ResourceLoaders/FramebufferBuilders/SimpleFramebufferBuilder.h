@@ -23,8 +23,8 @@ public:
 		  ColorBuilder&& colorBuilderInit
 		, DepthBuilder&& depthBuilderInit
 	)
-		: m_colorBuilder(colorBuilderInit)
-		, m_depthBuilder(depthBuilderInit)
+		: m_colorBuilder(std::forward<ColorBuilder>(colorBuilderInit))
+		, m_depthBuilder(std::forward<DepthBuilder>(depthBuilderInit))
 	{}
 
 	SimpleFramebufferBuilder(const SimpleFramebufferBuilder&) = default;
@@ -68,7 +68,7 @@ public:
 		DrawBuffer buffer = static_cast<DrawBuffer>(FramebufferDrawBuffer::ColorAttachment0);
 		result.frame.namedDrawBuffers(1, &buffer);
 
-		return result;
+		return std::move(result);
 	}
 
 

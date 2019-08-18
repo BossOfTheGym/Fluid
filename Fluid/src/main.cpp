@@ -39,8 +39,6 @@ void mainloop()
 
 	QuadBuilder quadBuilder;
 
-	Texture2D_Builder checkedTextureBuilder(misc::checkedTextureBuilder(info.width, info.height));
-
 	SimpleFramebufferBuilder framebufferBuilder(
 		  misc::checkedTextureBuilder(info.width, info.height)
 		, misc::depthTextureBuilder(info.width, info.height)
@@ -75,6 +73,7 @@ void mainloop()
 
 	while (!glfwWindowShouldClose(window))
 	{
+		//events
 		glfwPollEvents();
 
 		//swap 
@@ -138,10 +137,10 @@ int main()
 
 	mainloop();
 
-	Window::terminate();
-
-
 	std::cout << "Execution finished" << std::endl;
+	std::cin.get();
+
+	Window::terminate();
 
 	return 0;
 }

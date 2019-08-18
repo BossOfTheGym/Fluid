@@ -92,8 +92,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <EnableModules>true</EnableModules>
-      <MinimalRebuild>true</MinimalRebuild>
+      <EnableModules>false</EnableModules>
+      <MinimalRebuild>false</MinimalRebuild>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
     </ClCompile>
@@ -130,8 +130,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <EnableModules>true</EnableModules>
-      <MinimalRebuild>true</MinimalRebuild>
+      <EnableModules>false</EnableModules>
+      <MinimalRebuild>false</MinimalRebuild>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
     </ClCompile>
@@ -151,8 +151,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <EnableModules>true</EnableModules>
-      <MinimalRebuild>true</MinimalRebuild>
+      <EnableModules>false</EnableModules>
+      <MinimalRebuild>false</MinimalRebuild>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
     </ClCompile>

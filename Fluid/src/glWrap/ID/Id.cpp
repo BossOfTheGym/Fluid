@@ -18,8 +18,6 @@ Id& Id::operator = (Id&& id) noexcept(true)
 {
 	std::swap(m_id, id.m_id);
 
-	id.resetId();
-
 	return *this;
 }
 
