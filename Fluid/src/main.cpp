@@ -137,10 +137,10 @@ int main()
 
 	mainloop();
 
+	Window::terminate();
+
 	std::cout << "Execution finished" << std::endl;
 	std::cin.get();
-
-	Window::terminate();
 
 	return 0;
 }
