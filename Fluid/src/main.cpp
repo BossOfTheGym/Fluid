@@ -44,10 +44,6 @@ void mainloop()
 		, misc::depthTextureBuilder(info.width, info.height)
 	);
 
-	PingPongBuffer pingPongBuffer(
-		  framebufferBuilder.buildFramebuffer()
-		, framebufferBuilder.buildFramebuffer()
-	);
 
 	//resources
 	const TextureUnit TEST_TEXTURE = 0;
@@ -66,10 +62,15 @@ void mainloop()
 
 	Framebuffer defaultBuffer = Framebuffer::default();
 
+	PingPongBuffer pingPongBuffer(
+		  framebufferBuilder.buildFramebuffer()
+		, framebufferBuilder.buildFramebuffer()
+	);
+
+
 	//loop
 	//state set-ups
 	OpenGL::viewport(0, 0, info.width, info.height);
-	OpenGL::disable(Capability::DepthTest);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -140,7 +141,6 @@ int main()
 	Window::terminate();
 
 	std::cout << "Execution finished" << std::endl;
-	std::cin.get();
 
 	return 0;
 }
