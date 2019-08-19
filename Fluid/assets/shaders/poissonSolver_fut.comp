@@ -1,0 +1,176 @@
+#version 450 core
+
+//workgroup parameters
+#define LOCAL_SIZE_X 16
+#define LOCAL_SIZE_Y 16
+
+layout(local_size_x = LOCAL_SIZE_X, local_size_y = LOCAL_SIZE_Y) in;
+
+
+//coeficients of discretisized 2D poisson equation(coefs both for bound and inner domain)
+//it's a cross template
+// y
+// ^        ____  
+// |   ____|_21_|____
+// |  |_10_|_11_|_12_|  -- used indices(later will be used for naming appropriate solution values)
+// |       |_01_|
+// 0------------------>x
+//
+struct CrossCoefficients
+{
+	           float c21;
+	float c10; float c11; float c12;
+	           float c01;
+};
+
+layout(binding = 0, std430) buffer coefficients
+{
+	CrossCoefficients data[];			
+};
+
+//solution & function(image2D) + equations coefficients
+//derivative is zero on the boundaries, so we only require one coef(weight) for function
+//1     : for inner values
+//not 1 : for boundaries and corners
+//(to keep the second approximation order)
+//all of them are padded
+
+layout(binding = 1, std430) buffer solution
+{
+	vec2 data[];
+};
+layout(binding = 2, std430) buffer function
+{
+	vec2 data[];
+};
+layout(binding = 3, std430) buffer boundaryWeights
+{
+	float data[];
+};
+
+//uniform to know what cell type is updated
+#define RED   0
+#define BLACK 1
+uniform uint uRedOrBlack = 0;
+
+//solution method is SOR
+//relaxation parameter for solving poisson equation
+uniform float uOmega = 1.0f;
+
+
+//one invocation deals with 2x2 square
+//one invocation updates two cells(two red or two black cells)
+//(0 - start index computed as (2 * x, 2 * y) where x, y are the first components of gl_GlobalInvocationID)
+// ___ ___  ___ ___ 
+//|___|___||___|___|
+//|_0_|___||_0_|___|
+// ___ ___  ___ ___ 
+//|___|___||___|___|
+//|_0_|___||_0_|___|
+//
+// Ordering is the following:
+// ___ ___ 
+//|_B_|_R_|
+//|_R_|_B_|
+
+//cells' offsets                      Red          Black
+const ivec2  FIRST_CELL_OFFSETS[2] = {ivec2(0, 0), ivec2(1, 0)};
+const ivec2 SECOND_CELL_OFFSETS[2] = {ivec2(1, 1), ivec2(0, 1)};
+
+
+//flatten index(for padded)
+int flattenPadded(ivec2 index, ivec2 extents)
+{
+	extents += ivec2(2, 2);
+	index   += ivec2(1, 1);
+
+	return extents.x * index.y + index.x;
+}
+
+int flatten(ivec2 index, ivec2 extents)
+{
+
+	return extents.x * index.y + index.x;	
+}
+
+
+//get
+CrossCoefficients getCoefs(ivec2 index, ivec2 extents)
+{
+
+	return coefficients.data[flatten(index, extents)];
+}
+
+vec2 getSolution(ivec2 index, ivec2 extents)
+{
+
+	return solution.data[flattenPadded(index, extents)];
+}
+
+vec2 getFunction(ivec2 index, ivec2 extents)
+{
+
+	return function.data[flattenPadded(index, extents)];
+}
+
+float getWeight(ivec2 index, ivec2 extents)
+{
+
+	return boundaryWeights.data[flatten(index, extents)];
+}
+
+//set
+void setSolution(ivec2 index, ivec2 extents, vec2 value)
+{
+	
+	solution.data[flattenPadded(index, extents)] = value;
+}
+
+//update cell
+void redBlackStep(ivec2 extents, ivec2 indexVec)
+{
+	//get equation coefs
+	CrossCoefficients equ = getCoefs(indexVec, extents));
+
+	//get solution values for cross update
+	vec2 s21 = getSolution(indexVec + ivec2(+1,  0), extents);
+	vec2 s10 = getSolution(indexVec + ivec2( 0, -1), extents);
+	vec2 s11 = getSolution(indexVec                , extents);
+	vec2 s12 = getSolution(indexVec + ivec2( 0, +1), extents);
+	vec2 s01 = getSolution(indexVec + ivec2(-1,  0), extents);
+
+	//get function value
+	float weight = getWeight(indexVec, extents)
+	vec2 f       = getFunction(indexVec, extents);
+
+	const float w = uOmega;
+
+	//algorithm(SOR)
+	s11 = (1.0f - w) * s11 + w / equ.c11 * (-equ.c01 * s01 - equ.c10 * s10 - equ.c12 * s12 - equ.c21 * s21 + weight * f);
+
+	//store back new value(and test)
+	setSolution(indexVec, extents, s11);
+}
+
+void main()
+{
+	//extents of work
+	ivec2 extents = (2 * gl_NumWorkGroups * gl_WorkGroupSize).xy;
+
+	//base index counting padding
+	ivec2 baseIndexVec = 2 * ivec2(gl_GlobalInvocationID.xy);
+
+	//get offsets of updated cell according to current cell type(red or black)
+	ivec2  firstCellOffset =  FIRST_CELL_OFFSETS[uRedOrBlack];
+	ivec2 secondCellOffset = SECOND_CELL_OFFSETS[uRedOrBlack];
+
+	//first cell update
+	ivec2 indexVec;
+
+	indexVec = baseIndexVec + firstCellOffset;
+	redBlackStep(xetents, indexVec);
+
+	//second cell update
+	indexVec  = baseIndexVec + secondCellOffset;
+	redBlackStep(extents, indexVec);
+}

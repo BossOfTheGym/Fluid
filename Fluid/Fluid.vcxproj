@@ -164,9 +164,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="assets\shaders\equationsInit.comp" />
     <None Include="assets\shaders\field.frag" />
     <None Include="assets\shaders\poissonSolver.comp" />
-    <None Include="assets\shaders\equationsInit.comp" />
+    <None Include="assets\shaders\poissonSolver_fut.comp" />
+    <None Include="assets\shaders\equationsInit_fut.comp" />
     <None Include="assets\shaders\quad.frag" />
     <None Include="assets\shaders\quad.vert" />
   </ItemGroup>
