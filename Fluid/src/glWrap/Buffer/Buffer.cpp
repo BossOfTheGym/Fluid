@@ -17,7 +17,7 @@ Buffer::Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
 	bufferData(size, data, usage);	
 }
 
-Buffer::Buffer(Buffer&& buffer) : Id()
+Buffer::Buffer(Buffer&& buffer) noexcept : Id()
 {
 	*this = std::move(buffer);
 }
@@ -29,14 +29,12 @@ Buffer::~Buffer()
 
 
 //operators
-Buffer& Buffer::operator = (Buffer&& buffer)
+Buffer& Buffer::operator = (Buffer&& buffer) noexcept
 {
 	static_cast<Id&>(*this) = static_cast<Id&&>(buffer);
 
 	std::swap(m_size , buffer.m_size);
 	std::swap(m_usage, buffer.m_usage);
-
-	buffer.deleteBuffer();
 
 	return *this;
 }

@@ -24,11 +24,11 @@ public:
 public:
 	Texture();
 
-    Texture(Texture&& tex);
+    Texture(Texture&& tex) noexcept;
 
     ~Texture();
 	
-    Texture& operator = (Texture&& tex);
+    Texture& operator = (Texture&& tex) noexcept;
 
 
 public:

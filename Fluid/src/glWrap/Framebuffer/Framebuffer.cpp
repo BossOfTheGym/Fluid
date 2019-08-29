@@ -13,7 +13,7 @@ Framebuffer Framebuffer::default()
 Framebuffer::Framebuffer() : Id()
 {}
 
-Framebuffer::Framebuffer(Framebuffer&& buffer) : Id()
+Framebuffer::Framebuffer(Framebuffer&& buffer) noexcept : Id()
 {
 	*this = std::move(buffer);
 }
@@ -24,7 +24,7 @@ Framebuffer::~Framebuffer()
 }
 
 //operators
-Framebuffer& Framebuffer::operator = (Framebuffer&& buffer)
+Framebuffer& Framebuffer::operator = (Framebuffer&& buffer) noexcept
 {
 	static_cast<Id&>(*this) = static_cast<Id&&>(buffer);
 

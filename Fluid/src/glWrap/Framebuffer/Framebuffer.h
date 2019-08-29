@@ -25,11 +25,11 @@ public:
 public:
 	Framebuffer();
 
-	Framebuffer(Framebuffer&& framebuffer);
+	Framebuffer(Framebuffer&& framebuffer) noexcept;
 
 	~Framebuffer();
 
-	Framebuffer& operator = (Framebuffer&& framebuffer);
+	Framebuffer& operator = (Framebuffer&& framebuffer) noexcept;
 
 
 public:

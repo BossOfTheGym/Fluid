@@ -18,7 +18,7 @@ ShaderProgram::ShaderProgram(
 	, m_computeInfo(computeInfo)
 {}
 
-ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram) : Id()
+ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram) noexcept : Id()
 {
 	*this = std::move(shaderProgram);
 }
@@ -31,11 +31,11 @@ ShaderProgram::~ShaderProgram()
 
 
 //operators
-ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram)
+ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram) noexcept
 {
 	static_cast<Id&>(*this) = static_cast<Id&&>(shaderProgram);
 
-	shaderProgram.deleteProgram();
+	std::swap(m_computeInfo, shaderProgram.m_computeInfo);
 
     return *this;
 }

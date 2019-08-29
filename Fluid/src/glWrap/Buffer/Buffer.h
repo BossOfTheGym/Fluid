@@ -11,12 +11,12 @@ public:
 
 	Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage);
 
-	Buffer(Buffer&& buffer);
+	Buffer(Buffer&& buffer) noexcept;
 
 	~Buffer();
 
 
-	Buffer& operator = (Buffer&& buffer);
+	Buffer& operator = (Buffer&& buffer) noexcept;
 
 
 public:
@@ -55,8 +55,8 @@ private:
 
 
 private:
-	GLsizeiptr    m_size;
-	BufferUsage   m_usage;
+	GLsizeiptr  m_size;
+	BufferUsage m_usage;
 };
 
 #endif

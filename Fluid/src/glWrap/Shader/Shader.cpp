@@ -24,7 +24,7 @@ Shader::Shader(ShaderType type, const String& source) : Shader(type)
 	compileShader();
 }
 
-Shader::Shader(Shader&& shader) : Id()
+Shader::Shader(Shader&& shader) noexcept : Id()
 {
 	*this = std::move(shader);
 }
@@ -37,13 +37,11 @@ Shader::~Shader()
 }
 
 //operators
-Shader& Shader::operator = (Shader&& shader)
+Shader& Shader::operator = (Shader&& shader) noexcept
 {
 	static_cast<Id&>(*this) = static_cast<Id&&>(shader);
 
 	std::swap(m_type, shader.m_type);
-
-	shader.deleteShader();
 
     return *this;
 }

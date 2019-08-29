@@ -28,13 +28,13 @@ public:
 
 	ShaderProgram(const ComputeInfo& computeInfo);
 
-    ShaderProgram(ShaderProgram&& shaderProgram);
+    ShaderProgram(ShaderProgram&& shaderProgram) noexcept;
 
 
     ~ShaderProgram();
 
 
-    ShaderProgram& operator = (ShaderProgram&& shaderProgram);
+    ShaderProgram& operator = (ShaderProgram&& shaderProgram) noexcept;
 
 
 public:

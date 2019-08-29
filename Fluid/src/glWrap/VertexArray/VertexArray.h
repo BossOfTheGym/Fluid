@@ -36,12 +36,12 @@ public:
 
 	VertexArray(const DrawInfo& info);
 
-    VertexArray(VertexArray&& vertexBuffer);
+    VertexArray(VertexArray&& vertexBuffer) noexcept;
 
     ~VertexArray();
 
 
-    VertexArray& operator = (VertexArray&& vertexBuffer);
+    VertexArray& operator = (VertexArray&& vertexBuffer) noexcept;
 
 
 public:

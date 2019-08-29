@@ -18,22 +18,10 @@
     <None Include="assets\shaders\quad.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="assets\shaders\equationsInit_fut.comp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="assets\shaders\poissonSolver_fut.comp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="assets\shaders\quad.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="assets\shaders\field.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="assets\shaders\equationsInit.comp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="assets\shaders\poissonSolver.comp">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

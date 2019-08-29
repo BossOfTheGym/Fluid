@@ -6,7 +6,7 @@
 Texture::Texture() : Id()
 {}
 
-Texture::Texture(Texture&& texture) : Id()
+Texture::Texture(Texture&& texture) noexcept: Id()
 {
 	*this = std::move(texture);
 }
@@ -19,11 +19,9 @@ Texture::~Texture()
 
 
 //operators
-Texture& Texture::operator = (Texture&& texture)
+Texture& Texture::operator = (Texture&& texture) noexcept
 {
 	static_cast<Id&>(*this) = static_cast<Id&&>(texture);
-
-	texture.deleteTexture();
 
     return *this;
 }

@@ -23,7 +23,7 @@ VertexArray::VertexArray(const DrawInfo& info)
 	, m_info(info)
 {}
 
-VertexArray::VertexArray(VertexArray&& vertexBuffer) : Id()
+VertexArray::VertexArray(VertexArray&& vertexBuffer) noexcept : Id()
 {
 	*this = std::move(vertexBuffer);
 }
@@ -36,13 +36,11 @@ VertexArray::~VertexArray()
 
 
 //operators
-VertexArray& VertexArray::operator = (VertexArray&& vertexBuffer)
+VertexArray& VertexArray::operator = (VertexArray&& vertexBuffer) noexcept
 {
 	static_cast<Id&>(*this) = static_cast<Id&&>(vertexBuffer);
 
-	m_info = vertexBuffer.m_info;
-
-	vertexBuffer.deleteArrayBuffer();
+	std::swap(m_info, vertexBuffer.m_info);
 
     return *this;
 }

@@ -18,13 +18,13 @@ public:
 
     Shader(ShaderType type, const String& source);
 
-    Shader(Shader&& shader);
+    Shader(Shader&& shader) noexcept;
 
 
     ~Shader();
 
 
-    Shader& operator = (Shader&& shader);
+    Shader& operator = (Shader&& shader) noexcept;
 
 
 public:
