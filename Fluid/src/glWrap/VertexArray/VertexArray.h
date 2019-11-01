@@ -16,8 +16,8 @@ public:
 
 		GLsizei  elementsCount = static_cast<GLsizei>(0); // both drawArrays & drawElements
 
-		DataType indicesType = DataType::None; // drawElements
-		GLvoid*  indices     = nullptr;        // drawElements
+		IndicesType indicesType = IndicesType::None; // drawElements
+		GLvoid*  indices        = nullptr;           // drawElements
 	};
 
 	struct PointerInfo
@@ -65,6 +65,8 @@ public:
 
 
 public:
+	void draw() const;
+
     void setAttribPointer(const PointerInfo& ptrInfo);
 
 	void setAttribPointerInBuffer(const Buffer& buffer, const PointerInfo& ptrInfo);

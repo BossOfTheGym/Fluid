@@ -58,7 +58,7 @@ void Shader::createShader(ShaderType type)
 void Shader::shaderSource(const String& source)
 {
     const GLchar* src = source.c_str();
-    GLint size        = source.size();
+    GLint size        = static_cast<GLint>(source.size());
 
     glShaderSource(id(), 1, &src, &size);
 }

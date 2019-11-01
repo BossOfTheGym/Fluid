@@ -68,7 +68,7 @@ public:
 		DrawBuffer buffer = static_cast<DrawBuffer>(FramebufferDrawBuffer::ColorAttachment0);
 		result.frame.namedDrawBuffers(1, &buffer);
 
-		return std::move(result);
+		return result;
 	}
 
 

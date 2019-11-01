@@ -15,9 +15,14 @@ namespace
 		{
 			for (int j = 0; j < width; j++)
 			{
-				*iter = static_cast<float>((i / 32 % 2 == (j / 32 % 2))); ++iter;
-				*iter = 0.50f; ++iter;
+				int checked = (i / 32 % 2 == (j / 32 % 2));
+
+				*iter = static_cast<float>(checked); ++iter;
+				/**iter = 0.50f; ++iter;
 				*iter =	0.25f; ++iter;
+				*iter = 1.00f; ++iter;*/
+				*iter = static_cast<float>(checked); ++iter;
+				*iter =	static_cast<float>(checked); ++iter;
 				*iter = 1.00f; ++iter;
 			}
 		}
@@ -47,8 +52,8 @@ namespace misc
 			, Texture2D_Builder::SamplingParameters{
 				  TextureParameterValue::Linear
 				, TextureParameterValue::Linear
-				, TextureParameterValue::ClampToEdge
-				, TextureParameterValue::ClampToEdge
+				, TextureParameterValue::Repeat
+				, TextureParameterValue::Repeat
 			}
 		);
 	}

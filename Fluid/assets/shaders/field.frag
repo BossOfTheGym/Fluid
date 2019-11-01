@@ -9,7 +9,7 @@ out vec4 color;
 
 layout(binding = 0) uniform sampler2D image;
 
-const float dt  = 0.003f;
+const float dt = 0.003f;
 
 void main()
 {

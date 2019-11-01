@@ -70,5 +70,5 @@ VertexArray QuadBuilder::buildShape()
 	);
 	quadShape.unbind();
 
-	return std::move(quadShape);
+	return quadShape;
 }

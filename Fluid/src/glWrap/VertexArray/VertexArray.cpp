@@ -124,6 +124,18 @@ void VertexArray::drawElements() const
 
 
 //misc
+void VertexArray::draw() const
+{
+	if (m_info.indicesType == IndicesType::None)
+	{
+		drawArrays();
+	}
+	else
+	{
+		drawElements();
+	}
+}
+
 void VertexArray::setAttribPointer(const PointerInfo& info)
 {
 	enableAttribArray(info.index);
