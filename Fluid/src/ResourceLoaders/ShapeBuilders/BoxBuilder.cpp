@@ -7,7 +7,8 @@ BoxBuilder::BoxBuilder()
 	: m_vertexPositions()
 	, m_indicesBuffer()
 {
-	Vec3 vertices[8] = {
+	Vec3 vertices[8] = 
+	{
 		  Vec3(-1.0f, -1.0f, -1.0f)
 		, Vec3(-1.0f, -1.0f, +1.0f)
 		, Vec3(-1.0f, +1.0f, -1.0f)
@@ -18,13 +19,25 @@ BoxBuilder::BoxBuilder()
 		, Vec3(+1.0f, +1.0f, +1.0f)
 	};
 
-	GLuint indices[24] = {
-		  6u, 4u, 7u, 5u
-		, 7u, 5u, 3u, 1u
-		, 3u, 1u, 2u, 0u
-		, 2u, 0u, 6u, 4u
-		, 6u, 7u, 2u, 3u
-		, 5u, 4u, 1u, 0u
+	GLuint indices[36] = 
+	{
+		  3, 7, 2
+		, 6, 2, 7
+
+		, 6, 7, 4
+		, 5, 4, 7
+
+		, 7, 3, 5
+		, 1, 5, 3
+
+		, 3, 2, 1
+		, 0, 1, 2
+
+		, 2, 6, 0
+		, 4, 0, 6
+
+		, 4, 5, 0
+		, 1, 0, 5
 	};
 
 
@@ -41,9 +54,9 @@ VertexArray BoxBuilder::buildShape()
 	VertexArray result;
 
 	result.info() = VertexArray::DrawInfo{
-		DrawMode::TriangleStrip
+		  DrawMode::Triangles
 		, static_cast<GLint>(0)
-		, static_cast<GLsizei>(24)
+		, static_cast<GLsizei>(36)
 		, IndicesType::UnsignedInt
 		, nullptr
 	};

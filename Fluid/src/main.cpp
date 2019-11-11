@@ -20,7 +20,8 @@
 #include <misc/PingPongBufer.h>
 #include <misc/memory/SimpleLinearAllocator.h>
 
-#include <voxelizer.h>
+#include "voxelizer.h"
+#include "OctreeVisualization.h"
 
 
 void test1Mainloop()
@@ -167,6 +168,51 @@ void test2()
 }
 
 
+auto testSVO()
+{
+	return vis::fromSVO(
+		voxel::svoVoxelize<int>(
+			voxel::Mesh{
+				{
+					  {Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+					, {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+			        , {Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+			        , {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+			        
+			        , {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f)}
+			        , {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f)}
+				}
+			}
+			, 128
+		)
+	);
+}
+
+auto testFVO()
+{
+	return vis::fromFVO(
+		voxel::fvoVoxelize<int>(
+			voxel::Mesh{
+				{
+					  {Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+			        , {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+			        , {Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+					, {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+
+			        , {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f)}
+			        , {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f)}
+				}
+			}
+			, 16
+			, Vec3(0.0f)
+			)
+		, [] (const auto& value)
+		{
+			return value != -3;
+		}
+	);
+}
+
 void test3MainLoop()
 {
 	//context
@@ -185,109 +231,78 @@ void test3MainLoop()
 	BoxBuilder boxBuilder;
 
 	//resources
-	std::cout << "---Initializing voxel shaders----" << std::endl;
 	Shader voxelVert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/voxel/voxel.vert");
 	Shader voxelGeom = shaderLoader.loadShader(ShaderType::Geometry, "assets/shaders/voxel/voxel.geom");
 	Shader voxelFrag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/voxel/voxel.frag");
-
-	std::cout << "---Building voxel program---" << std::endl;
 	ShaderProgram voxelProgram = programBuilder.buildProgram(voxelVert, voxelGeom, voxelFrag);
 
-	std::cout << "---Getting uniform locations from voxel program---" << std::endl;
+	Shader boxVert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/box/box.vert");
+	Shader boxFrag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/box/box.frag");
+	ShaderProgram boxProgram = programBuilder.buildProgram(boxVert, boxFrag);
+
+	auto boxPvmLoc = boxProgram.getUniformLocation("uPVM");
 	auto voxelSizeLoc = voxelProgram.getUniformLocation("uVoxelSize");
 	auto voxelPvmLoc  = voxelProgram.getUniformLocation("uPVM");
 
-	std::cout << "---Initializing box shaders---" << std::endl;
-	Shader boxVert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/box/box.vert");
-	Shader boxFrag = shaderLoader.loadShader(ShaderType::Fragment, "assets/shaders/box/box.frag");
-
-	std::cout << "---Building box program---" << std::endl;
-	ShaderProgram boxProgram = programBuilder.buildProgram(boxVert, boxFrag);
-
-	std::cout << "---Getting uniforms from box program---" << std::endl;
-	auto boxPvmLoc = boxProgram.getUniformLocation("uPVM");
-
-	std::cout << "---Building shapes & voxel model---" << std::endl;
 	VertexArray boxArray = boxBuilder.buildShape();
-	auto [voxelsArray, voxelsBuffer, voxelSize] = voxelizeV1(16);
+	auto [voxelArray, voxelData, voxelSize] = testFVO();
 
-	std::cout << "---Get default framebuffer---" << std::endl;
 	Framebuffer defaultFB = Framebuffer::default();
 
-	std::cout << "---Initializing view parameters---" << std::endl;
+
+	//view params
 	Mat4 p = glm::perspective(glm::radians(45.0f), 1.0f * info.width / info.height, 0.5f, 100.0f);
-	Mat4 v = glm::lookAt(Vec3(5.0f, 1.0f, 5.0f), Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
+	Mat4 v = glm::lookAt(Vec3(5.0f, 2.0f, 5.0f), Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
 	Mat4 m = Mat4(1.0f);
 	Mat4 r = glm::rotate(Mat4(1.0f), glm::radians(0.3f), Vec3(0.0f, 1.0f, 0.0f));
 
+
 	//loop
 	//state set-ups
-	std::cout << "---Setting up OpenGL states---" << std::endl;
 	OpenGL::viewport(0, 0, info.width, info.height);
 	OpenGL::polygonMode(Face::FrontAndBack, PolygonMode::Line);
 	OpenGL::enable(Capability::DepthTest);
-	OpenGL::disable(Capability::CullFace);
+	//OpenGL::enable(Capability::CullFace);
+	//OpenGL::cullFace(Face::Back);
+
 
 	std::cout << "---Mainloop---" << std::endl;
-	glfwSwapInterval(1);
 	while (!glfwWindowShouldClose(window))
 	{
 		//events
-		std::cout << "---Poll events---" << std::endl;
 		glfwPollEvents();
 
 		//clear
-		std::cout << "---Clear default framebuffer---" << std::endl;
 		defaultFB.clearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		defaultFB.clearDepth(1.0f);
 		defaultFB.clear(ClearMask::ColorDepth);
 
 		//render
-		std::cout << "---Update view parameters---" << std::endl;
 		m = r * m;
 		auto pvm = p * v * m;
 
 
-		std::cout << "---Bind box program---" << std::endl;
 		boxProgram.use();
-
-		std::cout << "---Set view parameters---" << std::endl;
 		boxProgram.setUniformMat4(boxPvmLoc, pvm);
 
-		std::cout << "---Bind box array---" << std::endl;
 		boxArray.bind();
-
-		std::cout << "---Draw box array---" << std::endl;
-		boxArray.draw();
-
-		std::cout << "---Unbind box array---" << std::endl;
+		boxArray.draw();	
 		boxArray.unbind();
 
-		std::cout << "---Unbind box program---" << std::endl;
 		boxProgram.unbind();
 
 
-		std::cout << "---Bind voxel program---" << std::endl;
 		voxelProgram.use();
-
-		std::cout << "---Set view and voxel parameters---" << std::endl;
-		voxelProgram.setUniform1f(voxelSizeLoc, voxelSize);
 		voxelProgram.setUniformMat4(voxelPvmLoc, pvm);
+		voxelProgram.setUniform1f(voxelSizeLoc, voxelSize);
 
-		std::cout << "---Bind voxel array---" << std::endl;
-		voxelsArray.bind();
+		voxelArray.bind();
+		voxelArray.draw();
+		voxelArray.unbind();
 
-		std::cout << "---Draw voxel array---" << std::endl;
-		voxelsArray.draw();
-
-		std::cout << "---Unbind voxel array---" << std::endl;
-		voxelsArray.unbind();
-
-		std::cout << "---Unbind voxel program---" << std::endl;
 		voxelProgram.unbind();
 
 		//swap front/back
-		std::cout << "---Swap buffers---" << std::endl;
 		glfwSwapBuffers(window);
 	}
 }

@@ -47,10 +47,10 @@ void main()
 		, uPVM * vec4(center + cubeVertices[7] * uVoxelSize / 2, 1.0f)
 	};
 
-	emitFace(vertices[3], vertices[2], vertices[7], vertices[6]);
-	emitFace(vertices[6], vertices[4], vertices[7], vertices[5]);
-	emitFace(vertices[7], vertices[5], vertices[3], vertices[0]);
-	emitFace(vertices[3], vertices[1], vertices[2], vertices[0]);
-	emitFace(vertices[2], vertices[0], vertices[6], vertices[4]);
-	emitFace(vertices[4], vertices[0], vertices[5], vertices[1]);
+	emitFace(vertices[3], vertices[7], vertices[2], vertices[6]); // ok
+	emitFace(vertices[6], vertices[7], vertices[4], vertices[5]); // ok
+	emitFace(vertices[7], vertices[3], vertices[5], vertices[1]); // ok
+	emitFace(vertices[3], vertices[2], vertices[1], vertices[0]); // ok
+	emitFace(vertices[2], vertices[6], vertices[0], vertices[4]); // ok
+	emitFace(vertices[4], vertices[5], vertices[0], vertices[1]); // ok
 }

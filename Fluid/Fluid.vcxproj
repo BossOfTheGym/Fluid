@@ -173,6 +173,9 @@
     <None Include="assets\shaders\field.frag" />
     <None Include="assets\shaders\quad.frag" />
     <None Include="assets\shaders\quad.vert" />
+    <None Include="assets\shaders\voxel\voxel.frag" />
+    <None Include="assets\shaders\voxel\voxel.geom" />
+    <None Include="assets\shaders\voxel\voxel.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.h" />
@@ -184,7 +187,6 @@
     <ClInclude Include="src\glWrap\Shader\ShaderProgram.h" />
     <ClInclude Include="src\glWrap\Texture\Texture.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
-    <ClInclude Include="src\misc\AABB.h" />
     <ClInclude Include="src\misc\memory\PoolAllocator.h" />
     <ClInclude Include="src\misc\memory\SimpleLinearAllocator.h" />
     <ClInclude Include="src\misc\memory\StackAllocator.h" />
@@ -192,6 +194,8 @@
     <ClInclude Include="src\misc\PingPongBufer.h" />
     <ClInclude Include="src\misc\Quadtree.h" />
     <ClInclude Include="src\misc\SomeTextureBuilders.h" />
+    <ClInclude Include="src\OctreeVisualization.h" />
+    <ClInclude Include="src\primitives.h" />
     <ClInclude Include="src\Render\Attributes.h" />
     <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.h" />
     <ClInclude Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.h" />
@@ -199,6 +203,7 @@
     <ClInclude Include="src\ResourceLoaders\ShapeBuilders\BoxBuilder.h" />
     <ClInclude Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.h" />
     <ClInclude Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.h" />
+    <ClInclude Include="src\SVO.h" />
     <ClInclude Include="src\Utility\Apply.h" />
     <ClInclude Include="src\Utility\Holder.h" />
     <ClInclude Include="src\voxelizer.h" />
@@ -213,14 +218,13 @@
     <ClCompile Include="src\glWrap\Shader\ShaderProgram.cpp" />
     <ClCompile Include="src\glWrap\Texture\Texture.cpp" />
     <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp" />
+    <ClCompile Include="src\primitives.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShapeBuilders\BoxBuilder.cpp" />
-    <ClCompile Include="src\voxelizer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\misc\SomeTextureBuilders.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.cpp" />
     <ClCompile Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.cpp" />
-    <ClCompile Include="src\voxelizerV1.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
