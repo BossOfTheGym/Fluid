@@ -92,13 +92,7 @@
     <ClInclude Include="src\misc\SomeTextureBuilders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\misc\memory\PoolAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\misc\memory\SimpleLinearAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\misc\memory\StackAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\misc\Octree.h">

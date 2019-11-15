@@ -187,9 +187,7 @@
     <ClInclude Include="src\glWrap\Shader\ShaderProgram.h" />
     <ClInclude Include="src\glWrap\Texture\Texture.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
-    <ClInclude Include="src\misc\memory\PoolAllocator.h" />
     <ClInclude Include="src\misc\memory\SimpleLinearAllocator.h" />
-    <ClInclude Include="src\misc\memory\StackAllocator.h" />
     <ClInclude Include="src\misc\Octree.h" />
     <ClInclude Include="src\misc\PingPongBufer.h" />
     <ClInclude Include="src\misc\Quadtree.h" />
