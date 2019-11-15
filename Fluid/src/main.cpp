@@ -31,7 +31,7 @@ void test1Mainloop()
 	decltype(auto) window  = context->window();
 	decltype(auto) info    = context->info();
 
-
+	      
 	//set-ups
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
