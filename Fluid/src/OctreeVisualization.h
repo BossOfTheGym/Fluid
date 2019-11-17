@@ -84,9 +84,10 @@ namespace vis
 		data.reserve(6LL * fvo.split() * fvo.split());
 		for (Hash i = 0; i < fvo.size(); i++)
 		{
+			auto voxel = fvo.voxel(i);
 			if (filter(fvo[i]))
 			{
-				data.push_back(fvo.voxel(i));
+				data.push_back(voxel);
 			}
 		}
 

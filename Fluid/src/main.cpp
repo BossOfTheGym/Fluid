@@ -20,6 +20,7 @@
 #include <misc/PingPongBufer.h>
 #include <misc/memory/SimpleLinearAllocator.h>
 
+#include "Profile.h"
 #include "voxelizer.h"
 #include "OctreeVisualization.h"
 
@@ -168,50 +169,73 @@ void test2()
 }
 
 
+
+auto testProfileMesh()
+{
+	const int COUNT = 10;
+
+	Profile<float> profile;
+
+	profile.args = {-0.75f, -0.25 , 0.0f, 0.25f, 0.75f};
+	profile.vals = { 0.5f ,  0.75f, 1.0f, 0.75f, 0.5f};
+	profile.count = 5;
+
+	return constructMeshFromProfile(profile, -1.0f, +1.0f, 50);
+}
+
 auto testSVO()
 {
+	/*
+	Mesh{
+	{
+	{Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+	, {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+	, {Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+	, {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
+
+	, {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f)}
+	, {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f)}
+	}
+	}
+	*/
+
 	return vis::fromSVO(
 		voxel::svoVoxelize<int>(
-			Mesh{
-				{
-					  {Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
-					, {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
-			        , {Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
-			        , {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
-			        
-			        , {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f)}
-			        , {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f)}
-				}
-			}
-			, 128
+			testProfileMesh()
+			, 7
 		)
 	);
 }
 
 auto testFVO()
 {
+	/*
+	Mesh{
+	{
+	{Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+	, {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+	, {Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+	, {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
+
+	, {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f)}
+	, {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f)}
+	}
+	}
+	*/;
+
 	return vis::fromFVO(
 		voxel::fvoVoxelize<int>(
-			Mesh{
-				{
-					  {Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
-			        , {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
-			        , {Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
-					, {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
-
-			        , {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, -1.0f)}
-			        , {Vec3(-1.0f, -1.0f, -1.0f), Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f)}
-				}
-			}
-			, 16
+			testProfileMesh()
+			, 7
 			, Vec3(0.0f)
 			)
 		, [] (const auto& value)
 		{
-			return value != -3;
+			return value >= 0;
 		}
 	);
 }
+
 
 void test3MainLoop()
 {
@@ -245,7 +269,7 @@ void test3MainLoop()
 	auto voxelPvmLoc  = voxelProgram.getUniformLocation("uPVM");
 
 	VertexArray boxArray = boxBuilder.buildShape();
-	auto [voxelArray, voxelData, voxelSize] = testFVO();
+	auto [voxelArray, voxelData, voxelSize] = testSVO();
 
 	Framebuffer defaultFB = Framebuffer::default();
 
@@ -262,8 +286,8 @@ void test3MainLoop()
 	OpenGL::viewport(0, 0, info.width, info.height);
 	OpenGL::polygonMode(Face::FrontAndBack, PolygonMode::Line);
 	OpenGL::enable(Capability::DepthTest);
-	//OpenGL::enable(Capability::CullFace);
-	//OpenGL::cullFace(Face::Back);
+	OpenGL::enable(Capability::CullFace);
+	OpenGL::cullFace(Face::Back);
 
 
 	std::cout << "---Mainloop---" << std::endl;
@@ -282,14 +306,14 @@ void test3MainLoop()
 		auto pvm = p * v * m;
 
 
-		boxProgram.use();
+		/*boxProgram.use();
 		boxProgram.setUniformMat4(boxPvmLoc, pvm);
 
 		boxArray.bind();
 		boxArray.draw();	
 		boxArray.unbind();
 
-		boxProgram.unbind();
+		boxProgram.unbind();*/
 
 
 		voxelProgram.use();
