@@ -393,7 +393,6 @@ namespace voxel
 
 			//get intial approximation
 			initialVoxelization(voxels, mesh);
-			auto hash = voxels.hash(Vec3(0.0f));
 
 			//mark interior and exterior
 			mark(voxels, innerPoint, empty, interior, exterior);

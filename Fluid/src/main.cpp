@@ -202,7 +202,7 @@ auto testSVO()
 	return vis::fromSVO(
 		voxel::svoVoxelize<int>(
 			testProfileMesh()
-			, 7
+			, 3
 		)
 	);
 }
@@ -226,7 +226,7 @@ auto testFVO()
 	return vis::fromFVO(
 		voxel::fvoVoxelize<int>(
 			testProfileMesh()
-			, 7
+			, 5
 			, Vec3(0.0f)
 			)
 		, [] (const auto& value)
@@ -269,7 +269,7 @@ void test3MainLoop()
 	auto voxelPvmLoc  = voxelProgram.getUniformLocation("uPVM");
 
 	VertexArray boxArray = boxBuilder.buildShape();
-	auto [voxelArray, voxelData, voxelSize] = testSVO();
+	auto [voxelArray, voxelData, voxelSize] = testFVO();
 
 	Framebuffer defaultFB = Framebuffer::default();
 
@@ -306,14 +306,14 @@ void test3MainLoop()
 		auto pvm = p * v * m;
 
 
-		/*boxProgram.use();
+		boxProgram.use();
 		boxProgram.setUniformMat4(boxPvmLoc, pvm);
 
 		boxArray.bind();
 		boxArray.draw();	
 		boxArray.unbind();
 
-		boxProgram.unbind();*/
+		boxProgram.unbind();
 
 
 		voxelProgram.use();
