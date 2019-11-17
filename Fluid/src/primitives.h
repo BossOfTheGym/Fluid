@@ -1,21 +1,7 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
-#include <cmath>
-
-#include <glm/glm.hpp>
-#include <glm/common.hpp>
-
-
-//consts
-const float EPS = 1e-6f;
-const float SQ2 = std::sqrt(2.0f);
-const float SQ3 = std::sqrt(3.0f);
-
-//all necessary structs
-using Vec3  = glm::vec3;
-using Vec4  = glm::vec4;
-using Vec3i = glm::ivec3;
+#include <Common.h>
 
 
 struct Triangle
@@ -36,7 +22,7 @@ struct Prism
 {
 	enum
 	{
-		LOWER_PLANE = 0
+		  LOWER_PLANE = 0
 		, UPPER_PLANE = 1
 		, SIDE_PLANE0 = 2
 		, SIDE_PLANE1 = 3

@@ -187,13 +187,16 @@
     <ClInclude Include="src\glWrap\Shader\ShaderProgram.h" />
     <ClInclude Include="src\glWrap\Texture\Texture.h" />
     <ClInclude Include="src\glWrap\VertexArray\VertexArray.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\misc\memory\SimpleLinearAllocator.h" />
     <ClInclude Include="src\misc\Octree.h" />
     <ClInclude Include="src\misc\PingPongBufer.h" />
     <ClInclude Include="src\misc\Quadtree.h" />
     <ClInclude Include="src\misc\SomeTextureBuilders.h" />
     <ClInclude Include="src\OctreeVisualization.h" />
+    <ClInclude Include="src\OctreeWriter.h" />
     <ClInclude Include="src\primitives.h" />
+    <ClInclude Include="src\Profile.h" />
     <ClInclude Include="src\Render\Attributes.h" />
     <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.h" />
     <ClInclude Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.h" />

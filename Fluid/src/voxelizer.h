@@ -7,17 +7,12 @@
 #include <set>
 
 #include "primitives.h"
+#include "Mesh.h"
 #include "SVO.h"
 
 
 namespace voxel
 {
-	struct Mesh
-	{
-		std::vector<Triangle> triangles;
-	};
-
-
 	template<class Value>
 	using SVO = SparseVoxelOctree<Value>;
 
@@ -245,16 +240,17 @@ namespace voxel
 			using Set   = std::set<Hash>;
 			using Queue = std::queue<Indices>;
 
-			Queue queue;
+			Set queue;
 			Hash split;
 
 			split = voxels.split();
 
 			//mark all interior points
-			queue.push(voxels.index(innerPoint));
+			queue.insert(voxels.hash(innerPoint));
 			while (!queue.empty())
 			{
-				auto indices = queue.front();
+				auto currHash = *queue.begin();
+				auto indices  = voxels.index(currHash);
 				
 				voxels[indices] = interior;
 
@@ -272,13 +268,13 @@ namespace voxel
 
 							if (voxels[toPush] == empty)
 							{
-								queue.push(toPush);
+								queue.insert(voxels.hash(toPush));
 							}
 						}
 					}
 				}
 
-				queue.pop();
+				queue.erase(currHash);
 			}
 
 			//mark all exterior points
@@ -309,10 +305,17 @@ namespace voxel
 					, Indices{+0, +0, -1}
 				};
 
+				auto split   = voxels.split();
 				auto indices = voxels.index(hash);
 				for (auto& check : checks)
 				{
-					if (voxels[indices + check] == label)
+					auto currIndices = indices + check;
+
+					currIndices.x = std::max(std::min(currIndices.x, split - 1), 0);
+					currIndices.y = std::max(std::min(currIndices.y, split - 1), 0);
+					currIndices.z = std::max(std::min(currIndices.z, split - 1), 0);
+
+					if (voxels[currIndices] == label)
 					{
 						return true;
 					}
@@ -337,17 +340,39 @@ namespace voxel
 			}
 		}
 
+		template<class Value, class Criteria>
+		void refineLabel(FVO<Value>& voxels, Value empty, Value exterior, Value label, Value exchange, Criteria goodBoundary)
+		{
+			using Hash    = typename FVO<Value>::Hash;
+			using Indices = typename FVO<Value>::Indices;
+
+			auto boundary = [&] (const auto& voxel)
+			{
+				return voxel != empty && voxel != interior && voxel != exterior;
+			};
+
+			for(Hash currHash = 0; currHash < voxels.size(); currHash++)
+			{
+				auto& voxel = voxels[currHash];
+
+				if (boundary(voxel) && !goodBoundary(currHash))
+				{
+					voxel = exchange;
+				}
+			}
+		}
+
 		template<class Value>
 		void refine(FVO<Value>& voxels, Value empty, Value interior, Value exterior)
 		{
 			using Hash    = typename FVO<Value>::Hash;
 			using Indices = typename FVO<Value>::Indices;
 
-			//delete outer voxels
-			refineLabel(voxels, empty, interior, exterior, interior, exterior);
-
 			//delete inner voxels
 			refineLabel(voxels, empty, interior, exterior, exterior, interior);
+
+			//delete outer voxels
+			refineLabel(voxels, empty, interior, exterior, interior, exterior);
 		}
 
 		template<class Value>

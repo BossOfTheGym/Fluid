@@ -172,7 +172,7 @@ auto testSVO()
 {
 	return vis::fromSVO(
 		voxel::svoVoxelize<int>(
-			voxel::Mesh{
+			Mesh{
 				{
 					  {Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
 					, {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +0.5f, +0.0f)}
@@ -192,7 +192,7 @@ auto testFVO()
 {
 	return vis::fromFVO(
 		voxel::fvoVoxelize<int>(
-			voxel::Mesh{
+			Mesh{
 				{
 					  {Vec3(-1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, +1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
 			        , {Vec3(+1.0f, -1.0f, +1.0f), Vec3(+1.0f, -1.0f, -1.0f), Vec3(+0.0f, +1.0f, +0.0f)}
