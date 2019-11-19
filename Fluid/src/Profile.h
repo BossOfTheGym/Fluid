@@ -2,6 +2,7 @@
 #define PROFILE_H
 
 #include "Mesh.h"
+#include "Math.h"
 
 #include <fstream>
 #include <vector>
