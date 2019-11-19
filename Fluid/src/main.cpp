@@ -176,11 +176,25 @@ auto testProfileMesh()
 
 	Profile<float> profile;
 
-	profile.args = {-0.75f, -0.25 , 0.0f, 0.25f, 0.75f};
+	/*profile.args = {-0.75f, -0.25 , 0.0f, 0.25f, 0.75f};
 	profile.vals = { 0.5f ,  0.75f, 1.0f, 0.75f, 0.5f};
-	profile.count = 5;
+	profile.count = 5;*/
 
-	return constructMeshFromProfile(profile, -1.0f, +1.0f, 50);
+	profile.args.reserve(COUNT);
+	profile.vals.reserve(COUNT);
+	profile.count = COUNT;
+
+	float h = 2.0f / (COUNT + 1);
+	for (int i = 1; i <= COUNT; i++)
+	{
+		auto arg = -1.0f + i * h;
+		auto val = 1.0f - arg * arg;
+
+		profile.args.push_back(arg);
+		profile.vals.push_back(val);
+	}
+
+	return constructMeshFromProfile(profile, -1.0f, +1.0f, 75);
 }
 
 auto testSVO()
@@ -202,7 +216,7 @@ auto testSVO()
 	return vis::fromSVO(
 		voxel::svoVoxelize<int>(
 			testProfileMesh()
-			, 3
+			, 30
 		)
 	);
 }
@@ -226,7 +240,7 @@ auto testFVO()
 	return vis::fromFVO(
 		voxel::fvoVoxelize<int>(
 			testProfileMesh()
-			, 5
+			, 40
 			, Vec3(0.0f)
 			)
 		, [] (const auto& value)
@@ -278,7 +292,7 @@ void test3MainLoop()
 	Mat4 p = glm::perspective(glm::radians(45.0f), 1.0f * info.width / info.height, 0.5f, 100.0f);
 	Mat4 v = glm::lookAt(Vec3(5.0f, 2.0f, 5.0f), Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
 	Mat4 m = Mat4(1.0f);
-	Mat4 r = glm::rotate(Mat4(1.0f), glm::radians(0.3f), Vec3(0.0f, 1.0f, 0.0f));
+	Mat4 r = glm::rotate(Mat4(1.0f), glm::radians(0.25f), Vec3(0.0f, 1.0f, 0.0f));
 
 
 	//loop
@@ -306,14 +320,14 @@ void test3MainLoop()
 		auto pvm = p * v * m;
 
 
-		boxProgram.use();
+		/*boxProgram.use();
 		boxProgram.setUniformMat4(boxPvmLoc, pvm);
 
 		boxArray.bind();
 		boxArray.draw();	
 		boxArray.unbind();
 
-		boxProgram.unbind();
+		boxProgram.unbind();*/
 
 
 		voxelProgram.use();

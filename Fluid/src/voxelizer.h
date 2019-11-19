@@ -20,7 +20,7 @@ namespace voxel
 	using FVO = FullVoxelOctree<Value>;
 
 
-
+	//Voxelizer. Traverses voxels belonging to some volume
 	namespace detail
 	{
 		//voxelization algorithm
@@ -66,11 +66,7 @@ namespace voxel
 						{
 							for (int k = -1; k < 2; k++)
 							{
-								auto toPush = indices + Indices{i, j, k};
-
-								toPush.x = std::max(std::min(toPush.x, split - 1), 0);
-								toPush.y = std::max(std::min(toPush.y, split - 1), 0);
-								toPush.z = std::max(std::min(toPush.z, split - 1), 0);
+								auto toPush = output.clampToBoundaries(indices + Indices{i, j, k});
 
 								m_queue.push(toPush);
 							}
@@ -99,10 +95,7 @@ namespace voxel
 							{
 								for (int k = -1; k < 2; k++)
 								{
-									auto toPush = indices + Indices{i, j, k};
-									toPush.x = std::max(std::min(toPush.x, split - 1), 0);
-									toPush.y = std::max(std::min(toPush.y, split - 1), 0);
-									toPush.z = std::max(std::min(toPush.z, split - 1), 0);
+									auto toPush = output.clampToBoundaries(indices + Indices{i, j, k});
 
 									auto hash = output.hash(toPush);
 									if (traversedVoxels.find(hash) == traversedVoxels.end())
@@ -128,13 +121,17 @@ namespace voxel
 		private:
 			Queue m_queue;
 		};
+	}
 
 
+	//Creates only voxelized boundary of volume
+	namespace detail
+	{
 		float getLargestDiagonalProj(const Vec3& normal, float halfVoxelSize)
 		{
 			static const Vec3 voxelDiagonals[4] =
 			{
-				Vec3{-halfVoxelSize, -halfVoxelSize, -halfVoxelSize}
+				  Vec3{-halfVoxelSize, -halfVoxelSize, -halfVoxelSize}
 				, Vec3{-halfVoxelSize, -halfVoxelSize, +halfVoxelSize}
 				, Vec3{-halfVoxelSize, +halfVoxelSize, -halfVoxelSize}
 				, Vec3{-halfVoxelSize, +halfVoxelSize, +halfVoxelSize}
@@ -203,7 +200,7 @@ namespace voxel
 	}
 
 
-
+	//Creates fully voxelized volume
 	namespace detail
 	{
 		//TODO : rework this
@@ -221,10 +218,6 @@ namespace voxel
 
 				//translate triangle
 				auto& [p0, p1, p2] = triangle.points;
-
-				auto i0 = voxels.index(p0);
-				auto i1 = voxels.index(p1);
-				auto i2 = voxels.index(p2);
 
 				auto volume = roundedTriangleFromTriangleRadius(triangle, radius, radius2);
 				voxelizer.traverseVoxels(voxels, volume, i);
@@ -260,11 +253,7 @@ namespace voxel
 					{
 						for (Hash k = -1; k < 2; k++)
 						{
-							auto toPush = indices + Indices{i, j, k};
-
-							toPush.x = std::max(std::min(toPush.x, split - 1), 0);
-							toPush.y = std::max(std::min(toPush.y, split - 1), 0);
-							toPush.z = std::max(std::min(toPush.z, split - 1), 0);
+							auto toPush = voxels.clampToBoundaries(indices + Indices{i, j, k});
 
 							if (voxels[toPush] == empty)
 							{
@@ -287,7 +276,7 @@ namespace voxel
 			}
 		}
 
-		template<class Value>
+		/*template<class Value>
 		void refineLabel(FVO<Value>& voxels, Value empty, Value interior, Value exterior, Value label, Value exchange)
 		{
 			using Hash    = typename FVO<Value>::Hash;
@@ -309,11 +298,7 @@ namespace voxel
 				auto indices = voxels.index(hash);
 				for (auto& check : checks)
 				{
-					auto currIndices = indices + check;
-
-					currIndices.x = std::max(std::min(currIndices.x, split - 1), 0);
-					currIndices.y = std::max(std::min(currIndices.y, split - 1), 0);
-					currIndices.z = std::max(std::min(currIndices.z, split - 1), 0);
+					auto currIndices = voxels.clampToBoundaries(indices + check);
 
 					if (voxels[currIndices] == label)
 					{
@@ -338,41 +323,131 @@ namespace voxel
 					voxel = exchange;
 				}
 			}
-		}
+		}*/
 
-		template<class Value, class Criteria>
-		void refineLabel(FVO<Value>& voxels, Value empty, Value exterior, Value label, Value exchange, Criteria goodBoundary)
+		template<class Value, class Boundary, class GoodBoundary>
+		void refineLabel(FVO<Value>& voxels, Value replacement, Boundary boundary, GoodBoundary goodBoundary)
 		{
 			using Hash    = typename FVO<Value>::Hash;
 			using Indices = typename FVO<Value>::Indices;
 
-			auto boundary = [&] (const auto& voxel)
-			{
-				return voxel != empty && voxel != interior && voxel != exterior;
-			};
-
 			for(Hash currHash = 0; currHash < voxels.size(); currHash++)
 			{
-				auto& voxel = voxels[currHash];
-
-				if (boundary(voxel) && !goodBoundary(currHash))
+				if (boundary(currHash) && !goodBoundary(currHash))
 				{
-					voxel = exchange;
+					auto& voxel = voxels[currHash];
+
+					voxel = replacement;
 				}
 			}
 		}
 
 		template<class Value>
-		void refine(FVO<Value>& voxels, Value empty, Value interior, Value exterior)
+		void refine(FVO<Value>& voxels, const Value& empty, const Value& interior, const Value& exterior)
 		{
 			using Hash    = typename FVO<Value>::Hash;
 			using Indices = typename FVO<Value>::Indices;
+			
+
+			//common lambdas
+			auto boundary = [&] (const auto& hash)
+			{
+				const auto& voxel = voxels[hash];
+
+				return voxel != empty && voxel != interior && voxel != exterior;
+			};
+
+			/*auto has6ConnectivityExteriorNeighbour = [&] (const auto& hash, const Value& neighbour)
+			{
+				Indices checks[6] =
+				{
+					  Indices{+1, +0, +0}
+					, Indices{-1, +0, +0}
+					, Indices{+0, +1, +0}
+					, Indices{+0, -1, +0}
+					, Indices{+0, +0, +1}
+					, Indices{+0, +0, -1}
+				};
+				
+				const auto& voxel = voxels[hash];
+
+				auto indices = voxels.index(hash);
+				for (auto& check : checks)
+				{
+					auto index = voxels.clampToBoundaries(indices + check);
+
+					if (voxels[index] == neighbour)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			};*/
+
 
 			//delete inner voxels
-			refineLabel(voxels, empty, interior, exterior, exterior, interior);
+			auto hasExteriorNeighbour = [&] (const auto& hash)
+			{
+				Indices checks[6] =
+				{
+					Indices{+1, +0, +0}
+					, Indices{-1, +0, +0}
+					, Indices{+0, +1, +0}
+					, Indices{+0, -1, +0}
+					, Indices{+0, +0, +1}
+					, Indices{+0, +0, -1}
+				};
+
+				const auto& voxel = voxels[hash];
+
+				auto indices = voxels.index(hash);
+				for (auto& check : checks)
+				{
+					auto index = voxels.clampToBoundaries(indices + check);
+
+					if (voxels.boundaryVoxel(index) || voxels[index] == exterior)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			};
+
+			refineLabel(voxels, interior, boundary, hasExteriorNeighbour);
+
 
 			//delete outer voxels
-			refineLabel(voxels, empty, interior, exterior, interior, exterior);
+			auto hasInteriorNeighbour = [&] (const auto& hash)
+			{
+				Indices checks[6] =
+				{
+					Indices{+1, +0, +0}
+					, Indices{-1, +0, +0}
+					, Indices{+0, +1, +0}
+					, Indices{+0, -1, +0}
+					, Indices{+0, +0, +1}
+					, Indices{+0, +0, -1}
+				};
+
+				const auto& voxel = voxels[hash];
+
+				auto indices = voxels.index(hash);
+				for (auto& check : checks)
+				{
+					auto index = voxels.clampToBoundaries(indices + check);
+
+					if (voxels[index] == interior)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			};
+
+			refineLabel(voxels, exterior, boundary, hasInteriorNeighbour);
 		}
 
 		template<class Value>

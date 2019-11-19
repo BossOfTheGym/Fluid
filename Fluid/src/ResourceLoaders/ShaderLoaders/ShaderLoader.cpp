@@ -22,7 +22,7 @@ Shader SimpleShaderLoader::loadShader(ShaderType type, const String& location)
 	}
 	else
 	{
-		std::cout << "Failed to compile shader. " << shader.infoLog() /*<< std::endl*/;
+		std::cout << "Failed to compile shader. " << shader.infoLog() << std::endl;
 	}
 
 	return shader;

@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include <algorithm>
 
 
 //next power of 2
@@ -208,6 +209,52 @@ public:
 	Value& operator [] (const Indices& item)
 	{
 		return m_map[hash(item)];
+	}
+
+
+	// TODO : add templates
+	bool boundaryVoxel(const Point& item) const
+	{
+		auto indices = index(item);
+
+		auto min = 0;
+		auto max = m_split - 1;
+
+		return indices.x == min || indices.y == min || indices.z == min
+			|| indices.x == max || indices.y == max || indices.z == max;
+	}
+
+	bool boundaryVoxel(const Hash& item) const
+	{
+		auto indices = index(item);
+
+		auto min = 0;
+		auto max = m_split - 1;
+
+		return indices.x == min || indices.y == min || indices.z == min
+			|| indices.x == max || indices.y == max || indices.z == max;
+	}
+
+	bool boundaryVoxel(const Indices& item) const
+	{
+		auto indices = index(item);
+
+		auto min = 0;
+		auto max = m_split - 1;
+
+		return indices.x == min || indices.y == min || indices.z == min
+			|| indices.x == max || indices.y == max || indices.z == max;
+	}
+
+	Indices clampToBoundaries(const Indices& item) const
+	{
+		Indices inBoundaries = item;
+
+		inBoundaries.x = std::max(std::min(inBoundaries.x, m_split - 1), 0);
+		inBoundaries.y = std::max(std::min(inBoundaries.y, m_split - 1), 0);
+		inBoundaries.z = std::max(std::min(inBoundaries.z, m_split - 1), 0);
+
+		return inBoundaries;
 	}
 
 
@@ -525,6 +572,53 @@ public:
 	Value& operator [] (const Indices& item)
 	{
 		return m_map[hash(item)];
+	}
+
+
+	// TODO : add templates
+	bool boundaryVoxel(const Point& item) const
+	{
+		auto indices = index(item);
+
+		auto min = 0;
+		auto max = m_split - 1;
+
+		return indices.x == min || indices.y == min || indices.z == min
+			|| indices.x == max || indices.y == max || indices.z == max;
+	}
+
+	bool boundaryVoxel(const Hash& item) const
+	{
+		auto indices = index(item);
+
+		auto min = 0;
+		auto max = m_split - 1;
+
+		return indices.x == min || indices.y == min || indices.z == min
+			|| indices.x == max || indices.y == max || indices.z == max;
+	}
+
+	bool boundaryVoxel(const Indices& item) const
+	{
+		auto indices = index(item);
+
+		auto min = 0;
+		auto max = m_split - 1;
+
+		return indices.x == min || indices.y == min || indices.z == min
+			|| indices.x == max || indices.y == max || indices.z == max;
+	}
+
+
+	Indices clampToBoundaries(const Indices& item) const
+	{
+		Indices inBoundaries = item;
+
+		inBoundaries.x = std::max(std::min(inBoundaries.x, m_split - 1), 0);
+		inBoundaries.y = std::max(std::min(inBoundaries.y, m_split - 1), 0);
+		inBoundaries.z = std::max(std::min(inBoundaries.z, m_split - 1), 0);
+
+		return inBoundaries;
 	}
 
 
