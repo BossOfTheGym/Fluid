@@ -50,7 +50,7 @@ auto readProfile(const std::string& filename)
 
 
 template<class Float>
-Mesh constructMeshFromProfile(const Profile<Float>& profile, float yLower, float yUpper, int angleSplit)
+Mesh constructMeshFromProfile(const Profile<Float>& profile, Float yLower, Float yUpper, int angleSplit)
 {
 	using Points = std::vector<Vec3>;
 
@@ -66,11 +66,13 @@ Mesh constructMeshFromProfile(const Profile<Float>& profile, float yLower, float
 
 			result.push_back(Vec3(val, arg, 0.0f));
 		}
+
+		return result;
 	};
 
 	auto getRotationMat = [&] (int split) -> Mat3
 	{
-		Mat3 result(1.0f);
+		Mat3 mat(1.0f);
 
 		Float cosAngle = std::cos(PI2 / split);
 		Float sinAngle = std::sin(PI2 / split);
@@ -78,14 +80,14 @@ Mesh constructMeshFromProfile(const Profile<Float>& profile, float yLower, float
 		mat[0][0] = +cosAngle; mat[2][0] = -sinAngle;
 		mat[0][2] = +sinAngle; mat[2][2] = +cosAngle;
 
-		return result;
+		return mat;
 	};
 
 	auto rotatePoints = [&] (Points& points, const Mat3& mat) -> void
 	{
 		for (auto& point : points)
 		{
-			point *= mat;
+			point = mat * point;
 		}
 	};
 
@@ -93,9 +95,9 @@ Mesh constructMeshFromProfile(const Profile<Float>& profile, float yLower, float
 	Mesh result;
 	Points back  = getPoints(profile);
 	Points front = getPoints(profile);
-	Mat3 rotation = getRotationMat(angleAplit);
+	Mat3 rotation = getRotationMat(angleSplit);
 
-	result.triangles.reserve(profile.count * 2 * angleSplit);
+	result.triangles.reserve(2ll * profile.count * angleSplit);
 	for (int k = 0; k < angleSplit; k++)
 	{
 		back = front;
@@ -105,7 +107,7 @@ Mesh constructMeshFromProfile(const Profile<Float>& profile, float yLower, float
 		result.triangles.push_back(Triangle{back.front(), front.front(), Vec3(0.0f, yLower, 0.0f)});
 
 		//add profile triangles
-		for (int i = 0; i < count - 1; i++)
+		for (int i = 0; i < profile.count - 1; i++)
 		{
 			result.triangles.push_back(Triangle{ back[i    ], front[i    ], front[i + 1]});
 			result.triangles.push_back(Triangle{front[i + 1],  back[i + 1],  back[i    ]});
@@ -117,5 +119,6 @@ Mesh constructMeshFromProfile(const Profile<Float>& profile, float yLower, float
 
 	return result;
 }
+
 
 #endif

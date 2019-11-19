@@ -37,6 +37,8 @@ public:
 			std::cout << "Failed to build program. " << program.infoLog();
 		}
 
+		(program.detachShader(shaders), ...);
+
 		return program;
 	}
 };

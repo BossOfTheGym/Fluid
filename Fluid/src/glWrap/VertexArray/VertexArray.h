@@ -20,6 +20,7 @@ public:
 		GLvoid*  indices        = nullptr;           // drawElements
 	};
 
+	//TODO : passing data of type 'double' erquires some special logic(good practice)
 	struct PointerInfo
 	{
 		GLuint        index      = static_cast<GLuint>(0);  // attribute index

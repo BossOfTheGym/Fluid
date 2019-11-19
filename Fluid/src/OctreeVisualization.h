@@ -100,7 +100,7 @@ namespace vis
 		{
 			  DrawMode::Points
 			, 0
-			, static_cast<GLsizei>(fvo.size())
+			, static_cast<GLsizei>(data.size())
 			, IndicesType::None
 			, nullptr
 		};
