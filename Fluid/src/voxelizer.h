@@ -276,55 +276,6 @@ namespace voxel
 			}
 		}
 
-		/*template<class Value>
-		void refineLabel(FVO<Value>& voxels, Value empty, Value interior, Value exterior, Value label, Value exchange)
-		{
-			using Hash    = typename FVO<Value>::Hash;
-			using Indices = typename FVO<Value>::Indices;
-
-			auto goodBoundary = [&] (const auto& hash)
-			{
-				Indices checks[6] =
-				{
-					  Indices{+1, +0, +0}
-					, Indices{-1, +0, +0}
-					, Indices{+0, +1, +0}
-					, Indices{+0, -1, +0}
-					, Indices{+0, +0, +1}
-					, Indices{+0, +0, -1}
-				};
-
-				auto split   = voxels.split();
-				auto indices = voxels.index(hash);
-				for (auto& check : checks)
-				{
-					auto currIndices = voxels.clampToBoundaries(indices + check);
-
-					if (voxels[currIndices] == label)
-					{
-						return true;
-					}
-				}
-				
-				return false;
-			};
-
-			auto boundary = [&] (const auto& voxel)
-			{
-				return voxel != empty && voxel != interior && voxel != exterior;
-			};
-
-			for(Hash currHash = 0; currHash < voxels.size(); currHash++)
-			{
-				auto& voxel = voxels[currHash];
-
-				if (boundary(voxel) && !goodBoundary(currHash))
-				{
-					voxel = exchange;
-				}
-			}
-		}*/
-
 		template<class Value, class Boundary, class GoodBoundary>
 		void refineLabel(FVO<Value>& voxels, Value replacement, Boundary boundary, GoodBoundary goodBoundary)
 		{
