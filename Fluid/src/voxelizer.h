@@ -308,34 +308,6 @@ namespace voxel
 				return voxel != empty && voxel != interior && voxel != exterior;
 			};
 
-			/*auto has6ConnectivityExteriorNeighbour = [&] (const auto& hash, const Value& neighbour)
-			{
-				Indices checks[6] =
-				{
-					  Indices{+1, +0, +0}
-					, Indices{-1, +0, +0}
-					, Indices{+0, +1, +0}
-					, Indices{+0, -1, +0}
-					, Indices{+0, +0, +1}
-					, Indices{+0, +0, -1}
-				};
-				
-				const auto& voxel = voxels[hash];
-
-				auto indices = voxels.index(hash);
-				for (auto& check : checks)
-				{
-					auto index = voxels.clampToBoundaries(indices + check);
-
-					if (voxels[index] == neighbour)
-					{
-						return true;
-					}
-				}
-
-				return false;
-			};*/
-
 
 			//delete inner voxels
 			auto hasExteriorNeighbour = [&] (const auto& hash)
