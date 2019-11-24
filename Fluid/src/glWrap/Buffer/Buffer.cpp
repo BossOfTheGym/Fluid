@@ -9,14 +9,6 @@ Buffer::Buffer()
 	, m_usage(BufferUsage::None)
 {}
 
-Buffer::Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
-	: Buffer()
-{
-	genBuffer();
-
-	bufferData(size, data, usage);	
-}
-
 Buffer::Buffer(Buffer&& buffer) noexcept : Id()
 {
 	*this = std::move(buffer);
@@ -45,10 +37,22 @@ void Buffer::genBuffer()
 {
 	GLuint bufferId;
 
+	//generates only name(id) but not the contents(buffers inner state)
 	glGenBuffers(1, &bufferId);
 
 	static_cast<Id&>(*this) = bufferId;
 }
+
+void Buffer::createBuffer()
+{
+	GLuint bufferID;
+
+	//generates name(id) and contents(buffers inner state)
+	glCreateBuffers(1, &bufferID);
+
+	static_cast<Id&>(*this) = bufferID;
+}
+
 
 void Buffer::bind(BufferTarget target) const
 {
@@ -60,7 +64,26 @@ void Buffer::unbind(BufferTarget target) const
 	glBindBuffer(static_cast<GLenum>(target), Id::Empty);
 }
 
-void Buffer::bufferData(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
+
+void Buffer::bufferData(BufferTarget target, GLsizeiptr size, const GLvoid* data, BufferUsage usage)
+{
+	m_usage = usage;
+	m_size  = size;
+
+	glBufferData(static_cast<GLenum>(target), size, data, static_cast<GLenum>(usage));
+}
+
+void Buffer::bufferSubData(BufferTarget target, GLintptr offset, GLsizei size, const GLvoid *data)
+{
+	glBufferSubData(static_cast<GLenum>(target), offset, size, data);
+}
+
+void Buffer::namedBufferSubData(GLintptr offset, GLsizei size, const GLvoid *data)
+{
+	glNamedBufferSubData(id(), offset, size, data);
+}
+
+void Buffer::namedBufferData(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
 {
 	m_usage = usage;
 	m_size  = size;
@@ -68,10 +91,6 @@ void Buffer::bufferData(GLsizeiptr size, const GLvoid* data, BufferUsage usage)
 	glNamedBufferData(id(), size, data, static_cast<GLenum>(usage));
 }
 
-void Buffer::bufferSubData(GLintptr offset, GLsizei size, const GLvoid *data)
-{
-	glNamedBufferSubData(id(), offset, size, data);
-}
 
 void Buffer::deleteBuffer()
 {
@@ -81,20 +100,22 @@ void Buffer::deleteBuffer()
 	resetBuffer();
 }
 
-void Buffer::bindBufferBase(BufferTarget target, GLuint index)
+
+void Buffer::bindBufferBase(IndexBufferTarget target, GLuint index)
 {
 	glBindBufferBase(static_cast<GLenum>(target), index, id());
 }
 
-void Buffer::bindBufferRange(BufferTarget target, GLuint index, GLintptr offset, GLsizeiptr size)
+void Buffer::bindBufferRange(IndexBufferTarget target, GLuint index, GLintptr offset, GLsizeiptr size)
 {
 	glBindBufferRange(static_cast<GLenum>(target), index, id(), offset, size);
 }
 
-void Buffer::unbindBufferBase(BufferTarget target, GLuint index)
+void Buffer::unbindBufferBase(IndexBufferTarget target, GLuint index)
 {
 	glBindBufferBase(static_cast<GLenum>(target), index, Id::Empty);
 }
+
 
 GLint Buffer::getBufferParameteriv()
 {

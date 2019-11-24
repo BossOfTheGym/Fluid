@@ -26,8 +26,6 @@ public:
 public:
 	ShaderProgram();
 
-	ShaderProgram(const ComputeInfo& computeInfo);
-
     ShaderProgram(ShaderProgram&& shaderProgram) noexcept;
 
 

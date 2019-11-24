@@ -34,6 +34,9 @@ public:
 public:
 	void genTexture();
 
+	void createTexture(TextureTarget target);
+
+
     void bind(TextureTarget target) const;
 
 	void unbind(TextureTarget target) const;
@@ -41,6 +44,7 @@ public:
 	void active(TextureActive texture) const;
 
 	void bindToUnit(TextureUnit unit) const;
+
 
     void texParameteri(TextureTarget target, TextureParameter name, GLint parameter);
 

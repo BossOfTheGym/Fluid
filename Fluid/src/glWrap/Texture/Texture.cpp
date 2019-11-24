@@ -36,6 +36,16 @@ void Texture::genTexture()
 	static_cast<Id&>(*this) = textureId;
 }
 
+void Texture::createTexture(TextureTarget target)
+{
+	GLuint textureId;
+
+	glCreateTextures(static_cast<GLenum>(target), 1, &textureId);
+
+	static_cast<Id&>(*this) = textureId;
+}
+
+
 void Texture::bind(TextureTarget target) const
 {
     glBindTexture(static_cast<GLenum>(target), id());

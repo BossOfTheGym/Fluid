@@ -159,6 +159,9 @@ enum class AttributeSize : GLint
 	, Two   = 2
 	, Three = 3
 	, Four  = 4
+
+	//TODO : check this out
+	, D3D_BGRA = GL_BGRA
 };
 
 
@@ -251,6 +254,14 @@ enum class BufferTarget : GLenum
 	, UniformBuffer           = GL_UNIFORM_BUFFER
 
 	, None                    = static_cast<GLenum>(0)
+};
+
+enum class IndexBufferTarget : GLenum
+{
+	  AtomicCounterBuffer     = GL_ATOMIC_COUNTER_BUFFER
+	, ShaderStorageBuffer     = GL_SHADER_STORAGE_BUFFER
+	, TransformFeedbackBuffer = GL_TRANSFORM_FEEDBACK_BUFFER
+	, UniformBuffer           = GL_UNIFORM_BUFFER
 };
 
 enum class BufferUsage : GLenum

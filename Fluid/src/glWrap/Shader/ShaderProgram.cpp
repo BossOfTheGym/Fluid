@@ -11,13 +11,6 @@ ShaderProgram::ShaderProgram()
 	, m_computeInfo{}
 {}
 
-ShaderProgram::ShaderProgram(
-	 const ComputeInfo& computeInfo
-) 
-    : Id(glCreateProgram())
-	, m_computeInfo(computeInfo)
-{}
-
 ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram) noexcept : Id()
 {
 	*this = std::move(shaderProgram);

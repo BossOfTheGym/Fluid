@@ -41,11 +41,11 @@ BoxBuilder::BoxBuilder()
 	};
 
 
-	m_vertexPositions.genBuffer();
-	m_vertexPositions.bufferData(sizeof(vertices), vertices, BufferUsage::StaticDraw);
+	m_vertexPositions.createBuffer();
+	m_vertexPositions.namedBufferData(sizeof(vertices), vertices, BufferUsage::StaticDraw);
 
-	m_indicesBuffer.genBuffer();
-	m_indicesBuffer.bufferData(sizeof(indices), indices, BufferUsage::StaticDraw);
+	m_indicesBuffer.createBuffer();
+	m_indicesBuffer.namedBufferData(sizeof(indices), indices, BufferUsage::StaticDraw);
 }
 
 
@@ -53,7 +53,8 @@ VertexArray BoxBuilder::buildShape()
 {
 	VertexArray result;
 
-	result.info() = VertexArray::DrawInfo{
+	result.info() = VertexArray::DrawInfo
+	{
 		  DrawMode::Triangles
 		, static_cast<GLint>(0)
 		, static_cast<GLsizei>(36)
@@ -65,7 +66,8 @@ VertexArray BoxBuilder::buildShape()
 	result.bind();
 	result.setAttribPointerInBuffer(
 		m_vertexPositions
-		, VertexArray::PointerInfo{
+		, VertexArray::PointerInfo
+		{
 			  static_cast<GLuint>(VertexAttributes::Position)
 			, AttributeSize::Three
 			, DataType::Float

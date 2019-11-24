@@ -13,17 +13,6 @@ Shader::Shader()
 	, m_type(ShaderType::None)
 {}
 
-Shader::Shader(ShaderType type)
-	: Id(glCreateShader(static_cast<GLenum>(type)))
-	, m_type(type)
-{}
-
-Shader::Shader(ShaderType type, const String& source) : Shader(type)
-{
-    shaderSource(source);
-	compileShader();
-}
-
 Shader::Shader(Shader&& shader) noexcept : Id()
 {
 	*this = std::move(shader);

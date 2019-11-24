@@ -2,25 +2,9 @@
 
 
 //constructors & destructor
-namespace
-{
-	Id genVertexArray()
-	{
-		GLuint vertexArrayId;
-		glGenVertexArrays(1, &vertexArrayId);
-
-		return vertexArrayId;
-	}
-}
-
 VertexArray::VertexArray()
 	: Id()
 	, m_info{}
-{}
-
-VertexArray::VertexArray(const DrawInfo& info) 
-	: Id(genVertexArray())
-	, m_info(info)
 {}
 
 VertexArray::VertexArray(VertexArray&& vertexBuffer) noexcept : Id()
@@ -65,8 +49,24 @@ void VertexArray::resetArrayBuffer()
 //core functions
 void VertexArray::genArray()
 {
-	static_cast<Id&>(*this) = genVertexArray();
+	GLuint arrayID;
+
+	//creates only name, doesn't create inner state
+	glGenVertexArrays(1, &arrayID);
+
+	static_cast<Id&>(*this) = arrayID;
 }
+
+void VertexArray::createArray()
+{
+	GLuint arrayID;
+
+	//creates name and inner object's state
+	glCreateVertexArrays(1, &arrayID);
+
+	static_cast<Id&>(*this) = arrayID;
+}
+
 
 void VertexArray::bind() const
 {
@@ -80,6 +80,7 @@ void VertexArray::unbind() const
 	glBindBuffer(static_cast<GLenum>(BufferTarget::ArrayBuffer)       , Id::Empty);
 	glBindBuffer(static_cast<GLenum>(BufferTarget::ElementArrayBuffer), Id::Empty);
 }
+
 
 void VertexArray::enableAttribArray(GLuint index)
 {
@@ -98,10 +99,11 @@ void VertexArray::vertexAttribPointer(const PointerInfo& info)
 	);
 }
 
-void VertexArray::disableAttribPointer(GLuint index)
+void VertexArray::disableAttribArray(GLuint index)
 {
     glDisableVertexAttribArray(index);
 }
+
 
 void VertexArray::drawArrays() const
 {
@@ -115,7 +117,7 @@ void VertexArray::drawArrays() const
 void VertexArray::drawElements() const
 {
 	glDrawElements(
-		static_cast<GLenum>(m_info.drawMode)
+		  static_cast<GLenum>(m_info.drawMode)
 		, m_info.elementsCount
 		, static_cast<GLenum>(m_info.indicesType)
 		, m_info.indices
@@ -126,6 +128,7 @@ void VertexArray::drawElements() const
 //misc
 void VertexArray::draw() const
 {
+	//TODO : rework this(there're plenty of draw* functions)
 	if (m_info.indicesType == IndicesType::None)
 	{
 		drawArrays();

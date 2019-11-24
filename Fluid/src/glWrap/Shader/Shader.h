@@ -14,10 +14,6 @@ private:
 public:
 	Shader();
 
-	Shader(ShaderType type);
-
-    Shader(ShaderType type, const String& source);
-
     Shader(Shader&& shader) noexcept;
 
 

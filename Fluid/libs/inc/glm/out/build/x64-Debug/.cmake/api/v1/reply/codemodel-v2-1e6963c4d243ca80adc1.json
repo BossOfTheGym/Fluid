@@ -27,8 +27,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "D:/Херня/Fluid/Fluid/Fluid/libs/inc/glm/out/build/x64-Debug",
-		"source" : "D:/Херня/Fluid/Fluid/Fluid/libs/inc/glm"
+		"build" : "C:/Users/Вова/Desktop/aaa/Fluid/libs/inc/glm/out/build/x64-Debug",
+		"source" : "C:/Users/Вова/Desktop/aaa/Fluid/libs/inc/glm"
 	},
 	"version" : 
 	{

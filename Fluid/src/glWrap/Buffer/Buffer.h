@@ -9,8 +9,6 @@ class Buffer : public Id
 public:
 	Buffer();
 
-	Buffer(GLsizeiptr size, const GLvoid* data, BufferUsage usage);
-
 	Buffer(Buffer&& buffer) noexcept;
 
 	~Buffer();
@@ -22,22 +20,32 @@ public:
 public:
 	void genBuffer();
 
+	void createBuffer();
+
+
 	void bind(BufferTarget target) const;
 
 	void unbind(BufferTarget target) const;
 
+
 	void deleteBuffer();
 
-	void bufferData(GLsizeiptr pSize, const GLvoid* data, BufferUsage pUsage);
+
+	void bufferData(BufferTarget target, GLsizeiptr pSize, const GLvoid* data, BufferUsage pUsage);
 	
-	void bufferSubData(GLintptr offset, GLsizei size, const GLvoid *data);
+	void bufferSubData(BufferTarget target, GLintptr offset, GLsizei size, const GLvoid *data);
+
+	void namedBufferData(GLsizeiptr pSize, const GLvoid* data, BufferUsage pUsage);
+
+	void namedBufferSubData(GLintptr offset, GLsizei size, const GLvoid *data);
+
 
 	//only AtomicCounterBuffer, TransformFeedbackBuffer, UniformBuffer, ShaderStorageBuffer allowed
-	void bindBufferBase(BufferTarget target, GLuint index);
+	void bindBufferBase(IndexBufferTarget target, GLuint index);
 
-	void bindBufferRange(BufferTarget target, GLuint index, GLintptr offset, GLsizeiptr size);
+	void bindBufferRange(IndexBufferTarget target, GLuint index, GLintptr offset, GLsizeiptr size);
 
-	void unbindBufferBase(BufferTarget target, GLuint index);
+	void unbindBufferBase(IndexBufferTarget target, GLuint index);
 
 
 	GLint getBufferParameteriv();

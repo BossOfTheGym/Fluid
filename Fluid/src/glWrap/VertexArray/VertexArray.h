@@ -35,8 +35,6 @@ public:
 public:
 	VertexArray();
 
-	VertexArray(const DrawInfo& info);
-
     VertexArray(VertexArray&& vertexBuffer) noexcept;
 
     ~VertexArray();
@@ -48,6 +46,8 @@ public:
 public:
 	void genArray();
 
+	void createArray();
+
     void bind() const;
 
 	void unbind() const;
@@ -56,7 +56,7 @@ public:
 
 	void vertexAttribPointer(const PointerInfo& info);
 
-    void disableAttribPointer(GLuint index);
+    void disableAttribArray(GLuint index);
 
 	void drawArrays() const;
 

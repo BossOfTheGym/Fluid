@@ -33,8 +33,11 @@ public:
 
 
 public:
-	//depend
+	//methods depend on object's state
+	void genFramebuffer();
+
 	void createFramebuffer();
+
 
 	void bindFramebuffer(FramebufferTarget target) const;
 
@@ -70,7 +73,7 @@ public:
 	void namedClearBufferfi(FramebufferClearBufferfi buffer, BufferNumber drawBuffer, GLfloat depth, GLint stencil);
 
 
-	//don't depend on object's state
+	//methods don't depend on object's state
 	void clear(ClearMask mask);
 
 	void clearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);

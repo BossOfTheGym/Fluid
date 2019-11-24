@@ -27,24 +27,26 @@ QuadBuilder::QuadBuilder()
 		, Vec2(+1.0f, +1.0f)
 	};
 
-	m_vertexPositions.genBuffer();
-	m_vertexPositions.bufferData(sizeof(vertices), vertices, BufferUsage::StaticDraw);
+	m_vertexPositions.createBuffer();
+	m_vertexPositions.namedBufferData(sizeof(vertices), vertices, BufferUsage::StaticDraw);
 
-	m_textureCoords.genBuffer();
-	m_textureCoords.bufferData(sizeof(textureCoords), textureCoords, BufferUsage::StaticDraw);
+	m_textureCoords.createBuffer();
+	m_textureCoords.namedBufferData(sizeof(textureCoords), textureCoords, BufferUsage::StaticDraw);
 }
 
 
 VertexArray QuadBuilder::buildShape()
 {
-	VertexArray quadShape(
-		{
-			  DrawMode::Triangles
-			, 0 // first
-		    , 6 // elements count(vertices count)
-		}
-	);
+	VertexArray quadShape;
 
+	quadShape.info() = VertexArray::DrawInfo
+	{
+		DrawMode::Triangles
+		, 0 // first
+		, 6 // elements count(vertices count)
+	};
+
+	quadShape.genArray();
 	quadShape.bind();
 	quadShape.setAttribPointerInBuffer(
 		m_vertexPositions

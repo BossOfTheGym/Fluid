@@ -32,14 +32,24 @@ Framebuffer& Framebuffer::operator = (Framebuffer&& buffer) noexcept
 }
 
 //core functions
-void Framebuffer::createFramebuffer()
+void Framebuffer::genFramebuffer()
 {
 	GLuint framebufferId;
 
+	glGenFramebuffers(1, &framebufferId);
+
+	static_cast<Id&>(*this) = framebufferId;
+}
+
+void Framebuffer::createFramebuffer()
+{
+	GLuint framebufferId;
+	
 	glCreateFramebuffers(1, &framebufferId);
 
 	static_cast<Id&>(*this) = framebufferId;
 }
+
 
 void Framebuffer::bindFramebuffer(FramebufferTarget target) const
 {
@@ -90,7 +100,7 @@ void Framebuffer::namedFramebufferTexture(FramebufferAttachment attachment, cons
 
 void Framebuffer::framebufferTextureLayer(FramebufferAttachment attachment, const Texture& texture, GLint level, GLint layer)
 {
-	//TODO
+	//TODO : add openGl function
 }
 
 
