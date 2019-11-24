@@ -35,8 +35,8 @@ namespace vis
 			data.push_back(svo.voxel(hash));
 		}
 
-		voxels.voxelData.genBuffer();
-		voxels.voxelData.bufferData(sizeof(Vec3) * data.size(), data.data(), BufferUsage::StaticDraw);
+		voxels.voxelData.createBuffer();
+		voxels.voxelData.namedBufferData(sizeof(Vec3) * data.size(), data.data(), BufferUsage::StaticDraw);
 		
 		//array
 		voxels.voxelArray.genArray();
@@ -90,8 +90,8 @@ namespace vis
 			}
 		}
 
-		voxels.voxelData.genBuffer();
-		voxels.voxelData.bufferData(sizeof(Vec3) * data.size(), data.data(), BufferUsage::StaticDraw);
+		voxels.voxelData.createBuffer();
+		voxels.voxelData.namedBufferData(sizeof(Vec3) * data.size(), data.data(), BufferUsage::StaticDraw);
 
 		//array
 		voxels.voxelArray.genArray();

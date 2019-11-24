@@ -160,7 +160,7 @@ void test3MainLoop()
 
 
 	//TEST
-	GLuint vao;
+	/*GLuint vao;
 	GLuint vbo;
 
 	GLfloat vertices[] = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f};
@@ -176,7 +176,7 @@ void test3MainLoop()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, 0, 0);
 	glBindVertexArray(0);
 
-	voxelSize = 0.5f;
+	voxelSize = 0.5f;*/
 	//
 
 	std::cout << "---Mainloop---" << std::endl;
@@ -213,8 +213,8 @@ void test3MainLoop()
 		voxelArray.unbind();
 
 		//TEST
-		glBindVertexArray(vao);
-		glDrawArrays(GL_POINTS, 0, 2);
+		/*glBindVertexArray(vao);
+		glDrawArrays(GL_POINTS, 0, 2);*/
 		//TEST
 
 		voxelProgram.unbind();
