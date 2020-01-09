@@ -9,6 +9,7 @@
 class VertexArray : public Id
 {
 public:
+	//TODO : there're plenty of drawing procedures, reaarrange a bit the logic
 	struct DrawInfo
 	{
 		DrawMode drawMode = DrawMode::None;        // drawArrays

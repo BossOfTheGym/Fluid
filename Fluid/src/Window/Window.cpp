@@ -29,7 +29,7 @@ bool Window::init(const CreationInfo& info)
 	}
 
 	Window::sContext = new Window();
-	Window::sContext->m_info   = std::move(info);
+	Window::sContext->m_info   = info;
 	Window::sContext->m_window = glfwCreateWindow(info.width, info.height, info.name.c_str(), nullptr, nullptr);
 
 	glfwMakeContextCurrent(Window::sContext->m_window);

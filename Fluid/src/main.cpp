@@ -20,6 +20,7 @@
 #include <misc/PingPongBufer.h>
 #include <misc/memory/SimpleLinearAllocator.h>
 
+#include "ArrowHead.h"
 #include "Profile.h"
 #include "voxelizer.h"
 #include "OctreeVisualization.h"
@@ -90,6 +91,7 @@ void test3MainLoop()
 	SimpleShaderLoader shaderLoader;
 	ShaderProgramBuilder programBuilder;
 	BoxBuilder boxBuilder;
+	ArrowHeadBuilder arrowHeadBuilder;
 
 	//resources
 	Shader voxelVert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/voxel/voxel.vert");
@@ -105,7 +107,8 @@ void test3MainLoop()
 	auto voxelSizeLoc = voxelProgram.getUniformLocation("uVoxelSize");
 	auto voxelPvmLoc  = voxelProgram.getUniformLocation("uPVM");
 
-	VertexArray boxArray = boxBuilder.buildShape();
+	auto arrowHeadArray = arrowHeadBuilder.buildShape();
+	auto boxArray = boxBuilder.buildShape();
 	auto [voxelArray, voxelData, voxelSize] = testFVO();
 
 	Framebuffer defaultFB = Framebuffer::default();
@@ -124,6 +127,7 @@ void test3MainLoop()
 	OpenGL::polygonMode(Face::FrontAndBack, PolygonMode::Line);
 	OpenGL::enable(Capability::DepthTest);
 	OpenGL::enable(Capability::CullFace);
+	OpenGL::disable(Capability::CullFace);
 	OpenGL::cullFace(Face::Back);
 
 	std::cout << "---Mainloop---" << std::endl;
@@ -141,17 +145,19 @@ void test3MainLoop()
 		m = r * m;
 		auto pvm = p * v * m;
 
-
 		boxProgram.use();
 		boxProgram.setUniformMat4(boxPvmLoc, pvm);
 
-		boxArray.bind();
+		/*boxArray.bind();
 		boxArray.draw();	
-		boxArray.unbind();
+		boxArray.unbind();*/
+		arrowHeadArray.bind();
+		arrowHeadArray.draw();
+		arrowHeadArray.unbind();
 
 		boxProgram.unbind();
 
-		voxelProgram.use();
+		/*voxelProgram.use();
 		voxelProgram.setUniformMat4(voxelPvmLoc, pvm);
 		voxelProgram.setUniform1f(voxelSizeLoc, voxelSize);
 
@@ -159,7 +165,7 @@ void test3MainLoop()
 		voxelArray.draw();
 		voxelArray.unbind();
 
-		voxelProgram.unbind();
+		voxelProgram.unbind();*/
 
 		//swap front/back
 		glfwSwapBuffers(window);

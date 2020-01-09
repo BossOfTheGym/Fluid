@@ -170,6 +170,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="assets\shaders\box\box.frag" />
+    <None Include="assets\shaders\box\box.vert" />
     <None Include="assets\shaders\field.frag" />
     <None Include="assets\shaders\quad.frag" />
     <None Include="assets\shaders\quad.vert" />
@@ -178,6 +180,7 @@
     <None Include="assets\shaders\voxel\voxel.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ArrowHead.h" />
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\glWrap\Buffer\Buffer.h" />
     <ClInclude Include="src\glWrap\Framebuffer\Framebuffer.h" />
@@ -211,6 +214,7 @@
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ArrowHead.cpp" />
     <ClCompile Include="src\glWrap\Buffer\Buffer.cpp" />
     <ClCompile Include="src\glWrap\Framebuffer\Framebuffer.cpp" />
     <ClCompile Include="src\glWrap\ID\Id.cpp" />
