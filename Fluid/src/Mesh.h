@@ -8,4 +8,10 @@ struct Mesh
 	std::vector<Triangle> triangles{};
 };
 
+struct IndicesMesh
+{
+	std::vector<Vec3> points{};
+	std::vector<int> indices{};
+};
+
 #endif

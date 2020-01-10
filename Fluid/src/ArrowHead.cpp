@@ -1,15 +1,17 @@
 #include "ArrowHead.h"
 
+#include <Render/Attributes.h>
+
 #include <cmath>
 
 
-ArrowHeadBuilder::ArrowHeadBuilder(  uint32_t split
+ArrowHeadMeshBuilder::ArrowHeadMeshBuilder(
+	  uint32_t split
 	, Float lengthFront
 	, Float lengthBack
 	, Float widthMiddle
 	, Float widthBack
 	, Float heightBack
-	, Float sigma
 ) 
 	: m_split(split)
 	, m_lengthFront(lengthFront)
@@ -17,17 +19,16 @@ ArrowHeadBuilder::ArrowHeadBuilder(  uint32_t split
 	, m_widthMiddle(widthMiddle)
 	, m_widthBack(widthBack)
 	, m_heightBack(heightBack)
-	, m_sigma(sigma)
-{}
-
-VertexArray ArrowHeadBuilder::buildShape()
+	, m_mesh()
 {
+	const Float EPS = 0.025;
+
 	const auto dx = m_widthBack / m_split;
 	const auto x0 = -m_widthBack / 2;
 	const auto xn = +m_widthBack / 2;
 
 	const auto h = m_heightBack;
-	const auto s = m_sigma;
+	const auto s = -static_cast<Float>(x0 * x0 / std::log(EPS / h));
 
 	//compute points of the back profile
 	std::vector<Vec3> backProfile;
@@ -74,8 +75,8 @@ VertexArray ArrowHeadBuilder::buildShape()
 	meshData.push_back(Vec3(-m_widthBack / 2, 0.0f, 0.0));
 	meshData.push_back(Vec3(+m_widthBack / 2, 0.0f, 0.0));
 
-	meshData.push_back(Vec3(-m_widthMiddle / 2, 0.0f, m_lengthBack));
 	meshData.push_back(Vec3(+m_widthMiddle / 2, 0.0f, m_lengthBack));
+	meshData.push_back(Vec3(-m_widthMiddle / 2, 0.0f, m_lengthBack));
 	meshData.push_back(Vec3(+m_widthBack / 2, 0.0f, 0.0));
 
 	//construct top part
@@ -86,8 +87,8 @@ VertexArray ArrowHeadBuilder::buildShape()
 		auto& m1 = middleProfile[i];
 		auto& m2 = middleProfile[i + 1];
 
-		meshData.push_back(b1);
 		meshData.push_back(b2);
+		meshData.push_back(b1);
 		meshData.push_back(m1);
 
 		meshData.push_back(m1);
@@ -100,8 +101,8 @@ VertexArray ArrowHeadBuilder::buildShape()
 		auto& m1 = middleProfile[i];
 		auto& m2 = middleProfile[i + 1];
 
-		meshData.push_back(m1);
 		meshData.push_back(m2);
+		meshData.push_back(m1);
 		meshData.push_back(Vec3(0.0, 0.0, m_lengthBack + m_lengthFront));
 	}
 
@@ -113,10 +114,10 @@ VertexArray ArrowHeadBuilder::buildShape()
 	{
 		xMin = std::min(point.x, xMin);
 		xMax = std::max(point.x, xMax);
-		yMin = std::min(point.y, xMin);
-		yMax = std::max(point.y, xMax);
-		zMin = std::min(point.z, xMin);
-		zMax = std::max(point.z, xMax);
+		yMin = std::min(point.y, yMin);
+		yMax = std::max(point.y, yMax);
+		zMin = std::min(point.z, zMin);
+		zMax = std::max(point.z, zMax);
 	}
 
 	Float delta = std::max(std::max(xMax - xMin, yMax - yMin), zMax - zMin) / 2;
@@ -127,17 +128,83 @@ VertexArray ArrowHeadBuilder::buildShape()
 		point.z = (point.z - (zMin + zMax) / 2) / delta;
 	}
 
+	//clear profile data
+	backProfile.swap(std::vector<Vec3>());
+	middleProfile.swap(std::vector<Vec3>());
+
+	//split to points and indices
+	auto comp = [&] (const Vec3& p1, const Vec3& p2)
+	{
+		if (p1.x != p2.x)
+		{
+			return p1.x < p2.x;
+		}
+		if (p1.y != p2.y)
+		{
+			return p1.y < p2.y;
+		}
+		return p1.z <= p2.z;
+	};
+
+	std::vector<Vec3> points(meshData);
+
+	std::sort(points.begin(), points.end(), comp);
+	auto last = std::unique(points.begin(), points.end());
+	points.resize(last - points.begin());
+
+	std::vector<int> indices;
+	
+	//TODO : Problem with std::lower_bound: doesn't find some vertices sometimes
+	for (auto& point : meshData)
+	{
+		auto i = std::find(points.begin(), points.end(), point);
+		if (i != points.end())
+		{
+			indices.push_back(i - points.begin());
+		}
+		else
+		{
+			std::cout << "HMMMMM..." << std::endl;
+		}
+	}
+
+	m_mesh.indices.swap(indices);
+	m_mesh.points.swap(points);
+}
+
+IndicesMesh ArrowHeadMeshBuilder::buildMesh()
+{
+	return m_mesh;
+}
+
+
+ArrowHeadArrayBuilder::ArrowHeadArrayBuilder(const IndicesMesh& mesh)
+	: m_mesh(mesh)
+{}
+
+ArrowHeadArrayBuilder::ArrowHeadArrayBuilder(IndicesMesh&& mesh)
+	: m_mesh(std::move(mesh))
+{}
+
+VertexArray ArrowHeadArrayBuilder::buildShape()
+{
 	//construst vertex array
 	Buffer vertices{};
 	vertices.createBuffer();
-	vertices.namedBufferData(sizeof(Vec3) * meshData.size(), meshData.data(), BufferUsage::StaticDraw);
+	vertices.namedBufferData(sizeof(Vec3) * m_mesh.points.size(), m_mesh.points.data(), BufferUsage::StaticDraw);
+
+	Buffer indices{};
+	indices.createBuffer();
+	indices.namedBufferData(sizeof(int) * m_mesh.indices.size(), m_mesh.indices.data(), BufferUsage::StaticDraw);
 
 	VertexArray result;
 	result.info() = VertexArray::DrawInfo
 	{
-		  DrawMode::Triangles
+		DrawMode::Triangles
 		, 0
-		, static_cast<GLsizei>(meshData.size())
+		, static_cast<GLsizei>(m_mesh.indices.size())
+		, IndicesType::UnsignedInt
+		, nullptr
 	};
 	result.createArray();
 	result.bind();
@@ -145,14 +212,16 @@ VertexArray ArrowHeadBuilder::buildShape()
 		vertices
 		, VertexArray::PointerInfo
 		{
-			  static_cast<GLuint>(VertexAttributes::Position),
-			  AttributeSize::Three,
-			  DataType::Float,
-			  GLBool::False,
-			  0,
-			  nullptr
+			static_cast<GLuint>(VertexAttributes::Position),
+			AttributeSize::Three,
+			DataType::Float,
+			GLBool::False,
+			0,
+			nullptr
 		}
 	);
+	result.setElementsBuffer(indices);
+
 	result.unbind();
 
 	return result;

@@ -64,7 +64,7 @@ auto testFVO()
 	return vis::fromFVO(
 		voxel::fvoVoxelize<int>(
 			testProfileMesh()
-			, 40
+			, 10
 			, Vec3(0.0f)
 			)
 		, [] (const auto& value)
@@ -91,7 +91,7 @@ void test3MainLoop()
 	SimpleShaderLoader shaderLoader;
 	ShaderProgramBuilder programBuilder;
 	BoxBuilder boxBuilder;
-	ArrowHeadBuilder arrowHeadBuilder;
+	ArrowHeadArrayBuilder arrowHeadArrayBuilder(ArrowHeadMeshBuilder().buildMesh());
 
 	//resources
 	Shader voxelVert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/voxel/voxel.vert");
@@ -107,7 +107,7 @@ void test3MainLoop()
 	auto voxelSizeLoc = voxelProgram.getUniformLocation("uVoxelSize");
 	auto voxelPvmLoc  = voxelProgram.getUniformLocation("uPVM");
 
-	auto arrowHeadArray = arrowHeadBuilder.buildShape();
+	auto arrowHeadArray = arrowHeadArrayBuilder.buildShape();
 	auto boxArray = boxBuilder.buildShape();
 	auto [voxelArray, voxelData, voxelSize] = testFVO();
 
@@ -116,9 +116,9 @@ void test3MainLoop()
 
 	//view params
 	Mat4 p = glm::perspective(glm::radians(45.0f), 1.0f * info.width / info.height, 0.5f, 100.0f);
-	Mat4 v = glm::lookAt(Vec3(5.0f, 2.0f, 5.0f), Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
+	Mat4 v = glm::lookAt(Vec3(4.0f, 2.0f, 4.0f), Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
 	Mat4 m = Mat4(1.0f);
-	Mat4 r = glm::rotate(Mat4(1.0f), glm::radians(0.25f), Vec3(0.0f, 1.0f, 0.0f));
+	Mat4 r = glm::rotate(Mat4(1.0f), glm::radians(0.15f), Vec3(0.0f, 1.0f, 0.0f));
 
 
 	//loop
@@ -127,9 +127,9 @@ void test3MainLoop()
 	OpenGL::polygonMode(Face::FrontAndBack, PolygonMode::Line);
 	OpenGL::enable(Capability::DepthTest);
 	OpenGL::enable(Capability::CullFace);
-	OpenGL::disable(Capability::CullFace);
+	OpenGL::frontFace(FrontFace::CounterClockwise);
+	//OpenGL::disable(Capability::CullFace);
 	OpenGL::cullFace(Face::Back);
-
 	std::cout << "---Mainloop---" << std::endl;
 	while (!glfwWindowShouldClose(window))
 	{
@@ -148,9 +148,10 @@ void test3MainLoop()
 		boxProgram.use();
 		boxProgram.setUniformMat4(boxPvmLoc, pvm);
 
-		/*boxArray.bind();
+		boxArray.bind();
 		boxArray.draw();	
-		boxArray.unbind();*/
+		boxArray.unbind();
+
 		arrowHeadArray.bind();
 		arrowHeadArray.draw();
 		arrowHeadArray.unbind();

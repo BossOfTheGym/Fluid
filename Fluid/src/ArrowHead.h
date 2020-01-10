@@ -4,45 +4,65 @@
 
 #include <glWrap/Vertexarray/VertexArray.h>
 
-#include <Render/Attributes.h>
-
 #include <cstdint>
-#include <Common.h>
+#include "Mesh.h"
 
-class ArrowHeadBuilder
+
+class ArrowHeadMeshBuilder
 {
 public:
-	ArrowHeadBuilder(
-		  uint32_t split    = 50
-	    , Float lengthFront = 2.0f
-		, Float lengthBack  = 3.0f
-		, Float widthMiddle = 2.0f
-		, Float widthBack   = 3.0f
-		, Float heightBack  = 1.0f
-		, Float sigma       = 1.0f
+	ArrowHeadMeshBuilder(
+		  uint32_t split    = 100
+		, Float lengthFront = 2.71f
+		, Float lengthBack  = 1.04f
+		, Float widthMiddle = 2.08f
+		, Float widthBack   = 2.5f
+		, Float heightBack  = 0.5f
 	);
 
-	ArrowHeadBuilder(const ArrowHeadBuilder&) = delete;
-	ArrowHeadBuilder(ArrowHeadBuilder&&)      = delete;
+	ArrowHeadMeshBuilder(const ArrowHeadMeshBuilder&) = delete;
+	ArrowHeadMeshBuilder(ArrowHeadMeshBuilder&&)      = delete;
 
-	~ArrowHeadBuilder() = default;
+	~ArrowHeadMeshBuilder() = default;
 
-	ArrowHeadBuilder& operator = (const ArrowHeadBuilder&) = delete;
-	ArrowHeadBuilder& operator = (ArrowHeadBuilder&&)      = delete;
+	ArrowHeadMeshBuilder& operator = (const ArrowHeadMeshBuilder&) = delete;
+	ArrowHeadMeshBuilder& operator = (ArrowHeadMeshBuilder&&)      = delete;
+
+public:
+	IndicesMesh buildMesh();
+
+private:
+	IndicesMesh m_mesh;
+
+	uint32_t m_split   ;
+	Float m_lengthFront;
+	Float m_lengthBack ;
+	Float m_widthMiddle;
+	Float m_widthBack  ;
+	Float m_heightBack ;
+};
+
+
+class ArrowHeadArrayBuilder
+{
+public:
+	ArrowHeadArrayBuilder(const IndicesMesh& mesh);
+	ArrowHeadArrayBuilder(IndicesMesh&& mesh);
+
+	ArrowHeadArrayBuilder(const ArrowHeadArrayBuilder&) = delete;
+	ArrowHeadArrayBuilder(ArrowHeadArrayBuilder&&)      = delete;
+
+	~ArrowHeadArrayBuilder() = default;
+
+	ArrowHeadArrayBuilder& operator = (const ArrowHeadArrayBuilder&) = delete;
+	ArrowHeadArrayBuilder& operator = (ArrowHeadArrayBuilder&&)      = delete;
 
 
 public:
 	VertexArray buildShape();
 
-
 private:
-	uint32_t m_split    = 10;
-	Float m_lengthFront = 2.0f;
-	Float m_lengthBack  = 3.0f;
-	Float m_widthMiddle = 2.0f;
-	Float m_widthBack   = 3.0f;
-	Float m_heightBack  = 1.0f;
-	Float m_sigma       = 0.2f;
+	IndicesMesh m_mesh;
 };
 
 
