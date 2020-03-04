@@ -407,5 +407,11 @@ namespace voxel
 	{	
 		return detail::fvoVoxelize<Value>(mesh, split, innerPoint, empty, interior, exterior);
 	}
+
+	template<class Value>
+	FVO<Value> fvoVoxelize(const IndicesMesh& mesh, int split, const Vec3& innerPoint, Value empty = -1, Value interior = -2, Value exterior = -3)
+	{
+		return detail::fvoVoxelize<Value>(indicesToTriangle(mesh), split, innerPoint, empty, interior, exterior);
+	}
 }
 #endif

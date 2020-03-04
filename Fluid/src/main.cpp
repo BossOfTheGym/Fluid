@@ -54,19 +54,21 @@ auto testSVO()
 	return vis::fromSVO(
 		voxel::svoVoxelize<int>(
 			testProfileMesh()
-			, 30
+			, 50
 		)
 	);
 }
 
 auto testFVO()
 {
-	return vis::fromFVO(
-		voxel::fvoVoxelize<int>(
+	return vis::fromFVO
+	(
+		voxel::fvoVoxelize<int>
+		(
 			testProfileMesh()
-			, 10
+			, 50
 			, Vec3(0.0f)
-			)
+		)
 		, [] (const auto& value)
 		{
 			return value >= 0;
@@ -74,6 +76,61 @@ auto testFVO()
 	);
 }
 
+
+void serializeMesh(const IndicesMesh& mesh)
+{
+	std::ofstream output("mesh.vtk");
+
+	output.precision(6);
+	output << "# vtk DataFile Version 3.0" << std::endl
+		<< "vtk output" << std::endl
+		<< "ASCII" << std::endl
+		<< "DATASET UNSTRUCTURED_GRID" << std::endl
+		<< "POINTS " << mesh.points.size() << " float" << std::endl;
+	for (auto& point : mesh.points)
+	{
+		output << point.x << " " << point.y << " " << point.z << std::endl;
+	}
+
+	output << std::endl;
+
+	int triangles = mesh.indices.size() / 3;
+	output << "CELLS " << triangles << " " << triangles * 4 << std::endl;
+	int i = 0;
+	int e = static_cast<int>(mesh.indices.size());
+	while (i + 2 < e)
+	{
+		output << 3 << " "
+			<< mesh.indices[i] << " "
+			<< mesh.indices[i + 1] << " "
+			<< mesh.indices[i + 2] << std::endl;
+
+		i += 3;
+	}
+
+	output << std::endl;
+
+	output << "CELL_TYPES " << triangles << std::endl;
+	for (int i = 0; i < triangles; i++)
+	{
+		output << 5 << std::endl;
+	}
+}
+
+auto voxelizeIndicesMesh(const IndicesMesh& mesh)
+{
+	return vis::fromFVO(
+		voxel::fvoVoxelize<int>(
+			mesh
+			, 50
+			, Vec3(0.0f, 0.0f, 0.0f)
+			)
+		, [] (const auto& value)
+		{
+			return value >= 0;
+		}
+	);
+}
 
 void test3MainLoop()
 {
@@ -91,7 +148,10 @@ void test3MainLoop()
 	SimpleShaderLoader shaderLoader;
 	ShaderProgramBuilder programBuilder;
 	BoxBuilder boxBuilder;
-	ArrowHeadArrayBuilder arrowHeadArrayBuilder(ArrowHeadMeshBuilder().buildMesh());
+	ArrowHeadMeshBuilder arrowHeadMeshBuilder;
+	ArrowHeadArrayBuilder arrowHeadArrayBuilder(arrowHeadMeshBuilder.indicesMesh());
+
+	serializeMesh(arrowHeadMeshBuilder.indicesMesh());
 
 	//resources
 	Shader voxelVert = shaderLoader.loadShader(ShaderType::Vertex  , "assets/shaders/voxel/voxel.vert");
@@ -104,31 +164,41 @@ void test3MainLoop()
 	ShaderProgram boxProgram = programBuilder.buildProgram(boxVert, boxFrag);
 
 	auto boxPvmLoc = boxProgram.getUniformLocation("uPVM");
-	auto voxelSizeLoc = voxelProgram.getUniformLocation("uVoxelSize");
-	auto voxelPvmLoc  = voxelProgram.getUniformLocation("uPVM");
+
+	auto voxelSizeLoc    = voxelProgram.getUniformLocation("uVoxelSize");
+	auto voxelPVMLoc     = voxelProgram.getUniformLocation("uPVM");
+	auto voxelPVLoc      = voxelProgram.getUniformLocation("uPV");
+	auto voxelVMLoc      = voxelProgram.getUniformLocation("uVM");
+	auto voxelPLoc       = voxelProgram.getUniformLocation("uP");
+	auto voxelVLoc       = voxelProgram.getUniformLocation("uV");
+	auto voxelMLoc       = voxelProgram.getUniformLocation("uM");
+	auto voxelViewPos    = voxelProgram.getUniformLocation("uEyePos");
 
 	auto arrowHeadArray = arrowHeadArrayBuilder.buildShape();
 	auto boxArray = boxBuilder.buildShape();
 	auto [voxelArray, voxelData, voxelSize] = testFVO();
-
+	auto [vaArrow, vdArrow, vsArrow] = voxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());
+	
 	Framebuffer defaultFB = Framebuffer::default();
 
 
 	//view params
-	Mat4 p = glm::perspective(glm::radians(45.0f), 1.0f * info.width / info.height, 0.5f, 100.0f);
-	Mat4 v = glm::lookAt(Vec3(4.0f, 2.0f, 4.0f), Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
-	Mat4 m = Mat4(1.0f);
-	Mat4 r = glm::rotate(Mat4(1.0f), glm::radians(0.15f), Vec3(0.0f, 1.0f, 0.0f));
+	Vec3 viewPos = Vec3(0.0f, 8.0f, 4.0f);
+	Vec3 viewPosUpdated = viewPos;
 
+	Mat4 p = glm::perspective(glm::radians(30.0f), 1.0f * info.width / info.height, 0.5f, 100.0f);
+	Mat4 v = glm::lookAt(viewPos, Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
+	Mat4 m = Mat4(1.0f);
+	Mat4 pv = p * v;
+	Mat4 vm = v * m;
+	Mat4 pvm = p * vm;
+	Mat4 r = glm::rotate(Mat4(1.0f), glm::radians(0.25f), Vec3(0.0f, 1.0f, 0.0f));
 
 	//loop
 	//state set-ups
 	OpenGL::viewport(0, 0, info.width, info.height);
-	OpenGL::polygonMode(Face::FrontAndBack, PolygonMode::Line);
 	OpenGL::enable(Capability::DepthTest);
 	OpenGL::enable(Capability::CullFace);
-	OpenGL::frontFace(FrontFace::CounterClockwise);
-	//OpenGL::disable(Capability::CullFace);
 	OpenGL::cullFace(Face::Back);
 	std::cout << "---Mainloop---" << std::endl;
 	while (!glfwWindowShouldClose(window))
@@ -137,14 +207,25 @@ void test3MainLoop()
 		glfwPollEvents();
 
 		//clear
-		defaultFB.clearColor(0.5F, 0.5f, 0.5f, 1.0f);
+		defaultFB.clearColor(0.05f, 0.05f, 0.05f, 1.0f);
 		defaultFB.clearDepth(1.0f);
 		defaultFB.clear(ClearMask::ColorDepth);
 
-		//render
-		m = r * m;
-		auto pvm = p * v * m;
+		//update
+		auto t = glfwGetTime();
+		auto cost = static_cast<float>(std::cos(t));
+		auto sint = static_cast<float>(std::sin(t));
 
+		viewPosUpdated = Vec3(4.0f * cost, 6.0f + 4.0f * sint, 4.0f * sint);
+		v = glm::lookAt(viewPosUpdated, Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f));
+
+		m = r * m;
+		pv = p * v;
+		vm = v * m;
+		pvm = p * vm;
+
+		// render
+		OpenGL::polygonMode(Face::FrontAndBack, PolygonMode::Line);
 		boxProgram.use();
 		boxProgram.setUniformMat4(boxPvmLoc, pvm);
 
@@ -152,21 +233,24 @@ void test3MainLoop()
 		boxArray.draw();	
 		boxArray.unbind();
 
-		arrowHeadArray.bind();
-		arrowHeadArray.draw();
-		arrowHeadArray.unbind();
-
 		boxProgram.unbind();
 
-		/*voxelProgram.use();
-		voxelProgram.setUniformMat4(voxelPvmLoc, pvm);
+		OpenGL::polygonMode(Face::FrontAndBack, PolygonMode::Fill);
+		voxelProgram.use();
+		voxelProgram.setUniformMat4(voxelPVMLoc, pvm);
+		voxelProgram.setUniformMat4(voxelPVLoc, pv);
+		voxelProgram.setUniformMat4(voxelVMLoc, vm);
+		voxelProgram.setUniformMat4(voxelPLoc, p);
+		voxelProgram.setUniformMat4(voxelVLoc, v);
+		voxelProgram.setUniformMat4(voxelMLoc, m);
+		voxelProgram.setUniformVec3(voxelViewPos, viewPosUpdated);
 		voxelProgram.setUniform1f(voxelSizeLoc, voxelSize);
 
 		voxelArray.bind();
 		voxelArray.draw();
 		voxelArray.unbind();
 
-		voxelProgram.unbind();*/
+		voxelProgram.unbind();
 
 		//swap front/back
 		glfwSwapBuffers(window);
@@ -177,7 +261,7 @@ void test3()
 {
 	Window::init(
 		Window::CreationInfo{
-			1024, 1024, "window"
+			1400, 1000, "window"
 			, Window::Hints{
 			      Window::Hint{GLFW_DOUBLEBUFFER, GLFW_TRUE}
 			    , Window::Hint{GLFW_DEPTH_BITS  , 24}

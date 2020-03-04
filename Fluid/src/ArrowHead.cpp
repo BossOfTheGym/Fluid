@@ -19,9 +19,10 @@ ArrowHeadMeshBuilder::ArrowHeadMeshBuilder(
 	, m_widthMiddle(widthMiddle)
 	, m_widthBack(widthBack)
 	, m_heightBack(heightBack)
+	, m_indicesMesh()
 	, m_mesh()
 {
-	const Float EPS = 0.025;
+	const auto EPS = 0.05f;
 
 	const auto dx = m_widthBack / m_split;
 	const auto x0 = -m_widthBack / 2;
@@ -168,11 +169,18 @@ ArrowHeadMeshBuilder::ArrowHeadMeshBuilder(
 		}
 	}
 
-	m_mesh.indices.swap(indices);
-	m_mesh.points.swap(points);
+	m_indicesMesh.indices.swap(indices);
+	m_indicesMesh.points.swap(points);
+
+	m_mesh = indicesToTriangle(m_indicesMesh);
 }
 
-IndicesMesh ArrowHeadMeshBuilder::buildMesh()
+const IndicesMesh& ArrowHeadMeshBuilder::indicesMesh() const
+{
+	return m_indicesMesh;
+}
+
+const Mesh& ArrowHeadMeshBuilder::mesh() const
 {
 	return m_mesh;
 }

@@ -29,10 +29,14 @@ public:
 	ArrowHeadMeshBuilder& operator = (ArrowHeadMeshBuilder&&)      = delete;
 
 public:
-	IndicesMesh buildMesh();
+	const IndicesMesh& indicesMesh() const;
+
+	const Mesh& mesh() const;
+
 
 private:
-	IndicesMesh m_mesh;
+	IndicesMesh m_indicesMesh;
+	Mesh m_mesh;
 
 	uint32_t m_split   ;
 	Float m_lengthFront;

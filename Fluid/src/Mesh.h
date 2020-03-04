@@ -14,4 +14,6 @@ struct IndicesMesh
 	std::vector<int> indices{};
 };
 
+Mesh indicesToTriangle(const IndicesMesh& indicesMesh);
+
 #endif

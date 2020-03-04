@@ -223,6 +223,7 @@
     <ClCompile Include="src\glWrap\Shader\ShaderProgram.cpp" />
     <ClCompile Include="src\glWrap\Texture\Texture.cpp" />
     <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\primitives.cpp" />
     <ClCompile Include="src\ResourceLoaders\ShapeBuilders\BoxBuilder.cpp" />
     <ClCompile Include="src\main.cpp" />
