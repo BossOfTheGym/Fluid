@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="glWrap">
+      <UniqueIdentifier>{95f1d9f7-ed1c-4b89-966c-9db88aee8491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glWrap\Headers">
+      <UniqueIdentifier>{5d6e3597-7220-44ad-ae5d-b2649415fdc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glWrap\Source">
+      <UniqueIdentifier>{cbabc16c-0477-49ca-8bb6-5db9e4206df8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\quad.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\quad.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\field.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\voxel\voxel.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\voxel\voxel.geom">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\voxel\voxel.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\box\box.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="assets\shaders\box\box.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\glWrap\Buffer\Buffer.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Framebuffer\Framebuffer.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\ID\Id.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\OpenGL.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Shader\Shader.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Shader\ShaderProgram.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\Texture\Texture.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glWrap\VertexArray\VertexArray.h">
+      <Filter>glWrap\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Miscellanious\ArrowHead.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render\Attributes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\ShapeBuilders\BoxBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Config\Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\MathLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visual\OctreeVisualization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Miscellanious\PingPongBufer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Primitives\Primitives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Profile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\ShaderProgramBuilders\ShaderProgramBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Miscellanious\SomeTextureBuilders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataStructures\SVO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\voxelizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\glWrap\Buffer\Buffer.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\Framebuffer\Framebuffer.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\OpenGL.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\ID\Id.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\Shader\Shader.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\Shader\ShaderProgram.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\Texture\Texture.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glWrap\VertexArray\VertexArray.cpp">
+      <Filter>glWrap\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceLoaders\ShapeBuilders\BoxBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Miscellanious\ArrowHead.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Miscellanious\SomeTextureBuilders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh\Profile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\MathLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Primitives\Primitives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
