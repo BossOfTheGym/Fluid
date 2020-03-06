@@ -63,7 +63,7 @@ auto testProfileMesh()
 		profile.vals.push_back(val);
 	}
 
-	return constructMeshFromProfile(profile, -1.0_FL, +1.0_FL, 75);
+	return mesh::constructMeshFromProfile(profile, -1.0_FL, +1.0_FL, 75);
 }
 
 auto testSVO()
@@ -71,7 +71,7 @@ auto testSVO()
 	return vis::fromSVO(
 		voxel::svoVoxelize<Int32>(
 			testProfileMesh()
-			, 50
+			, 16
 		)
 	);
 }
@@ -83,7 +83,7 @@ auto testFVO()
 		voxel::fvoVoxelize<Int32>
 		(
 			testProfileMesh()
-			, 50
+			, 128
 			, Vec3(0.0_FL)
 			, -1, -2, -3
 		)
@@ -196,14 +196,14 @@ void test3MainLoop()
 	auto arrowHeadArray = arrowHeadArrayBuilder.buildShape();
 	auto boxArray = boxBuilder.buildShape();
 
-	auto [voxelArray, voxelData, voxelSize] = testFVO();
+	auto [voxelArray, voxelData, voxelSize] = testSVO();
 	auto [vaArrow, vdArrow, vsArrow] = voxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());
 	
 	gl::Framebuffer defaultFB = gl::Framebuffer::default();
 
 
 	//view params
-	Vec3 viewPos = Vec3(0.0_FL, 8.0_FL, 4.0_FL);
+	Vec3 viewPos = Vec3(0.0_FL, 4.0_FL, 4.0_FL);
 	Vec3 viewPosUpdated = viewPos;
 
 	Mat4 p = glm::perspective(glm::radians(30.0_FL), 1.0_FL * info.width / info.height, 0.5_FL, 100.0_FL);
@@ -236,7 +236,7 @@ void test3MainLoop()
 		auto cost = static_cast<float>(std::cos(t));
 		auto sint = static_cast<float>(std::sin(t));
 
-		viewPosUpdated = Vec3(4.0_FL * cost, 6.0_FL + 4.0_FL * sint, 4.0_FL * sint);
+		//viewPosUpdated = Vec3(4.0_FL * cost, 6.0_FL + 4.0_FL * sint, 4.0_FL * sint);
 		v = glm::lookAt(viewPosUpdated, Vec3(0.0_FL), Vec3(0.0_FL, 1.0_FL, 0.0_FL));
 
 		m = r * m;
@@ -300,6 +300,7 @@ void test3()
 	gl::state::initializeLoader();
 
 	test3MainLoop();
+	std::cin.get();
 
 	Window::terminate();
 

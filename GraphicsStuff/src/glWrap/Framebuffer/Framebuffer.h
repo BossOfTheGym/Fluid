@@ -26,11 +26,11 @@ namespace gl
 	public:
 		Framebuffer();
 
-		Framebuffer(Framebuffer&& framebuffer) noexcept;
+		Framebuffer(Framebuffer&& framebuffer);
 
 		~Framebuffer();
 
-		Framebuffer& operator = (Framebuffer&& framebuffer) noexcept;
+		Framebuffer& operator = (Framebuffer&& framebuffer);
 
 
 	public:

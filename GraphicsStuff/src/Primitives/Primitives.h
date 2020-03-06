@@ -18,7 +18,7 @@ namespace primitive
 	{
 		Vec3 heightVec     = {}; // normalized
 		Vec3 radiusVecs[2] = {}; // normalized
-		Vec3 origin = {};
+		Vec3 origin  = {};
 		Float height = {};
 		Float radius = {};
 	};

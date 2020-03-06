@@ -31,7 +31,7 @@ const float kAtt  = 1.0f;
 const float kAttL = 0.1f;
 const float kAttQ = 0.1f;
 
-const float y = 2.2f;
+const float y = 2.0f;
 
 void main()
 {

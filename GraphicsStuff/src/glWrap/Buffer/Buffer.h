@@ -11,12 +11,12 @@ namespace gl
 	public:
 		Buffer();
 
-		Buffer(Buffer&& buffer) noexcept;
+		Buffer(Buffer&& buffer);
 
 		~Buffer();
 
 
-		Buffer& operator = (Buffer&& buffer) noexcept;
+		Buffer& operator = (Buffer&& buffer);
 
 
 	public:

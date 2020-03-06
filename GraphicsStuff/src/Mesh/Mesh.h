@@ -24,4 +24,6 @@ namespace mesh
 	};
 
 	Mesh indicesToTriangle(const IndicesMesh& indicesMesh);
+
+	Mesh testMesh();
 }

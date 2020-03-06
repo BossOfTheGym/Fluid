@@ -3,12 +3,14 @@
 
 namespace mesh
 {
+	using math::operator "" _FL;
+
 	Mesh indicesToTriangle(const IndicesMesh& indicesMesh)
 	{
 		Mesh result;
 
-		int i = 0;
-		int e = static_cast<int>(indicesMesh.indices.size());
+		Int32 i = 0;
+		Int32 e = static_cast<int>(indicesMesh.indices.size());
 		while (i + 2 < e)
 		{
 			auto i0 = indicesMesh.indices[i];
@@ -26,5 +28,18 @@ namespace mesh
 		result.triangles.shrink_to_fit();
 
 		return result;
+	}
+
+	Mesh testMesh()
+	{
+		Mesh mesh;
+		mesh.triangles.push_back(
+			Triangle{
+				  Vec3{-1.0_FL, -1.0_FL, -1.0_FL}
+				, Vec3{-1.0_FL, -1.0_FL, +1.0_FL}
+				, Vec3{+0.0_FL, +1.0_FL, +0.0_FL}
+			}
+		);
+		return mesh;
 	}
 }

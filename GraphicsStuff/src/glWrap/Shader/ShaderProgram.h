@@ -37,13 +37,13 @@ namespace gl
 	public:
 		ShaderProgram();
 
-		ShaderProgram(ShaderProgram&& shaderProgram) noexcept;
+		ShaderProgram(ShaderProgram&& shaderProgram);
 
 
 		~ShaderProgram();
 
 
-		ShaderProgram& operator = (ShaderProgram&& shaderProgram) noexcept;
+		ShaderProgram& operator = (ShaderProgram&& shaderProgram);
 
 
 	public:

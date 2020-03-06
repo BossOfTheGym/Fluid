@@ -8,7 +8,7 @@ namespace gl
 	Texture::Texture() : Id()
 	{}
 
-	Texture::Texture(Texture&& texture) noexcept : Id()
+	Texture::Texture(Texture&& texture) : Id()
 	{
 		*this = std::move(texture);
 	}
@@ -21,7 +21,7 @@ namespace gl
 
 
 	//operators
-	Texture& Texture::operator = (Texture&& texture) noexcept
+	Texture& Texture::operator = (Texture&& texture)
 	{
 		static_cast<Id&>(*this) = static_cast<Id&&>(texture);
 

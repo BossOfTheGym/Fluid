@@ -14,7 +14,7 @@ namespace gl
 		, m_computeInfo{}
 	{}
 
-	ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram) noexcept : Id()
+	ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram) : Id()
 	{
 		*this = std::move(shaderProgram);
 	}
@@ -27,7 +27,7 @@ namespace gl
 
 
 	//operators
-	ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram) noexcept
+	ShaderProgram& ShaderProgram::operator = (ShaderProgram&& shaderProgram)
 	{
 		static_cast<Id&>(*this) = static_cast<Id&&>(shaderProgram);
 

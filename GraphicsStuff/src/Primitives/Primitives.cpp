@@ -2,6 +2,8 @@
 
 namespace primitive
 {
+	using math::operator "" _FL;
+
 	//utils
 	Vec3 triangleNormal(const Triangle& triangle)
 	{
@@ -44,28 +46,21 @@ namespace primitive
 	Cylinder cylinderFromPoints(const Vec3& point0, const Vec3& point1, Float radius)
 	{
 		Vec3  heightVec = point1 - point0;
-		float height = glm::length(heightVec);
+		Float height = glm::length(heightVec);
 
 		heightVec /= height;
 
-		// TODO : suspicious part
 		int i = 0;
 		while (i < 3 && std::abs(heightVec[i]) < math::EPS)
 		{
 			i++;
 		}
-
-		int j = i + 1;
-		while (j < 3 && std::abs(heightVec[j]) < math::EPS)
-		{
-			j++;
-		}
-
-		if (i >= 3 || j >= 3)
+		if (i >= 3)
 		{
 			return Cylinder{};
 		}
-		//
+
+		int j = (i + 1) % 3;
 
 		Vec3 radiusVec{};
 		radiusVec[i] = +heightVec[j];
@@ -79,8 +74,42 @@ namespace primitive
 		cylinder.radius = radius;
 		cylinder.radiusVecs[0] = radiusVec;
 		cylinder.radiusVecs[1] = glm::normalize(glm::cross(radiusVec, heightVec));
-
 		return cylinder;
+
+		/////////////////////////////
+
+		/*Vec3  heightVec = point1 - point0;
+		float height  = glm::length(heightVec);
+
+		heightVec /= height;
+
+		int i = 0;
+		while (i < 3 && std::abs(heightVec[i]) < math::EPS)
+		{
+			i++;
+		}
+
+		int j = 0;
+		if (i == 0)
+		{
+			j = 1;
+		}
+
+		Vec3 radiusVec{};
+		radiusVec[i] = +heightVec[j];
+		radiusVec[j] = -heightVec[i];
+		radiusVec /= glm::length(radiusVec);
+
+		Cylinder cylinder{};
+
+		cylinder.height    = height;
+		cylinder.heightVec = heightVec;
+		cylinder.origin    = point0;
+		cylinder.radius    = radius;
+		cylinder.radiusVecs[0] = radiusVec;
+		cylinder.radiusVecs[1] = glm::normalize(glm::cross(radiusVec, heightVec));
+
+		return cylinder;*/
 	}
 
 	Sphere sphereFromCenterRadius(const Vec3& center, Float radius)
@@ -117,7 +146,7 @@ namespace primitive
 		Float dr2 = dr0 * dr0 + dr1 * dr1;
 		Float rr = (cylinder.radius * cylinder.radius);
 
-		return 0 <= dh && dh <= cylinder.height && dr2 <= rr;
+		return 0.0_FL <= dh && dh <= cylinder.height && dr2 <= rr;
 	}
 
 	bool pointInSphere(const Vec3& point, const Sphere& sphere)
@@ -140,7 +169,7 @@ namespace primitive
 			auto& w0 = plane[3];
 
 			float check = x * x0 + y * y0 + z * z0 + w0;
-			if (check <= 0.0f)
+			if (check < 0.0_FL)
 			{
 				return false;
 			}
@@ -161,4 +190,5 @@ namespace primitive
 			|| pointInCylinder(point, edges[2])
 			|| pointInPrism(point, triangle);
 	}
+
 }

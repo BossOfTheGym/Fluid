@@ -4,6 +4,7 @@
 
 #include <glWrap/Buffer/Buffer.h>
 
+
 namespace gl
 {
 	//constructors & destructor
@@ -12,7 +13,7 @@ namespace gl
 		, m_info{}
 	{}
 
-	VertexArray::VertexArray(VertexArray&& vertexBuffer) noexcept : Id()
+	VertexArray::VertexArray(VertexArray&& vertexBuffer) : Id()
 	{
 		*this = std::move(vertexBuffer);
 	}
@@ -25,7 +26,7 @@ namespace gl
 
 
 	//operators
-	VertexArray& VertexArray::operator = (VertexArray&& vertexBuffer) noexcept
+	VertexArray& VertexArray::operator = (VertexArray&& vertexBuffer)
 	{
 		// TODO : that can be bad? but it works
 		static_cast<Id&>(*this) = static_cast<Id&&>(vertexBuffer);
@@ -41,7 +42,6 @@ namespace gl
 	{
 		GLuint vertexArrayId = id();
 		glDeleteVertexArrays(1, &vertexArrayId);
-
 		resetArrayBuffer();
 	}
 

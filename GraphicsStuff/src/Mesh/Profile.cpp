@@ -9,15 +9,13 @@ namespace mesh
 	using math::Mat3;
 	using math::Mat4;
 
-	using math::PI2;
-
 	using math::operator "" _FL;
 
 	Profile readProfile(const std::string& filename)
 	{
 		std::ifstream input(filename);
 
-		int size;
+		Int32 size;
 		input >> size;
 
 		Profile profile;
@@ -56,12 +54,12 @@ namespace mesh
 			return result;
 		};
 
-		auto getRotationMat = [&] (int split) -> Mat3
+		auto getRotationMat = [&] (Int32 split) -> Mat3
 		{
 			Mat3 mat(1.0_FL);
 
-			Float cosAngle = std::cos(PI2 / split);
-			Float sinAngle = std::sin(PI2 / split);
+			Float cosAngle = std::cos(math::PI2 / split);
+			Float sinAngle = std::sin(math::PI2 / split);
 
 			mat[0][0] = +cosAngle; mat[2][0] = -sinAngle;
 			mat[0][2] = +sinAngle; mat[2][2] = +cosAngle;
@@ -84,7 +82,7 @@ namespace mesh
 		Mat3 rotation = getRotationMat(angleSplit);
 
 		result.triangles.reserve(2ll * profile.count * angleSplit);
-		for (int k = 0; k < angleSplit; k++)
+		for (Int32 k = 0; k < angleSplit; k++)
 		{
 			back = front;
 			rotatePoints(front, rotation);
@@ -93,7 +91,7 @@ namespace mesh
 			result.triangles.push_back(Triangle{back.front(), front.front(), Vec3(0.0_FL, yLower, 0.0_FL)});
 
 			//add profile triangles
-			for (int i = 0; i < profile.count - 1; i++)
+			for (Int32 i = 0; i < profile.count - 1; i++)
 			{
 				result.triangles.push_back(Triangle{back[i], front[i], front[i + 1]});
 				result.triangles.push_back(Triangle{front[i + 1],  back[i + 1],  back[i]});

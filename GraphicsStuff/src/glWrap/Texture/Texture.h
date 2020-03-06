@@ -25,11 +25,11 @@ namespace gl
 	public:
 		Texture();
 
-		Texture(Texture&& tex) noexcept;
+		Texture(Texture&& tex);
 
 		~Texture();
 
-		Texture& operator = (Texture&& tex) noexcept;
+		Texture& operator = (Texture&& tex);
 
 
 	public:

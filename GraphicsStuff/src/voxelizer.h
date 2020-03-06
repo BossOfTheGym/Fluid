@@ -103,7 +103,7 @@ namespace voxel
 					{
 						traversedVoxels.insert(hash);
 
-						for (int i = -1; i < 2; i++)
+ 						for (int i = -1; i < 2; i++)
 						{
 							for (int j = -1; j < 2; j++)
 							{
@@ -168,37 +168,19 @@ namespace voxel
 				, split
 			);
 
-			float voxelSize     = 2.0_FL / split;
-			float voxelHalfSize = 1.0_FL / split;
-			float radius  = voxelSize * math::SQ3 / 2;
-			float radius2 = voxelSize * math::SQ3;
+			Float voxelSize     = 2.0_FL / split;
+			Float voxelHalfSize = 1.0_FL / split;
+			Float radius  = voxelSize * math::SQ3 / 2;
+			Float radius2 = voxelSize * math::SQ3;
 
 			Voxelizer<SVO<Value>, Value> voxelizer;
 			for (Value i = 0; i < mesh.triangles.size(); i++)
 			{
 				auto triangle = mesh.triangles[i];
 
-				//translate triangle
-				auto& [p0, p1, p2] = triangle.points;
+				// TODO : normal check here possible, check if triangle plane is parallel to x or y or z axis
 
-				auto i0 = voxels.index(p0);
-				auto i1 = voxels.index(p1);
-				auto i2 = voxels.index(p2);
-
-				if (i0.x == i1.x && i0.x == i2.x)
-				{
-					p0.x += math::EPS; p1.x += math::EPS; p2.x += math::EPS;
-				}
-				if (i0.y == i1.y && i0.y == i2.y)
-				{
-					p0.y += math::EPS; p1.y += math::EPS; p2.y += math::EPS;
-				}
-				if (i0.z == i1.z && i0.z == i2.z)
-				{
-					p0.z += math::EPS; p1.z += math::EPS; p2.z += math::EPS;
-				}
-
-				float height = getLargestDiagonalProj(primitive::triangleNormal(triangle), voxelHalfSize);
+				Float height = getLargestDiagonalProj(primitive::triangleNormal(triangle), voxelHalfSize);
 				auto volume  = primitive::roundedTriangleFromTriangleRadius(triangle, radius, 2.0_FL * height);
 				voxelizer.traverseVoxels(voxels, volume, i);
 			}

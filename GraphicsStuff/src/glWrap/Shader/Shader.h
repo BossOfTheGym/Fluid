@@ -17,13 +17,13 @@ namespace gl
 	public:
 		Shader();
 
-		Shader(Shader&& shader) noexcept;
+		Shader(Shader&& shader);
 
 
 		~Shader();
 
 
-		Shader& operator = (Shader&& shader) noexcept;
+		Shader& operator = (Shader&& shader);
 
 
 	public:

@@ -11,13 +11,13 @@ namespace gl
 	Id::Id(GLuint id) : m_id(id)
 	{}
 
-	Id::Id(Id&& id) noexcept : m_id(id.id())
+	Id::Id(Id&& id): m_id(id.id())
 	{
 		id.resetId();
 	}
 
 	//operators
-	Id& Id::operator = (Id&& id) noexcept
+	Id& Id::operator = (Id&& id)
 	{
 		std::swap(m_id, id.m_id);
 

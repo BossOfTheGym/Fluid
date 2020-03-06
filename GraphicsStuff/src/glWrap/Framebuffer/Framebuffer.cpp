@@ -18,7 +18,7 @@ namespace gl
 	Framebuffer::Framebuffer() : Id()
 	{}
 
-	Framebuffer::Framebuffer(Framebuffer&& buffer) noexcept : Id()
+	Framebuffer::Framebuffer(Framebuffer&& buffer) : Id()
 	{
 		*this = std::move(buffer);
 	}
@@ -29,7 +29,7 @@ namespace gl
 	}
 
 	//operators
-	Framebuffer& Framebuffer::operator = (Framebuffer&& buffer) noexcept
+	Framebuffer& Framebuffer::operator = (Framebuffer&& buffer)
 	{
 		static_cast<Id&>(*this) = static_cast<Id&&>(buffer);
 

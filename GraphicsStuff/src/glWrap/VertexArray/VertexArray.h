@@ -38,12 +38,12 @@ namespace gl
 	public:
 		VertexArray();
 
-		VertexArray(VertexArray&& vertexBuffer) noexcept;
+		VertexArray(VertexArray&& vertexBuffer);
 
 		~VertexArray();
 
 
-		VertexArray& operator = (VertexArray&& vertexBuffer) noexcept;
+		VertexArray& operator = (VertexArray&& vertexBuffer);
 
 
 	public:

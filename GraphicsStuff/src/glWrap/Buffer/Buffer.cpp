@@ -2,6 +2,7 @@
 
 #include <utility>
 
+
 namespace gl
 {
 //constructors & destructor
@@ -11,7 +12,7 @@ namespace gl
 		, m_usage(BufferUsage::None)
 	{}
 
-	Buffer::Buffer(Buffer&& buffer) noexcept : Id()
+	Buffer::Buffer(Buffer&& buffer) : Id()
 	{
 		*this = std::move(buffer);
 	}
@@ -23,7 +24,7 @@ namespace gl
 
 
 	//operators
-	Buffer& Buffer::operator = (Buffer&& buffer) noexcept
+	Buffer& Buffer::operator = (Buffer&& buffer)
 	{
 		static_cast<Id&>(*this) = static_cast<Id&&>(buffer);
 
@@ -41,7 +42,6 @@ namespace gl
 
 		//generates only name(id) but not the contents(buffers inner state)
 		glGenBuffers(1, &bufferId);
-
 		static_cast<Id&>(*this) = bufferId;
 	}
 
@@ -97,6 +97,7 @@ namespace gl
 	void Buffer::deleteBuffer()
 	{
 		GLuint bufferId = id();
+		
 		glDeleteBuffers(1, &bufferId);
 
 		resetBuffer();

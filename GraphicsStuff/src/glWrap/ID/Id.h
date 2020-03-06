@@ -18,10 +18,10 @@ namespace gl
 		Id(GLuint id);
 
 		Id(const Id&) = delete;
-		Id(Id&& id) noexcept;
+		Id(Id&& id);
 
 		Id& operator = (const Id&) = delete;
-		Id& operator = (Id&& id) noexcept;
+		Id& operator = (Id&& id);
 
 		~Id() = default;
 
@@ -31,6 +31,8 @@ namespace gl
 
 		bool valid() const;
 
+
+	protected:
 		void resetId();
 
 

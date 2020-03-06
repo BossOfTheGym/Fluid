@@ -152,17 +152,17 @@ namespace octree
 
 		Point voxel(const Point& point) const
 		{
-			return coord(point) + Point(m_spaceDelta / 2.0f);
+			return coord(point) + Point(m_spaceDelta / 2.0_FL);
 		}
 
 		Point voxel(const Hash& hash) const
 		{
-			return coord(hash) + Point(m_spaceDelta / 2.0f);
+			return coord(hash) + Point(m_spaceDelta / 2.0_FL);
 		}
 
 		Point voxel(const Indices& indices) const
 		{
-			return coord(indices) + Point(m_spaceDelta / 2.0f);
+			return coord(indices) + Point(m_spaceDelta / 2.0_FL);
 		}
 
 

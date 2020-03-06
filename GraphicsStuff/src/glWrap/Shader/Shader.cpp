@@ -12,7 +12,7 @@ namespace gl
 		, m_type(ShaderType::None)
 	{}
 
-	Shader::Shader(Shader&& shader) noexcept : Id()
+	Shader::Shader(Shader&& shader) : Id()
 	{
 		*this = std::move(shader);
 	}
@@ -25,7 +25,7 @@ namespace gl
 	}
 
 	//operators
-	Shader& Shader::operator = (Shader&& shader) noexcept
+	Shader& Shader::operator = (Shader&& shader)
 	{
 		static_cast<Id&>(*this) = static_cast<Id&&>(shader);
 
