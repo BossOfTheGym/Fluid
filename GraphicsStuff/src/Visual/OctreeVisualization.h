@@ -48,7 +48,7 @@ namespace vis
 		{
 			  gl::DrawMode::Points
 			, 0
-			, static_cast<GLsizei>(svo.size())
+			, static_cast<GLsizei>(data.size())
 			, gl::IndicesType::None
 			, nullptr
 		};
@@ -122,6 +122,50 @@ namespace vis
 
 		//size
 		voxels.voxelSize = fvo.spaceDelta().x;
+
+		return voxels;
+	}
+
+	template<class Dummy = int>
+	Voxels dummy()
+	{
+		using Data = std::vector<Vec3>;
+
+		Voxels voxels{};
+
+		//buffer
+		Data data(1 << 10);
+
+		voxels.voxelData.createBuffer();
+		voxels.voxelData.namedBufferData(sizeof(Vec3) * data.size(), data.data(), gl::BufferUsage::StaticDraw);
+
+		//array
+		voxels.voxelArray.genArray();
+		voxels.voxelArray.bind();
+		voxels.voxelArray.info() = gl::VertexArray::DrawInfo
+		{
+			gl::DrawMode::Points
+			, 0
+			, static_cast<GLsizei>(data.size())
+			, gl::IndicesType::None
+			, nullptr
+		};
+		voxels.voxelArray.setAttribPointerInBuffer(
+			voxels.voxelData
+			, gl::VertexArray::PointerInfo
+			{
+				static_cast<GLuint>(VertexAttributes::Position)
+				, gl::AttributeSize::Three
+			, gl::DataType::Float 
+			, gl::GLBool::True
+			, 0
+			, nullptr
+			}
+		);
+		voxels.voxelArray.unbind();
+
+		//size
+		voxels.voxelSize = 0.0_FL;
 
 		return voxels;
 	}
