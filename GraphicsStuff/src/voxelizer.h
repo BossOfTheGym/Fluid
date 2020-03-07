@@ -8,7 +8,6 @@
 #include <Mesh/Mesh.h>
 #include <DataStructures/SVO.h>
 
-// TODO : inspect better
 
 namespace voxel
 {
@@ -33,7 +32,6 @@ namespace voxel
 	using primitive::AABB;
 	using primitive::RoundedTriangle;
 
-	// TODO : do smth with that piece, maybe should use smth from std::pmr?
 	//Voxelizer. Traverses voxels belonging to some volume
 	namespace detail
 	{
@@ -323,7 +321,6 @@ namespace voxel
 				for (auto& check : checks)
 				{
 					auto index = voxels.clampToBoundaries(indices + check);
-
 					if (voxels.boundaryVoxel(index) || voxels[index] == exterior)
 					{
 						return true;

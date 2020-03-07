@@ -214,20 +214,6 @@ void test3MainLoop()
 	Mat4 pvm = p * vm;
 	Mat4 r = glm::rotate(Mat4(1.0_FL), glm::radians(0.25_FL), Vec3(0.0_FL, 1.0_FL, 0.0_FL));
 
-	//TEST
-	auto fbb = res::SimpleFramebufferBuilder(
-		  misc::colorTextureBuilder(512, 512)
-		, misc::depthTextureBuilder(512, 512)
-	);
-	for(int i = 0; i < 1000; i++)
-	{
-		//auto r = fbb.buildFramebuffer();
-	}
-	for(int i = 0; i < 10000; i++)
-	{
-		auto r = vis::dummy();
-	}
-
 	//loop
 	//state set-ups
 	gl::state::viewport(0, 0, info.width, info.height);
