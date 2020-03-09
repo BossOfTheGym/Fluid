@@ -327,21 +327,32 @@ namespace gl
 		, None = static_cast<GLint>(0)
 	};
 
+	// TODO : add another formats like GL_RGBA32F
 	enum class InternalFormat : GLint
 	{
-		Red            = GL_RED
+		  Red            = GL_RED
 		, RG             = GL_RG
 		, RGB            = GL_RGB
 		, RGBA           = GL_RGBA
 		, DepthComponent = GL_DEPTH_COMPONENT
 		, DepthStencil   = GL_DEPTH_STENCIL
 
+		, R16F    = GL_R16F
+		, RG16F   = GL_RG16F
+		, RGB16F  = GL_RGB16F
+		, RGBA16F = GL_RGBA16F
+
+		, R32F    = GL_R32F
+		, RG32F   = GL_RG32F
+		, RGB32F  = GL_RGB32F
+		, RGBA32F = GL_RGBA32F
+
 		, None = static_cast<GLint>(0)
 	};
 
 	enum class PixelDataFormat : GLenum
 	{
-		Red            = GL_RED
+		  Red            = GL_RED
 		, RG             = GL_RG
 		, RGB            = GL_RGB
 		, BGR            = GL_BGR

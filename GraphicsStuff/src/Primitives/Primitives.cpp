@@ -75,41 +75,6 @@ namespace primitive
 		cylinder.radiusVecs[0] = radiusVec;
 		cylinder.radiusVecs[1] = glm::normalize(glm::cross(radiusVec, heightVec));
 		return cylinder;
-
-		/////////////////////////////
-
-		/*Vec3  heightVec = point1 - point0;
-		float height  = glm::length(heightVec);
-
-		heightVec /= height;
-
-		int i = 0;
-		while (i < 3 && std::abs(heightVec[i]) < math::EPS)
-		{
-			i++;
-		}
-
-		int j = 0;
-		if (i == 0)
-		{
-			j = 1;
-		}
-
-		Vec3 radiusVec{};
-		radiusVec[i] = +heightVec[j];
-		radiusVec[j] = -heightVec[i];
-		radiusVec /= glm::length(radiusVec);
-
-		Cylinder cylinder{};
-
-		cylinder.height    = height;
-		cylinder.heightVec = heightVec;
-		cylinder.origin    = point0;
-		cylinder.radius    = radius;
-		cylinder.radiusVecs[0] = radiusVec;
-		cylinder.radiusVecs[1] = glm::normalize(glm::cross(radiusVec, heightVec));
-
-		return cylinder;*/
 	}
 
 	Sphere sphereFromCenterRadius(const Vec3& center, Float radius)

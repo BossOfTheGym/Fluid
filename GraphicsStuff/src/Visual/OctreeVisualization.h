@@ -19,7 +19,7 @@ namespace vis
 		gl::VertexArray voxelArray{};
 		gl::Buffer      voxelData{};
 
-		Float voxelSize{};
+		Vec3 voxelSize{};
 	};
 
 	template<class Value>
@@ -67,7 +67,7 @@ namespace vis
 		voxels.voxelArray.unbind();
 
 		//size
-		voxels.voxelSize = svo.spaceDelta().x;
+		voxels.voxelSize = svo.spaceDelta();
 
 		return voxels;
 	}
@@ -121,7 +121,7 @@ namespace vis
 		voxels.voxelArray.unbind();
 
 		//size
-		voxels.voxelSize = fvo.spaceDelta().x;
+		voxels.voxelSize = fvo.spaceDelta();
 
 		return voxels;
 	}

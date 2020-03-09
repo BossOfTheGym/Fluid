@@ -11,7 +11,7 @@ out OUT_GEOM
 } outData;
 
 
-uniform float uVoxelSize;
+uniform vec3 uVoxelSize;
 
 uniform mat4  uPVM;
 uniform mat4  uPV;
@@ -74,7 +74,7 @@ void main()
 
 	if (dot(uM * vec4(center, 1.0), clippingPlane) > 0)
 	{
-		//return;
+		return;
 	}
 
 	vec3 cubeVertices[8] = 

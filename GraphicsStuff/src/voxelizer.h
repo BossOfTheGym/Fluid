@@ -36,103 +36,70 @@ namespace voxel
 	namespace detail
 	{
 		//voxelization algorithm
-		template<class VO, class Value>
-		class Voxelizer
+		template<class VO>
+		auto traverseVoxels(const VO& voxelTree, const RoundedTriangle& volume)
 		{
-		public:
 			using Indices = typename VO::Indices;
 			using Point   = typename VO::Point;
 			using Hash    = typename VO::Hash;
 			using Set     = std::set<Hash>;
 
-			using Queue = std::queue<Indices>;
+			// in fact not a queue but we do not care about the incoming order
+			using Queue   = std::vector<Indices>;
 
 
-		public:
-			Voxelizer() = default;
+			auto& [vertices, edges, triangle] = volume;
 
-			Voxelizer(const Voxelizer&) = default;
-			Voxelizer(Voxelizer&&)      = default;
+			Queue voxelQueue;
 
-			~Voxelizer() = default;
-
-			Voxelizer& operator = (const Voxelizer&) = default;
-			Voxelizer& operator = (Voxelizer&&)      = default;
-
-
-		public:
-			void traverseVoxels(VO& output, const RoundedTriangle& volume, Value primIndex)
+			//add all voxels from vertices
+			auto split = voxelTree.split();
+			for (auto& vertex : vertices)
 			{
-				//add all voxels from vertices
-				auto& [vertices, edges, triangle] = volume;
+				auto indices = voxelTree.index(vertex.center);
 
-				//initial push & bounding indices
-				auto split = output.split();
-				for (auto& vertex : vertices)
+				for (Hash i = -1; i < 2; i++)
+				for (Hash j = -1; j < 2; j++)
+				for (Hash k = -1; k < 2; k++)
 				{
-					auto indices = output.index(vertex.center);
+					auto toPush = voxelTree.clampToBoundaries(indices + Indices{i, j, k});
 
-					for (int i = -1; i < 2; i++)
-					{
-						for (int j = -1; j < 2; j++)
-						{
-							for (int k = -1; k < 2; k++)
-							{
-								auto toPush = output.clampToBoundaries(indices + Indices{i, j, k});
-
-								m_queue.push(toPush);
-							}
-						}
-					}
-				}
-
-				//traverse all voxels
-				Set traversedVoxels;
-				while (!m_queue.empty())
-				{
-					auto indices = m_queue.front();
-					auto voxel   = output.voxel(indices);
-					auto hash    = output.hash(indices);
-
-					if (
-						traversedVoxels.find(hash) == traversedVoxels.end() 
-						&& primitive::pointInRoundedTriangle(voxel, volume)
-						)
-					{
-						traversedVoxels.insert(hash);
-
- 						for (int i = -1; i < 2; i++)
-						{
-							for (int j = -1; j < 2; j++)
-							{
-								for (int k = -1; k < 2; k++)
-								{
-									auto toPush = output.clampToBoundaries(indices + Indices{i, j, k});
-
-									auto hash = output.hash(toPush);
-									if (traversedVoxels.find(hash) == traversedVoxels.end())
-									{
-										m_queue.push(toPush);
-									}
-								}
-							}
-						}
-					}
-
-					m_queue.pop();
-				}
-
-				//push traversed voxels into output
-				for (auto& hash : traversedVoxels)
-				{
-					output[hash] = primIndex;
+					voxelQueue.push_back(toPush);
 				}
 			}
 
+			//traverse all voxels
+			Set traversedVoxels;
+			while (!voxelQueue.empty())
+			{
+				auto indices = voxelQueue.back();
+				voxelQueue.pop_back();
 
-		private:
-			Queue m_queue;
-		};
+				auto voxel   = voxelTree.voxel(indices);
+				auto hash    = voxelTree.hash(indices);
+
+				bool notTraversed = traversedVoxels.find(hash) == traversedVoxels.end(); 
+				if (notTraversed && primitive::pointInRoundedTriangle(voxel, volume))
+				{
+					traversedVoxels.insert(hash);
+
+					for (Hash i = -1; i < 2; i++)
+					for (Hash j = -1; j < 2; j++)
+					for (Hash k = -1; k < 2; k++)
+					{
+						auto toPush = voxelTree.clampToBoundaries(indices + Indices{i, j, k});
+
+						auto hash = voxelTree.hash(toPush);
+						if (traversedVoxels.find(hash) == traversedVoxels.end())
+						{
+							voxelQueue.push_back(toPush);
+						}
+					}
+				}
+			}
+
+			return traversedVoxels;
+		}
 	}
 
 
@@ -170,17 +137,25 @@ namespace voxel
 			Float voxelHalfSize = 1.0_FL / split;
 			Float radius  = voxelSize * math::SQ3 / 2;
 			Float radius2 = voxelSize * math::SQ3;
-
-			Voxelizer<SVO<Value>, Value> voxelizer;
 			for (Value i = 0; i < mesh.triangles.size(); i++)
 			{
 				auto triangle = mesh.triangles[i];
 
-				// TODO : normal check here possible, check if triangle plane is parallel to x or y or z axis
+				// TODO : normal check here possible, check if triangle plane is parallel to xy or yz or xz plane
 
 				Float height = getLargestDiagonalProj(primitive::triangleNormal(triangle), voxelHalfSize);
+				
+				// TEST
+				height = voxelHalfSize;
+				radius = height;
+				// END TEST
+
 				auto volume  = primitive::roundedTriangleFromTriangleRadius(triangle, radius, 2.0_FL * height);
-				voxelizer.traverseVoxels(voxels, volume, i);
+				auto traversed = traverseVoxels(voxels, volume);
+				for(auto& voxel : traversed)
+				{
+					voxels[voxel] = i;
+				}
 			}
 
 			return voxels;
@@ -192,6 +167,13 @@ namespace voxel
 	{
 		return detail::svoVoxelize<Value>(mesh, split);
 	}
+
+	template<class Value>
+	SVO<Value> svoVoxelize(const IndicesMesh& mesh, Int32 split)
+	{
+		return detail::svoVoxelize<Value>(mesh::indicesToTriangle(mesh), split);
+	}
+
 
 
 	//Creates fully voxelized volume
@@ -205,8 +187,6 @@ namespace voxel
 			Float voxelSize = 2.0_FL / voxels.split();
 			Float radius  = voxelSize * math::SQ3 / 2;
 			Float radius2 = voxelSize * math::SQ3;
-
-			Voxelizer<FVO<Value>, Value> voxelizer;
 			for (Value i = 0; i < mesh.triangles.size(); i++)
 			{
 				auto triangle = mesh.triangles[i];
@@ -215,7 +195,11 @@ namespace voxel
 				auto& [p0, p1, p2] = triangle.points;
 
 				auto volume = primitive::roundedTriangleFromTriangleRadius(triangle, radius, radius2);
-				voxelizer.traverseVoxels(voxels, volume, i);
+				auto traversed = traverseVoxels(voxels, volume);
+				for(auto& voxel : traversed)
+				{
+					voxels[voxel] = i;
+				}
 			}
 		}
 
@@ -242,11 +226,11 @@ namespace voxel
 				
 				voxels[indices] = interior;
 
-				for (Hash i = -1; i < 2; i++)
+				for (int i = -1; i < 2; i++)
 				{
-					for (Hash j = -1; j < 2; j++)
+					for (int j = -1; j < 2; j++)
 					{
-						for (Hash k = -1; k < 2; k++)
+						for (int k = -1; k < 2; k++)
 						{
 							auto toPush = voxels.clampToBoundaries(indices + Indices{i, j, k});
 
@@ -402,6 +386,6 @@ namespace voxel
 	template<class Value>
 	FVO<Value> fvoVoxelize(const IndicesMesh& mesh, Int32 split, const Vec3& innerPoint, Value empty, Value interior, Value exterior)
 	{
-		return detail::fvoVoxelize<Value>(indicesToTriangle(mesh), split, innerPoint, empty, interior, exterior);
+		return detail::fvoVoxelize<Value>(mesh::indicesToTriangle(mesh), split, innerPoint, empty, interior, exterior);
 	}
 }

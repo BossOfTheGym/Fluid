@@ -12,8 +12,6 @@ out vec4 outColor;
 
 uniform vec3 uEyePos;
 
-uniform float uVoxelSize;
-
 // I'm lazy as fuck
 const vec3 lightPos     = vec3(0.5f, 3.5f, 0.5f);
 const vec3 lightColor   = vec3(1.0f, 1.0f, 1.0f);
@@ -51,14 +49,20 @@ void main()
 	float att = (kAtt + kAttL * lightDist + kAttQ * lightDist * lightDist);
 
 	vec3 color = (kA * ambientColor + kD * d * lightColor + kSp * pow(s, kSh) * lightColor) / att;
-	color = pow(color, vec3(1.0f / y));
 	
+	// voxel border
 	vec3 bc = inData.bc;
 	float eps = 0.05;
 	if (bc.y <= eps || bc.z <= eps)
 	{
-		//color = kE;
+		color = 3 * kE;
 	}
+
+	// gamma correction
+	color = pow(color, vec3(1.0f / y));
+
+	// tone mapping
+	color = color / (color + vec3(1.0f));
 
 	outColor = vec4(color, 1.0f);
 }

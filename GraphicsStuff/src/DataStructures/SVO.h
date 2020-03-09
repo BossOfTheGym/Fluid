@@ -9,7 +9,6 @@
 
 namespace octree
 {
-	// TODO : do something with this
 	using math::Vec3;
 	using math::Vec3i;
 	using math::Int32;
@@ -48,6 +47,7 @@ namespace octree
 		return count;
 	}
 
+	// TODO : rework this
 
 	// simple sparse octree imitation
 	template<class Value>
@@ -217,6 +217,8 @@ namespace octree
 			return m_map[hash(item)];
 		}
 
+
+		
 
 		bool boundaryVoxel(const Point& item) const
 		{
@@ -534,7 +536,7 @@ namespace octree
 			Hash yc = indices.y;
 			Hash zc = indices.z;
 
-			return (zc)+(yc * m_biasY) + (xc * m_biasX);
+			return (zc) + (yc * m_biasY) + (xc * m_biasX);
 		}
 
 

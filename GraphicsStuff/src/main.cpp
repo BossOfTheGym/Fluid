@@ -71,7 +71,7 @@ auto testSVO()
 	return vis::fromSVO(
 		voxel::svoVoxelize<Int32>(
 			testProfileMesh()
-			, 16
+			, 32
 		)
 	);
 }
@@ -83,7 +83,7 @@ auto testFVO()
 		voxel::fvoVoxelize<Int32>
 		(
 			testProfileMesh()
-			, 128
+			, 32
 			, Vec3(0.0_FL)
 			, -1, -2, -3
 		)
@@ -135,12 +135,22 @@ void serializeMesh(const mesh::IndicesMesh& mesh)
 	}
 }
 
-auto voxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
+auto svoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
+{
+	return vis::fromSVO(
+		voxel::svoVoxelize<Int32>(
+			mesh
+			, 128
+			)
+	);
+}
+
+auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
 {
 	return vis::fromFVO(
 		voxel::fvoVoxelize<Int32>(
 			mesh
-			, 50
+			, 128
 			, Vec3(0.0_FL, 0.0_FL, 0.0_FL)
 			, -1, -2, -3
 			)
@@ -184,20 +194,20 @@ void test3MainLoop()
 
 	auto boxPvmLoc = boxProgram.getUniformLocation("uPVM");
 
-	auto voxelSizeLoc    = voxelProgram.getUniformLocation("uVoxelSize");
-	auto voxelPVMLoc     = voxelProgram.getUniformLocation("uPVM");
-	auto voxelPVLoc      = voxelProgram.getUniformLocation("uPV");
-	auto voxelVMLoc      = voxelProgram.getUniformLocation("uVM");
-	auto voxelPLoc       = voxelProgram.getUniformLocation("uP");
-	auto voxelVLoc       = voxelProgram.getUniformLocation("uV");
-	auto voxelMLoc       = voxelProgram.getUniformLocation("uM");
-	auto voxelViewPos    = voxelProgram.getUniformLocation("uEyePos");
+	auto voxelSizeLoc = voxelProgram.getUniformLocation("uVoxelSize");
+	auto voxelPVMLoc  = voxelProgram.getUniformLocation("uPVM");
+	auto voxelPVLoc   = voxelProgram.getUniformLocation("uPV");
+	auto voxelVMLoc   = voxelProgram.getUniformLocation("uVM");
+	auto voxelPLoc    = voxelProgram.getUniformLocation("uP");
+	auto voxelVLoc    = voxelProgram.getUniformLocation("uV");
+	auto voxelMLoc    = voxelProgram.getUniformLocation("uM");
+	auto voxelViewPos = voxelProgram.getUniformLocation("uEyePos");
 
 	auto arrowHeadArray = arrowHeadArrayBuilder.buildShape();
 	auto boxArray = boxBuilder.buildShape();
 
-	auto [voxelArray, voxelData, voxelSize] = testSVO();
-	auto [vaArrow, vdArrow, vsArrow] = voxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());
+	auto [voxelArray, voxelData, voxelSize] = svoVoxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());//testSVO();
+	auto [vaArrow, vdArrow, vsArrow] = fvoVoxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());
 	
 	gl::Framebuffer defaultFB = gl::Framebuffer::default();
 
@@ -264,7 +274,7 @@ void test3MainLoop()
 		voxelProgram.setUniformMat4(voxelVLoc, v);
 		voxelProgram.setUniformMat4(voxelMLoc, m);
 		voxelProgram.setUniformVec3(voxelViewPos, viewPosUpdated);
-		voxelProgram.setUniform1f(voxelSizeLoc, voxelSize);
+		voxelProgram.setUniformVec3(voxelSizeLoc, voxelSize);
 
 		voxelArray.bind();
 		voxelArray.draw();

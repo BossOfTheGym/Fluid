@@ -106,4 +106,9 @@ namespace misc
 			}
 		);
 	}
+
+	res::Texture2D_Builder testFloatinPointTexture(int width, int height)
+	{
+		return {};
+	}
 }
