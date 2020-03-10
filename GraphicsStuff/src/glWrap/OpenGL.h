@@ -385,7 +385,7 @@ namespace gl
 
 	enum class BlitMask : GLbitfield
 	{
-		Color   = GL_COLOR_BUFFER_BIT
+		  Color   = GL_COLOR_BUFFER_BIT
 		, Depth   = GL_DEPTH_BUFFER_BIT
 		, Stencil = GL_STENCIL_BUFFER_BIT
 
@@ -399,7 +399,7 @@ namespace gl
 
 	enum class ClearMask : GLbitfield
 	{
-		Color   = GL_COLOR_BUFFER_BIT
+		  Color   = GL_COLOR_BUFFER_BIT
 		, Depth   = GL_DEPTH_BUFFER_BIT
 		, Stencil = GL_STENCIL_BUFFER_BIT
 
@@ -413,13 +413,13 @@ namespace gl
 
 	enum class FramebufferClearBufferfv : GLenum
 	{
-		Color = GL_COLOR
+		  Color = GL_COLOR
 		, Depth = GL_DEPTH
 	};
 
 	enum class FramebufferClearBufferiv : GLenum
 	{
-		Color   = GL_COLOR
+		  Color   = GL_COLOR
 		, Stencil = GL_STENCIL
 	};
 
@@ -438,16 +438,12 @@ namespace gl
 
 	using FramebufferAttachment = GLenum; // can have many so it can't be wrapped in enum class
 
-	enum class FramebufferAttachmentDepthStencil : GLenum
+	enum class FramebufferAttachments: GLenum
 	{
-		Depth        = GL_DEPTH_ATTACHMENT
+		  Color        = GL_COLOR_ATTACHMENT0 
+		, Depth        = GL_DEPTH_ATTACHMENT
 		, Stencil      = GL_STENCIL_ATTACHMENT
 		, DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT
-	};
-
-	enum class FrameBufferAttachmentColor : GLenum
-	{
-		Color = GL_COLOR_ATTACHMENT0
 	};
 
 
@@ -455,7 +451,7 @@ namespace gl
 
 	enum class DefaultDrawBuffer : GLenum
 	{
-		None         = GL_NONE
+		  None         = GL_NONE
 		, FrontLeft    = GL_FRONT_LEFT
 		, FrontRight   = GL_FRONT_RIGHT
 		, BackLeft     = GL_BACK_LEFT
@@ -469,14 +465,14 @@ namespace gl
 
 	enum class FramebufferDrawBuffer : GLenum
 	{
-		None             = GL_NONE
+		  None             = GL_NONE
 		, ColorAttachment0 = GL_COLOR_ATTACHMENT0
 	};
 
 
 	enum class FramebufferStatus : GLenum
 	{
-		Complete               = GL_FRAMEBUFFER_COMPLETE
+		  Complete               = GL_FRAMEBUFFER_COMPLETE
 		, Undefined              = GL_FRAMEBUFFER_UNDEFINED
 		, IncompleteAttachment   = GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT
 		, IncompleteDrawBuffer   = GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER
@@ -488,13 +484,13 @@ namespace gl
 
 	enum class FramebufferFilter : GLenum
 	{
-		Nearest = GL_NEAREST
+		  Nearest = GL_NEAREST
 		, Linear  = GL_LINEAR
 	};
 
 	enum class FramebufferParameteri : GLenum
 	{
-		DefaultWidth                = GL_FRAMEBUFFER_DEFAULT_WIDTH
+		  DefaultWidth                = GL_FRAMEBUFFER_DEFAULT_WIDTH
 		, DefaultHeight               = GL_FRAMEBUFFER_DEFAULT_HEIGHT
 		, DefaultLayers               = GL_FRAMEBUFFER_DEFAULT_LAYERS
 		, DefaultSamples              = GL_FRAMEBUFFER_DEFAULT_SAMPLES

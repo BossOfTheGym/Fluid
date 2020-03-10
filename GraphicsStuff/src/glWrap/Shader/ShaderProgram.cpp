@@ -103,6 +103,10 @@ namespace gl
 		glUniform3fv(location, 1, glm::value_ptr(vec));
 	}
 
+	void ShaderProgram::setUniform1i(GLint location, Int32 value) const
+	{
+		glUniform1i(location, value);
+	}
 
 	void ShaderProgram::setUniform1f(GLint location, Float value) const
 	{

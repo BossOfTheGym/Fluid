@@ -29,7 +29,6 @@ const float kAtt  = 1.0f;
 const float kAttL = 0.1f;
 const float kAttQ = 0.1f;
 
-const float y = 2.0f;
 
 void main()
 {
@@ -52,17 +51,15 @@ void main()
 	
 	// voxel border
 	vec3 bc = inData.bc;
-	float eps = 0.07;
+	float eps = 0.05;
+	vec3 bloom = vec3(0.0f);
 	if (bc.y <= eps || bc.z <= eps)
 	{
-		color = 10.0f * kE;
+		color = vec3(0.0f);
+		bloom = 10.0f * kE;
 	}
 
-	// gamma correction
-	color = pow(color, vec3(1.0f / y));
-
-	// tone mapping
-	color = color / (color + vec3(0.5f));
-
+	// bloom, color
 	outColor = vec4(color, 1.0f);
+	outBloom = vec4(bloom, 1.0f);
 }

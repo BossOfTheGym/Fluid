@@ -55,32 +55,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\box\box.frag">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\box\box.vert">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\field.frag">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\quad.frag">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\quad.vert">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\voxel\voxel.frag">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\voxel\voxel.geom">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\voxel\voxel.vert">
-      <Filter>assets\shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\glWrap\Buffer\Buffer.h">
       <Filter>glWrap\Headers</Filter>
     </ClInclude>
@@ -171,6 +145,15 @@
     <ClInclude Include="src\Utility\Holder.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utility\PureType.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\NColorFramebufferBuilder.h">
+      <Filter>ResourceLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\ColorBufferBuilder.h">
+      <Filter>ResourceLoaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glWrap\Buffer\Buffer.cpp">
@@ -233,5 +216,40 @@
     <ClCompile Include="src\Window\Window.cpp">
       <Filter>Window</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\box.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\box.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\field.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\gauss.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\quad.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\quad.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\voxel.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\voxel.geom">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\voxel.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\hdr_gamma.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\mix.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

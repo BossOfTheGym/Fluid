@@ -11,6 +11,7 @@ namespace gl
 	class Shader;
 
 	using math::Float;
+	using math::Int32;
 	using math::Vec2;
 	using math::Vec3;
 	using math::Vec4;
@@ -74,6 +75,8 @@ namespace gl
 
 		void setUniformVec3(GLint location, const Vec3& vec) const;
 
+
+		void setUniform1i(GLint location, Int32 value) const;
 
 		void setUniform1f(GLint location, Float value) const;
 

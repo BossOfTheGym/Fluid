@@ -171,16 +171,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="assets\shaders\box\box.frag" />
-    <None Include="assets\shaders\box\box.vert" />
-    <None Include="assets\shaders\field.frag" />
-    <None Include="assets\shaders\quad.frag" />
-    <None Include="assets\shaders\quad.vert" />
-    <None Include="assets\shaders\voxel\voxel.frag" />
-    <None Include="assets\shaders\voxel\voxel.geom" />
-    <None Include="assets\shaders\voxel\voxel.vert" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\Config\Config.h" />
     <ClInclude Include="src\DataStructures\SVO.h" />
@@ -200,6 +190,8 @@
     <ClInclude Include="src\Miscellanious\SomeTextureBuilders.h" />
     <ClInclude Include="src\Primitives\Primitives.h" />
     <ClInclude Include="src\Render\Attributes.h" />
+    <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\ColorBufferBuilder.h" />
+    <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\NColorFramebufferBuilder.h" />
     <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\SimpleFramebufferBuilder.h" />
     <ClInclude Include="src\ResourceLoaders\ShaderLoaders\ShaderLoader.h" />
     <ClInclude Include="src\ResourceLoaders\ShaderProgramBuilders\ShaderProgramBuilder.h" />
@@ -208,6 +200,7 @@
     <ClInclude Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.h" />
     <ClInclude Include="src\Utility\Apply.h" />
     <ClInclude Include="src\Utility\Holder.h" />
+    <ClInclude Include="src\Utility\PureType.h" />
     <ClInclude Include="src\Visual\OctreeVisualization.h" />
     <ClInclude Include="src\voxelizer.h" />
     <ClInclude Include="src\Window\Window.h" />
@@ -233,6 +226,19 @@
     <ClCompile Include="src\ResourceLoaders\ShapeBuilders\QuadBuilder.cpp" />
     <ClCompile Include="src\ResourceLoaders\TextureBuilders\Texture2D_Builder.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\box.frag" />
+    <None Include="assets\shaders\box.vert" />
+    <None Include="assets\shaders\field.frag" />
+    <None Include="assets\shaders\gauss.frag" />
+    <None Include="assets\shaders\hdr_gamma.frag" />
+    <None Include="assets\shaders\mix.frag" />
+    <None Include="assets\shaders\quad.frag" />
+    <None Include="assets\shaders\quad.vert" />
+    <None Include="assets\shaders\voxel.frag" />
+    <None Include="assets\shaders\voxel.geom" />
+    <None Include="assets\shaders\voxel.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

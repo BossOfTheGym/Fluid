@@ -3,30 +3,29 @@
 #include <glWrap/Framebuffer/Framebuffer.h>
 #include <glWrap/Texture/Texture.h>
 
+#include <Utility/PureType.h>
 
 namespace res
 {
-	struct FramebufferResources
-	{
-		gl::Framebuffer frame;
-		gl::Texture     color;
-		gl::Texture     depth;
-	};
-
 	template<class ColorBuilder, class DepthBuilder>
 	class SimpleFramebufferBuilder
 	{
 	public:
-		using ColorBuilderType = std::remove_cv_t<std::remove_reference_t<ColorBuilder>>;
-		using DepthBuilderType = std::remove_cv_t<std::remove_reference_t<DepthBuilder>>;
+		using ColorBuilderType = util::remove_cv_ref_t<ColorBuilder>;
+		using DepthBuilderType = util::remove_cv_ref_t<DepthBuilder>;
+
+		struct FramebufferResources
+		{
+			gl::Framebuffer frame;
+			gl::Texture     color;
+			gl::Texture     depth;
+		};
 
 	public:
-		SimpleFramebufferBuilder(
-			ColorBuilder colorBuilderInit
-			, DepthBuilder depthBuilderInit
-		)
-			: m_colorBuilder(std::forward<ColorBuilder>(colorBuilderInit))
-			, m_depthBuilder(std::forward<DepthBuilder>(depthBuilderInit))
+		template<class CB, class DB>
+		SimpleFramebufferBuilder(CB&& colorBuilderInit,DB&& depthBuilderInit)
+			: m_colorBuilder(std::forward<CB>(colorBuilderInit))
+			, m_depthBuilder(std::forward<DB>(depthBuilderInit))
 		{}
 
 		SimpleFramebufferBuilder(const SimpleFramebufferBuilder&) = default;
@@ -48,12 +47,12 @@ namespace res
 
 			result.frame.createFramebuffer();
 			result.frame.namedFramebufferTexture(
-				static_cast<gl::FramebufferAttachment>(gl::FrameBufferAttachmentColor::Color)
+				static_cast<gl::FramebufferAttachment>(gl::FramebufferAttachments::Color)
 				, result.color
 				, 0
 			);
 			result.frame.namedFramebufferTexture(
-				static_cast<gl::FramebufferAttachment>(gl::FramebufferAttachmentDepthStencil::Depth)
+				static_cast<gl::FramebufferAttachment>(gl::FramebufferAttachments::Depth)
 				, result.depth
 				, 0
 			);
@@ -79,4 +78,8 @@ namespace res
 		ColorBuilderType m_colorBuilder;
 		DepthBuilderType m_depthBuilder;
 	};
+
+	template<class CB, class DB>
+	SimpleFramebufferBuilder(CB&&, DB&&) 
+		-> SimpleFramebufferBuilder<util::remove_cv_ref_t<CB>, util::remove_cv_ref_t<DB>>;
 }

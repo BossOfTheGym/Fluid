@@ -49,7 +49,7 @@ namespace gl
 
 
 		void blitNamedFramebuffer(
-			const Rectangle& destRect
+			  const Rectangle& destRect
 			, const Framebuffer& src
 			, const Rectangle& srcRect
 			, BlitMask mask

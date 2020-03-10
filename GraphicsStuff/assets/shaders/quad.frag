@@ -2,14 +2,14 @@
 
 in VS_OUT
 {
-	in vec2 texCoords;
-};
+	vec2 texCoords;
+} vertOut;
 
 out	vec4 color;
 
-layout(binding = 0) uniform sampler2D testTexture;
+layout(binding = 0) uniform sampler2D image;
 
 void main()
 {
-	color = texture(testTexture, texCoords);
+	color = vec4(texture(image, vertOut.texCoords).rgb, 1.0f);
 }

@@ -17,7 +17,9 @@
 #include <ResourceLoaders/ShapeBuilders/QuadBuilder.h>
 #include <ResourceLoaders/TextureBuilders/Texture2D_Builder.h>
 #include <ResourceLoaders/ShaderProgramBuilders/ShaderProgramBuilder.h>
+#include <ResourceLoaders/FramebufferBuilders/NColorFramebufferBuilder.h>
 #include <ResourceLoaders/FramebufferBuilders/SimpleFramebufferBuilder.h>
+#include <ResourceLoaders/FramebufferBuilders/ColorBufferBuilder.h>
 #include <ResourceLoaders/ShapeBuilders/BoxBuilder.h>
 
 #include <Miscellanious/SomeTextureBuilders.h>
@@ -45,7 +47,7 @@ using math::operator "" _FL;
 
 auto testProfileMesh()
 {
-	const int COUNT = 10;
+	const int COUNT = 15;
 
 	mesh::Profile profile;
 
@@ -57,7 +59,7 @@ auto testProfileMesh()
 	for (int i = 1; i <= COUNT; i++)
 	{
 		auto arg = -1.0_FL + i * h;
-		auto val = 1.0_FL - arg * arg;
+		auto val = std::abs(0.5 * std::sin(3 * arg)) + 0.2;
 
 		profile.args.push_back(arg);
 		profile.vals.push_back(val);
@@ -69,10 +71,7 @@ auto testProfileMesh()
 auto testSVO()
 {
 	return vis::fromSVO(
-		voxel::svoVoxelize<Int32>(
-			testProfileMesh()
-			, 32
-		)
+		voxel::svoVoxelize<Int32>(testProfileMesh(), 48)
 	);
 }
 
@@ -163,8 +162,8 @@ auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
 
 
 
-const int WIDTH  = 1500;
-const int HEIGHT = 1000;
+const int WIDTH  = 1600;
+const int HEIGHT = 1080;
 
 void test3MainLoop()
 {
@@ -173,50 +172,75 @@ void test3MainLoop()
 	decltype(auto) window  = context->window();
 	decltype(auto) info    = context->info();
 
-
 	//set-ups
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
-
 	//loader & builders
 	res::SimpleShaderLoader shaderLoader;
 	res::ShaderProgramBuilder programBuilder;
 	res::BoxBuilder boxBuilder;
-	res::SimpleFramebufferBuilder f32FramebufferBuilder(
+	res::QuadBuilder quadBuilder;
+	res::ColorBufferBuilder f32FramebufferBuilder
+	(
+		  misc::rgbaf32TextureBuilder(WIDTH, HEIGHT)		
+	);
+	res::NColorFBBuilder nColorFBBuilder
+	(
 		  misc::rgbaf32TextureBuilder(WIDTH, HEIGHT)
 		, misc::depthTextureBuilder(WIDTH, HEIGHT)
+		, res::value<2>{}
 	);
-	misc::ArrowHeadMeshBuilder arrowHeadMeshBuilder;
-	misc::ArrowHeadArrayBuilder arrowHeadArrayBuilder(arrowHeadMeshBuilder.indicesMesh());
-
-
-	serializeMesh(arrowHeadMeshBuilder.indicesMesh());
-
 
 	// shaders and programs
-	gl::Shader voxelVert = shaderLoader.loadShader(gl::ShaderType::Vertex  , "assets/shaders/voxel/voxel.vert");
-	gl::Shader voxelGeom = shaderLoader.loadShader(gl::ShaderType::Geometry, "assets/shaders/voxel/voxel.geom");
-	gl::Shader voxelFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/voxel/voxel.frag");
-	gl::ShaderProgram voxelProgram = programBuilder.buildProgram(voxelVert, voxelGeom, voxelFrag);
+	gl::Shader quadVert = shaderLoader.loadShader(gl::ShaderType::Vertex  , "assets/shaders/quad.vert");
+	gl::Shader quadFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/quad.frag");
 
-	gl::Shader boxVert = shaderLoader.loadShader(gl::ShaderType::Vertex  , "assets/shaders/box/box.vert");
-	gl::Shader boxFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/box/box.frag");
-	gl::ShaderProgram boxProgram = programBuilder.buildProgram(boxVert, boxFrag);
+	gl::Shader voxelVert = shaderLoader.loadShader(gl::ShaderType::Vertex  , "assets/shaders/voxel.vert");
+	gl::Shader voxelGeom = shaderLoader.loadShader(gl::ShaderType::Geometry, "assets/shaders/voxel.geom");
+	gl::Shader voxelFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/voxel.frag");
+
+	gl::Shader boxVert = shaderLoader.loadShader(gl::ShaderType::Vertex  , "assets/shaders/box.vert");
+	gl::Shader boxFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/box.frag");
+
+	gl::Shader gaussFrag    = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/gauss.frag");
+	gl::Shader mixFrag      = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/mix.frag");
+	gl::Shader hdrGammaFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/hdr_gamma.frag");
+
+	gl::ShaderProgram boxProgram      = programBuilder.buildProgram(boxVert, boxFrag);
+	gl::ShaderProgram voxelProgram    = programBuilder.buildProgram(voxelVert, voxelGeom, voxelFrag);
+	gl::ShaderProgram quadProgram     = programBuilder.buildProgram(quadVert, quadFrag);
+	gl::ShaderProgram blurProgram     = programBuilder.buildProgram(quadVert, gaussFrag);
+	gl::ShaderProgram mixProgram      = programBuilder.buildProgram(quadVert, mixFrag);
+	gl::ShaderProgram hdrGammaProgram = programBuilder.buildProgram(quadVert, hdrGammaFrag);
 
 	// framebuffers
 	gl::Framebuffer defaultFB = gl::Framebuffer::default();
 	
-	auto [offScreen, offColor, offDepth] = f32FramebufferBuilder.buildFramebuffer();
-	auto [bloom, bloomColor, bloomdepth] = f32FramebufferBuilder.buildFramebuffer();
+	const int COLOR_TEXTURE = 0;
+	const int BLOOM_TEXTURE = 1;
+	auto [offScreen, offColors, offDepth] = nColorFBBuilder.buildFramebuffer();
+	auto [mixed, mixedColor] = f32FramebufferBuilder.buildFramebuffer();
 	misc::PingPongBuffer gaussFramebuffers
 	(
 		  f32FramebufferBuilder.buildFramebuffer()
 		, f32FramebufferBuilder.buildFramebuffer()
 	);
 
-	// shader locations
+	// shader locations & binding points
+	const gl::TextureUnit QUAD_FRAG_IMAGE = 0;
+
+	const gl::TextureUnit MIX_FRAG_IMAGE1 = 0;
+	const gl::TextureUnit MIX_FRAG_IMAGE2 = 1;
+
+	const gl::TextureUnit HDR_GAMMA_FRAG_IMAGE = 0;
+
+	const gl::TextureUnit GAUSS_FRAG_IMAGE = 0;
+
+	const Int32 HORIZONTAL_PASS = 0;
+	const Int32 VERTICAL_PASS   = 1;
+
 	auto boxPvmLoc = boxProgram.getUniformLocation("uPVM");
 
 	auto voxelSizeLoc = voxelProgram.getUniformLocation("uVoxelSize");
@@ -228,12 +252,12 @@ void test3MainLoop()
 	auto voxelMLoc    = voxelProgram.getUniformLocation("uM");
 	auto voxelViewPos = voxelProgram.getUniformLocation("uEyePos");
 
-	// vertex arrays
-	auto arrowHeadArray = arrowHeadArrayBuilder.buildShape();
-	auto boxArray = boxBuilder.buildShape();
+	auto gaussPassLoc = blurProgram.getUniformLocation("uPass");
 
+	// vertex arrays
+	auto boxArray  = boxBuilder.buildShape();
+	auto quadArray = quadBuilder.buildShape();
 	auto [voxelArray, voxelData, voxelSize] = testSVO();
-	auto [vaArrow, vdArrow, vsArrow] = fvoVoxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());
 	
 	//view params
 	Vec3 viewPos = Vec3(0.0_FL, 4.0_FL, 4.0_FL);
@@ -247,29 +271,18 @@ void test3MainLoop()
 	Mat4 pvm = p * vm;
 	Mat4 r = glm::rotate(Mat4(1.0_FL), glm::radians(0.25_FL), Vec3(0.0_FL, 1.0_FL, 0.0_FL));
 
-	//loop
-	//state set-ups
-	gl::state::viewport(0, 0, info.width, info.height);
-	gl::state::enable(gl::Capability::DepthTest);
-	gl::state::enable(gl::Capability::CullFace);
-	gl::state::cullFace(gl::Face::Back);
-	std::cout << "---Mainloop---" << std::endl;
+	// loop
 	while (!glfwWindowShouldClose(window))
 	{
 		//events
 		glfwPollEvents();
 
-		//clear
-		defaultFB.clearColor(0.05_FL, 0.05_FL, 0.05_FL, 1.0_FL);
-		defaultFB.clearDepth(1.0_FL);
-		defaultFB.clear(gl::ClearMask::ColorDepth);
-
 		//update
-		auto t = glfwGetTime();
+		auto t = glfwGetTime() / 2;
 		auto cost = static_cast<float>(std::cos(t));
 		auto sint = static_cast<float>(std::sin(t));
 
-		//viewPosUpdated = Vec3(4.0_FL * cost, 6.0_FL + 4.0_FL * sint, 4.0_FL * sint);
+		viewPosUpdated = Vec3(1.5_FL, 3.0_FL + 5.0_FL * sint, 1.5_FL);
 		v = glm::lookAt(viewPosUpdated, Vec3(0.0_FL), Vec3(0.0_FL, 1.0_FL, 0.0_FL));
 
 		m = r * m;
@@ -277,33 +290,136 @@ void test3MainLoop()
 		vm = v * m;
 		pvm = p * vm;
 
-		// render
-		gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Line);
-		boxProgram.use();
-		boxProgram.setUniformMat4(boxPvmLoc, pvm);
+		// 1. frags & bloom
+		{
+			gl::state::viewport(0, 0, info.width, info.height);
+			gl::state::enable(gl::Capability::DepthTest);
+			gl::state::enable(gl::Capability::CullFace);
+			gl::state::cullFace(gl::Face::Back);
+			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Fill);
 
-		boxArray.bind();
-		boxArray.draw();	
-		boxArray.unbind();
+			offScreen.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+			offScreen.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
+			offScreen.clearDepth(1.0_FL);
+			offScreen.clear(gl::ClearMask::ColorDepth);
 
-		boxProgram.unbind();
+			voxelProgram.use();
+			voxelProgram.setUniformMat4(voxelPVMLoc, pvm);
+			voxelProgram.setUniformMat4(voxelPVLoc, pv);
+			voxelProgram.setUniformMat4(voxelVMLoc, vm);
+			voxelProgram.setUniformMat4(voxelPLoc, p);
+			voxelProgram.setUniformMat4(voxelVLoc, v);
+			voxelProgram.setUniformMat4(voxelMLoc, m);
+			voxelProgram.setUniformVec3(voxelViewPos, viewPosUpdated);
+			voxelProgram.setUniformVec3(voxelSizeLoc, voxelSize);
 
-		gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Fill);
-		voxelProgram.use();
-		voxelProgram.setUniformMat4(voxelPVMLoc, pvm);
-		voxelProgram.setUniformMat4(voxelPVLoc, pv);
-		voxelProgram.setUniformMat4(voxelVMLoc, vm);
-		voxelProgram.setUniformMat4(voxelPLoc, p);
-		voxelProgram.setUniformMat4(voxelVLoc, v);
-		voxelProgram.setUniformMat4(voxelMLoc, m);
-		voxelProgram.setUniformVec3(voxelViewPos, viewPosUpdated);
-		voxelProgram.setUniformVec3(voxelSizeLoc, voxelSize);
+			voxelArray.bind();
+			voxelArray.draw();
+			voxelArray.unbind();
 
-		voxelArray.bind();
-		voxelArray.draw();
-		voxelArray.unbind();
+			voxelProgram.unbind();
+		}
 
-		voxelProgram.unbind();
+		// 2. gaussian blur
+		{
+			auto& [frame0, color0] = gaussFramebuffers.previous();
+			auto& [frame1, color1] = gaussFramebuffers.current();
+			frame0.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+			frame0.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
+			frame0.clear(gl::ClearMask::Color);
+			frame1.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+			frame1.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
+			frame1.clear(gl::ClearMask::Color);
+
+			// copy bloom output to gauss framebuffer
+			frame1.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+
+			quadProgram.use();
+			offColors[BLOOM_TEXTURE].bindToUnit(QUAD_FRAG_IMAGE);
+
+			quadArray.bind();
+			quadArray.draw();
+			quadArray.unbind();
+
+			quadProgram.unbind();
+
+			// blur
+			blurProgram.use();
+
+			quadArray.bind();
+			for (int k = 0; k < 1; k++)
+			{
+				auto& [curr, currColor] = gaussFramebuffers.current();
+				auto& [prev, prevColor] = gaussFramebuffers.previous();
+
+				blurProgram.setUniform1i(gaussPassLoc, HORIZONTAL_PASS);
+				currColor.bindToUnit(GAUSS_FRAG_IMAGE);
+				prev.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+				quadArray.draw();
+
+				blurProgram.setUniform1i(gaussPassLoc, VERTICAL_PASS);
+				prevColor.bindToUnit(GAUSS_FRAG_IMAGE);
+				curr.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+				quadArray.draw();
+			}
+			quadArray.unbind();
+
+			blurProgram.unbind();
+		}
+
+		// 3. combine frag & bloom
+		{
+			mixed.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+			mixed.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
+			mixed.clear(gl::ClearMask::Color);
+
+			auto& image1 = gaussFramebuffers.current().color;
+			auto& image2 = offColors[COLOR_TEXTURE];
+
+			mixProgram.use();
+
+			image1.bindToUnit(MIX_FRAG_IMAGE1);
+			image2.bindToUnit(MIX_FRAG_IMAGE2);
+
+			quadArray.bind();
+			quadArray.draw();
+			quadArray.unbind();
+
+			mixProgram.unbind();
+		}
+
+		// 4. tone mapping & gamma correction
+		{
+			gl::state::disable(gl::Capability::DepthTest);
+
+			defaultFB.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+			defaultFB.clearColor(0.05_FL, 0.05_FL, 0.05_FL, 1.0_FL);
+			defaultFB.clear(gl::ClearMask::Color);
+
+			hdrGammaProgram.use();
+			mixedColor.bindToUnit(HDR_GAMMA_FRAG_IMAGE);
+
+			quadArray.bind();
+			quadArray.draw();
+			quadArray.unbind();
+
+			hdrGammaProgram.unbind();
+		}
+
+		// 5. box
+		{
+			gl::state::enable(gl::Capability::DepthTest);
+			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Line);
+
+			boxProgram.use();
+			boxProgram.setUniformMat4(boxPvmLoc, pvm);
+
+			boxArray.bind();
+			boxArray.draw();	
+			boxArray.unbind();
+
+			boxProgram.unbind();
+		}
 
 		//swap front/back
 		glfwSwapBuffers(window);
@@ -334,7 +450,7 @@ void test3()
 	gl::state::initializeLoader();
 
 	test3MainLoop();
-	std::cout << "Execution finished" << std::endl;
+	std::cout << "Execution finished. Press any key..." << std::endl;
 	std::cin.get();
 
 	Window::terminate();

@@ -12,8 +12,8 @@ out vec4 outColor;
 #define PASS_HORIZONTAL 0
 #define PASS_VERTICAL 1
 
-uniform sampler2D image;
-uniform int pass;
+layout(binding = 0) uniform sampler2D image;
+uniform int uPass;
 
 const int SIZE = 6; 
 const float WEIGHTS[SIZE] = 
@@ -30,11 +30,11 @@ void main()
 {
 	vec2 step   = 1.0f / textureSize(image, 0);
 	vec2 offset = vec2(0.0f);
-	if (pass == PASS_HORIZONTAL)
+	if (uPass == PASS_HORIZONTAL)
 	{
 		offset = vec2(step.x, 0.0f);
 	}
-	else if (pass == PASS_VERTICAL)
+	else if (uPass == PASS_VERTICAL)
 	{
 		offset = vec2(0.0f, step.y);
 	}

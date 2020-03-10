@@ -129,4 +129,23 @@ namespace misc
 			}
 		);
 	}
+
+	res::Texture2D_Builder rgbaf16TextureBuilder(int width, int height)
+	{
+		return res::Texture2D_Builder(
+			res::Texture2D_Builder::PixelData{}
+
+			, res::Texture2D_Builder::ImageData
+			{
+				gl::TextureTarget::Texture2D
+				, 0
+			, gl::InternalFormat::RGBA16F
+			, width
+			, height
+			, gl::PixelDataFormat::RGBA
+			, gl::DataType::Float
+			, nullptr
+			}
+		);
+	}
 }
