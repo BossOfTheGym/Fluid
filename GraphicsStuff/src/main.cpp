@@ -161,6 +161,11 @@ auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
 	);
 }
 
+
+
+const int WIDTH  = 1500;
+const int HEIGHT = 1000;
+
 void test3MainLoop()
 {
 	//context
@@ -168,21 +173,29 @@ void test3MainLoop()
 	decltype(auto) window  = context->window();
 	decltype(auto) info    = context->info();
 
+
 	//set-ups
 	glfwShowWindow(window);
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
+
 	//loader & builders
 	res::SimpleShaderLoader shaderLoader;
 	res::ShaderProgramBuilder programBuilder;
 	res::BoxBuilder boxBuilder;
+	res::SimpleFramebufferBuilder f32FramebufferBuilder(
+		  misc::rgbaf32TextureBuilder(WIDTH, HEIGHT)
+		, misc::depthTextureBuilder(WIDTH, HEIGHT)
+	);
 	misc::ArrowHeadMeshBuilder arrowHeadMeshBuilder;
 	misc::ArrowHeadArrayBuilder arrowHeadArrayBuilder(arrowHeadMeshBuilder.indicesMesh());
 
+
 	serializeMesh(arrowHeadMeshBuilder.indicesMesh());
 
-	//resources
+
+	// shaders and programs
 	gl::Shader voxelVert = shaderLoader.loadShader(gl::ShaderType::Vertex  , "assets/shaders/voxel/voxel.vert");
 	gl::Shader voxelGeom = shaderLoader.loadShader(gl::ShaderType::Geometry, "assets/shaders/voxel/voxel.geom");
 	gl::Shader voxelFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/voxel/voxel.frag");
@@ -192,6 +205,18 @@ void test3MainLoop()
 	gl::Shader boxFrag = shaderLoader.loadShader(gl::ShaderType::Fragment, "assets/shaders/box/box.frag");
 	gl::ShaderProgram boxProgram = programBuilder.buildProgram(boxVert, boxFrag);
 
+	// framebuffers
+	gl::Framebuffer defaultFB = gl::Framebuffer::default();
+	
+	auto [offScreen, offColor, offDepth] = f32FramebufferBuilder.buildFramebuffer();
+	auto [bloom, bloomColor, bloomdepth] = f32FramebufferBuilder.buildFramebuffer();
+	misc::PingPongBuffer gaussFramebuffers
+	(
+		  f32FramebufferBuilder.buildFramebuffer()
+		, f32FramebufferBuilder.buildFramebuffer()
+	);
+
+	// shader locations
 	auto boxPvmLoc = boxProgram.getUniformLocation("uPVM");
 
 	auto voxelSizeLoc = voxelProgram.getUniformLocation("uVoxelSize");
@@ -203,15 +228,13 @@ void test3MainLoop()
 	auto voxelMLoc    = voxelProgram.getUniformLocation("uM");
 	auto voxelViewPos = voxelProgram.getUniformLocation("uEyePos");
 
+	// vertex arrays
 	auto arrowHeadArray = arrowHeadArrayBuilder.buildShape();
 	auto boxArray = boxBuilder.buildShape();
 
-	auto [voxelArray, voxelData, voxelSize] = svoVoxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());//testSVO();
+	auto [voxelArray, voxelData, voxelSize] = testSVO();
 	auto [vaArrow, vdArrow, vsArrow] = fvoVoxelizeIndicesMesh(arrowHeadMeshBuilder.indicesMesh());
 	
-	gl::Framebuffer defaultFB = gl::Framebuffer::default();
-
-
 	//view params
 	Vec3 viewPos = Vec3(0.0_FL, 4.0_FL, 4.0_FL);
 	Vec3 viewPosUpdated = viewPos;
@@ -292,7 +315,7 @@ void test3()
 {
 	Window::init(
 		Window::CreationInfo{
-			1400, 1000, "window"
+			WIDTH, HEIGHT, "window"
 			, Window::Hints{
 			      Window::Hint{GLFW_DOUBLEBUFFER, GLFW_TRUE}
 			    , Window::Hint{GLFW_DEPTH_BITS  , 24}

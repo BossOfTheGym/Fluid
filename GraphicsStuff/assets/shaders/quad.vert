@@ -8,11 +8,11 @@ layout(location = TEXTURE_LOCATION)  in vec2 textureCoords;
 
 out VS_OUT
 {
-	out vec2 texCoords;
-};
+	vec2 texCoords;
+} vertOut;
 
 void main()
 {
 	gl_Position = vec4(position, 1.0);
-	texCoords = textureCoords;
+	vertOut.texCoords = textureCoords;
 }

@@ -7,8 +7,8 @@ in OUT_GEOM
 	vec3 bc;
 } inData;
 
-out vec4 outColor;
-
+layout (location = 0) out vec4 outColor;
+layout (location = 1) out vec4 outBloom;
 
 uniform vec3 uEyePos;
 
@@ -21,7 +21,7 @@ const vec3 ambientColor = vec3(1.0f, 1.0f, 1.0f);
 const vec3 kA  = vec3(0.0215f, 0.1745f, 0.0215f);
 const vec3 kD  = vec3(0.07568f, 0.61424f, 0.07568f);
 const vec3 kSp = vec3(0.633f, 0.727811f, 0.633f);
-const vec3 kE  = vec3(0.5f, 0.25f, 0.9f); // not emerald :P
+const vec3 kE  = vec3(0.75f, 0.2f, 0.9f); // not emerald :P
 
 const float kSh = 0.6f * 128;
 
@@ -52,17 +52,17 @@ void main()
 	
 	// voxel border
 	vec3 bc = inData.bc;
-	float eps = 0.05;
+	float eps = 0.07;
 	if (bc.y <= eps || bc.z <= eps)
 	{
-		color = 3 * kE;
+		color = 10.0f * kE;
 	}
 
 	// gamma correction
 	color = pow(color, vec3(1.0f / y));
 
 	// tone mapping
-	color = color / (color + vec3(1.0f));
+	color = color / (color + vec3(0.5f));
 
 	outColor = vec4(color, 1.0f);
 }

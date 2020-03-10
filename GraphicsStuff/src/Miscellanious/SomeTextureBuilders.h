@@ -13,5 +13,5 @@ namespace misc
 
 	res::Texture2D_Builder depthTextureBuilder(int width, int height);
 
-	res::Texture2D_Builder testFloatinPointTexture(int width, int height);
+	res::Texture2D_Builder rgbaf32TextureBuilder(int width, int height);
 }

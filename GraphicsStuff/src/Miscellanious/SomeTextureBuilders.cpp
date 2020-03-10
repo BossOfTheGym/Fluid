@@ -35,7 +35,8 @@ namespace misc
 		return res::Texture2D_Builder(
 			  checkedData(width, height)
 
-			, res::Texture2D_Builder::ImageData{
+			, res::Texture2D_Builder::ImageData
+			{
 				  gl::TextureTarget::Texture2D
 				, 0
 				, gl::InternalFormat::RGBA
@@ -46,7 +47,8 @@ namespace misc
 				, nullptr
 			}
 
-			, res::Texture2D_Builder::SamplingParameters{
+			, res::Texture2D_Builder::SamplingParameters
+			{
 				  gl::TextureParameterValue::Linear
 				, gl::TextureParameterValue::Linear
 				, gl::TextureParameterValue::Repeat
@@ -58,10 +60,10 @@ namespace misc
 	res::Texture2D_Builder colorTextureBuilder(int width, int height)
 	{
 		return res::Texture2D_Builder(
-			res::Texture2D_Builder::PixelData{
-			}
+			res::Texture2D_Builder::PixelData{}
 
-			, res::Texture2D_Builder::ImageData{
+			, res::Texture2D_Builder::ImageData
+			{
 				  gl::TextureTarget::Texture2D
 				, 0
 			    , gl::InternalFormat::RGBA
@@ -72,7 +74,8 @@ namespace misc
 			    , nullptr
 			}
 
-			, res::Texture2D_Builder::SamplingParameters{
+			, res::Texture2D_Builder::SamplingParameters
+			{
 				  gl::TextureParameterValue::Linear
 				, gl::TextureParameterValue::Linear
 			    , gl::TextureParameterValue::ClampToEdge
@@ -84,10 +87,10 @@ namespace misc
 	res::Texture2D_Builder depthTextureBuilder(int width, int height)
 	{
 		return res::Texture2D_Builder(
-			res::Texture2D_Builder::PixelData{
-			}
+			res::Texture2D_Builder::PixelData{}
 
-			, res::Texture2D_Builder::ImageData{
+			, res::Texture2D_Builder::ImageData
+			{
 				gl::TextureTarget::Texture2D
 				, 0
 			    , gl::InternalFormat::DepthComponent
@@ -98,7 +101,8 @@ namespace misc
 			    , nullptr
 			}
 
-			, res::Texture2D_Builder::SamplingParameters{
+			, res::Texture2D_Builder::SamplingParameters
+			{
 				  gl::TextureParameterValue::Nearest
 				, gl::TextureParameterValue::Nearest
 				, gl::TextureParameterValue::ClampToEdge
@@ -107,8 +111,22 @@ namespace misc
 		);
 	}
 
-	res::Texture2D_Builder testFloatinPointTexture(int width, int height)
+	res::Texture2D_Builder rgbaf32TextureBuilder(int width, int height)
 	{
-		return {};
+		return res::Texture2D_Builder(
+			res::Texture2D_Builder::PixelData{}
+
+			, res::Texture2D_Builder::ImageData
+			{
+				  gl::TextureTarget::Texture2D
+				, 0
+				, gl::InternalFormat::RGBA32F
+				, width
+				, height
+				, gl::PixelDataFormat::RGBA
+				, gl::DataType::Float
+				, nullptr
+			}
+		);
 	}
 }
