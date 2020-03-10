@@ -71,7 +71,7 @@ auto testProfileMesh()
 auto testSVO()
 {
 	return vis::fromSVO(
-		voxel::svoVoxelize<Int32>(testProfileMesh(), 48)
+		voxel::svoVoxelize<Int32>(testProfileMesh(), 24)
 	);
 }
 
@@ -162,8 +162,8 @@ auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
 
 
 
-const int WIDTH  = 1600;
-const int HEIGHT = 1080;
+const int WIDTH  = 1280;
+const int HEIGHT = 720;
 
 void test3MainLoop()
 {
@@ -296,13 +296,23 @@ void test3MainLoop()
 			gl::state::enable(gl::Capability::DepthTest);
 			gl::state::enable(gl::Capability::CullFace);
 			gl::state::cullFace(gl::Face::Back);
-			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Fill);
-
+			
 			offScreen.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
 			offScreen.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
 			offScreen.clearDepth(1.0_FL);
 			offScreen.clear(gl::ClearMask::ColorDepth);
 
+			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Line);
+			boxProgram.use();
+			boxProgram.setUniformMat4(boxPvmLoc, pvm);
+
+			boxArray.bind();
+			boxArray.draw();	
+			boxArray.unbind();
+
+			boxProgram.unbind();
+
+			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Fill);
 			voxelProgram.use();
 			voxelProgram.setUniformMat4(voxelPVMLoc, pvm);
 			voxelProgram.setUniformMat4(voxelPVLoc, pv);
@@ -347,7 +357,7 @@ void test3MainLoop()
 			blurProgram.use();
 
 			quadArray.bind();
-			for (int k = 0; k < 1; k++)
+			for (int k = 0; k < 2; k++)
 			{
 				auto& [curr, currColor] = gaussFramebuffers.current();
 				auto& [prev, prevColor] = gaussFramebuffers.previous();
@@ -392,7 +402,7 @@ void test3MainLoop()
 		{
 			gl::state::disable(gl::Capability::DepthTest);
 
-			defaultFB.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
+			defaultFB.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);			
 			defaultFB.clearColor(0.05_FL, 0.05_FL, 0.05_FL, 1.0_FL);
 			defaultFB.clear(gl::ClearMask::Color);
 
@@ -404,21 +414,6 @@ void test3MainLoop()
 			quadArray.unbind();
 
 			hdrGammaProgram.unbind();
-		}
-
-		// 5. box
-		{
-			gl::state::enable(gl::Capability::DepthTest);
-			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Line);
-
-			boxProgram.use();
-			boxProgram.setUniformMat4(boxPvmLoc, pvm);
-
-			boxArray.bind();
-			boxArray.draw();	
-			boxArray.unbind();
-
-			boxProgram.unbind();
 		}
 
 		//swap front/back
