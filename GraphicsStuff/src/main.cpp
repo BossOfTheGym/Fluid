@@ -162,8 +162,8 @@ auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
 
 
 
-const int WIDTH  = 1600;
-const int HEIGHT = 1000;
+const int WIDTH  = 1920;
+const int HEIGHT = 1080;
 
 void test3MainLoop()
 {
@@ -315,9 +315,9 @@ void test3MainLoop()
 
 			voxelArray.bind();
 			voxelArray.draw();
-			voxelArray.unbind();
+			//voxelArray.unbind();
 
-			voxelProgram.unbind();
+			//voxelProgram.unbind();
 		}
 
 		// 2. gaussian blur
@@ -333,14 +333,14 @@ void test3MainLoop()
 
 			quadArray.bind();
 			quadArray.draw();
-			quadArray.unbind();
+			//quadArray.unbind();
 
-			quadProgram.unbind();
+			//quadProgram.unbind();
 
 			// blur
 			blurProgram.use();
 
-			quadArray.bind();
+			//quadArray.bind();
 			for (int k = 0; k < 1; k++)
 			{
 				auto& [curr, currColor] = gaussFramebuffers.current();
@@ -356,9 +356,9 @@ void test3MainLoop()
 				curr.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
 				quadArray.draw();
 			}
-			quadArray.unbind();
+			//quadArray.unbind();
 
-			blurProgram.unbind();
+			//blurProgram.unbind();
 		}
 
 		// 3. combine frag & bloom
@@ -373,11 +373,11 @@ void test3MainLoop()
 			image1.bindToUnit(MIX_FRAG_IMAGE1);
 			image2.bindToUnit(MIX_FRAG_IMAGE2);
 
-			quadArray.bind();
+			//quadArray.bind();
 			quadArray.draw();
-			quadArray.unbind();
+			//quadArray.unbind();
 
-			mixProgram.unbind();
+			//mixProgram.unbind();
 		}
 
 		// 4. tone mapping & gamma correction
@@ -389,11 +389,11 @@ void test3MainLoop()
 			hdrGammaProgram.use();
 			mixedColor.bindToUnit(HDR_GAMMA_FRAG_IMAGE);
 
-			quadArray.bind();
+			//quadArray.bind();
 			quadArray.draw();
-			quadArray.unbind();
+			//quadArray.unbind();
 
-			hdrGammaProgram.unbind();
+			//hdrGammaProgram.unbind();
 		}
 
 		//swap front/back
@@ -413,9 +413,6 @@ void test3()
 		        , Window::Hint{GLFW_STENCIL_BITS, 8}
 		        , Window::Hint{GLFW_CONTEXT_VERSION_MAJOR, 4}
 		        , Window::Hint{GLFW_CONTEXT_VERSION_MINOR, 5}
-		        , Window::Hint{GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API}
-		        , Window::Hint{GLFW_CLIENT_API, GLFW_OPENGL_API}
-		        , Window::Hint{GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE}
 		        , Window::Hint{GLFW_VISIBLE  , GL_FALSE}
 		        , Window::Hint{GLFW_RESIZABLE, GL_FALSE}
 		    }

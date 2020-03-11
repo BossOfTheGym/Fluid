@@ -14,7 +14,7 @@ uniform vec3 uEyePos;
 
 // I'm lazy as fuck
 const vec3 lightPos     = vec3(0.5f, 3.5f, 0.5f);
-const vec3 lightColor   = vec3(1.0f, 1.0f, 1.0f);
+const vec3 lightColor   = vec3(5.0f, 10.0f, 5.0f);
 const vec3 ambientColor = vec3(1.0f, 1.0f, 1.0f);
 
 //emerald :D
@@ -56,7 +56,7 @@ void main()
 	if (bc.y <= eps || bc.z <= eps)
 	{
 		color = vec3(0.0f);
-		bloom = 10.0f * kE;
+		bloom = 12.0f * kE;
 	}
 
 	// bloom, color

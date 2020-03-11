@@ -66,7 +66,7 @@ void emitFace(in VertexData v0, in VertexData v1, in VertexData v2, in VertexDat
 	EndPrimitive();
 }
 
-const vec4 clippingPlane = vec4(normalize(vec3(-1.0f, 0.0f, 0.0f)), 0.0f);
+const vec4 clippingPlane = vec4(normalize(vec3(1.0f, 0.0f, 0.0f)), 0.0f);
 
 void main()
 {
