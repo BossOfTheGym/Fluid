@@ -162,8 +162,8 @@ auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
 
 
 
-const int WIDTH  = 1920;
-const int HEIGHT = 1080;
+const int WIDTH  = 1024;
+const int HEIGHT = 1024;
 
 void test3MainLoop()
 {
@@ -341,18 +341,17 @@ void test3MainLoop()
 			blurProgram.use();
 
 			//quadArray.bind();
-			for (int k = 0; k < 1; k++)
+			auto& [curr, currColor] = gaussFramebuffers.current();
+			auto& [prev, prevColor] = gaussFramebuffers.previous();
+			for (int k = 0; k < 2; k++)
 			{
-				auto& [curr, currColor] = gaussFramebuffers.current();
-				auto& [prev, prevColor] = gaussFramebuffers.previous();
-
 				blurProgram.setUniform1i(gaussPassLoc, HORIZONTAL_PASS);
-				currColor.bindToUnit(GAUSS_FRAG_IMAGE);
+				currColor.bindToUnit(GAUSS_FRAG_IMAGE);							
 				prev.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
 				quadArray.draw();
 
 				blurProgram.setUniform1i(gaussPassLoc, VERTICAL_PASS);
-				prevColor.bindToUnit(GAUSS_FRAG_IMAGE);
+				prevColor.bindToUnit(GAUSS_FRAG_IMAGE);			
 				curr.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
 				quadArray.draw();
 			}

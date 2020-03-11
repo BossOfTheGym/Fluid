@@ -11,6 +11,10 @@ namespace octree
 {
 	using math::Vec3;
 	using math::Vec3i;
+	using math::Vec3i32;
+	using math::Vec3u32;
+	using math::Vec3i64;
+	using math::Vec3u64;
 	using math::Int32;
 	using math::Int64;	
 	using math::Float;
@@ -48,6 +52,66 @@ namespace octree
 	}
 
 	// TODO : rework this
+
+	template<class Value>
+	class SparseGrid
+	{
+	public:
+		using Int  = Int64;
+		using Hash = Int64;
+		using Map  = std::map<Hash, Value>;
+		using Point   = Vec3;
+		using Indices = Vec3i64;
+
+
+	public:
+		SparseGrid(const AABB& space, const Vec3i32& split)
+			: m_space(space)
+			, m_split(split)
+		{
+			// TODO : some error processing?
+
+			auto [fc, sc] = space;
+			auto delta = sc - fc;
+			m_delta[0] = delta[0] / split[0];			
+			m_delta[1] = delta[1] / split[1];
+			m_delta[2] = delta[2] / split[2];
+
+			auto [x, y, z] = split;
+			m_biasX = y * z;
+			m_biasY = z;
+		}
+
+		SparseGrid(const AABB& space, const Vec3& delta)
+		{
+			auto [fc, sc] = space;
+			auto delta = sc - fc;
+
+
+		}
+
+
+	public:
+
+
+	private:
+		Map m_map;
+
+		AABB m_space;
+
+		Vec3    m_delta;
+		Vec3i32 m_split;
+
+		Int32 m_biasX;
+		Int32 m_biasY;
+	};
+
+
+	template<class Value>
+	class FullGrid
+	{};
+
+
 
 	// simple sparse octree imitation
 	template<class Value>

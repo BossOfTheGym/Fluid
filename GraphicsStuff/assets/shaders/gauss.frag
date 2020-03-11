@@ -15,7 +15,13 @@ out vec4 outColor;
 layout(binding = 0) uniform sampler2D image;
 uniform int uPass;
 
-const int SIZE = 6; 
+const vec2 OFFSETS[2] =
+{
+	  vec2(1.0f, 0.0f)
+	, vec2(0.0f, 1.0f)
+};
+
+const int SIZE = 6;
 const float WEIGHTS[SIZE] = 
 {
 	  0.22667175022808675f
@@ -25,18 +31,14 @@ const float WEIGHTS[SIZE] =
 	, 0.01713046245272764f
 	, 0.00400731205193958f
 };
-	
+
 void main()
 {
-	vec2 step   = 1.0f / textureSize(image, 0);
 	vec2 offset = vec2(0.0f);
-	if (uPass == PASS_HORIZONTAL)
+	vec2 step = 1.0f / textureSize(image, 0); 
+	if (uPass == PASS_HORIZONTAL || uPass == PASS_VERTICAL)
 	{
-		offset = vec2(step.x, 0.0f);
-	}
-	else if (uPass == PASS_VERTICAL)
-	{
-		offset = vec2(0.0f, step.y);
+		offset = OFFSETS[uPass] * step;
 	}
 
 	vec2 tex    = vertOut.texCoords;

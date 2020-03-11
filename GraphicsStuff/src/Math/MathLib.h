@@ -64,4 +64,10 @@ namespace math
 	using Mat2 = glm::tmat2x2<Float>;
 
 	using Vec3i = glm::tvec3<Int32>;
+
+	using Vec3i32 = glm::tvec3<Int32>;
+	using Vec3u32 = glm::tvec3<Int32>;
+
+	using Vec3i64 = glm::tvec3<Int64>;
+	using Vec3u64 = glm::tvec3<Int64>;
 }
