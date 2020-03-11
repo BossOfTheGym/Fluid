@@ -1,5 +1,7 @@
 #include "Primitives.h"
 
+// TODO : make all comparisons EPS-correct
+
 namespace primitive
 {
 	using math::operator "" _FL;
@@ -156,4 +158,11 @@ namespace primitive
 			|| pointInPrism(point, triangle);
 	}
 
+	bool pointInAABB(const Vec3& point, const AABB& aabb)
+	{
+		auto& [fc, sc] = aabb.corners;
+		return fc[0] <= point[0] && point[0] <= sc[0]
+			&& fc[1] <= point[1] && point[1] <= sc[1]
+			&& fc[2] <= point[2] && point[2] <= sc[2];
+	}
 }

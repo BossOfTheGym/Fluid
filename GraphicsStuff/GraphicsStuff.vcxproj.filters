@@ -22,9 +22,6 @@
     <Filter Include="DataStructures">
       <UniqueIdentifier>{eed6a4de-582c-4174-857b-1d537bbb8f17}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Math">
-      <UniqueIdentifier>{e48bd005-f910-4ea9-92a6-7bcffb777402}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utility">
       <UniqueIdentifier>{0dbceb68-c5fb-44ff-912d-b84e31e752f3}</UniqueIdentifier>
     </Filter>
@@ -52,6 +49,9 @@
     </Filter>
     <Filter Include="assets\shaders">
       <UniqueIdentifier>{011b7080-5064-4b50-90fa-74db5a606ebf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{e48bd005-f910-4ea9-92a6-7bcffb777402}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -78,4 +78,6 @@ namespace primitive
 	bool pointInPrism(const Vec3& point, const Prism& prism);
 
 	bool pointInRoundedTriangle(const Vec3& point, const RoundedTriangle& roundedTriangle);
+	
+	bool pointInAABB(const Vec3& point, const AABB& aabb);
 }

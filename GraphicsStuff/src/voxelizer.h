@@ -11,11 +11,11 @@
 
 namespace voxel
 {
-	template<class Value>
+	/*template<class Value>
 	using SVO = octree::SparseVoxelOctree<Value>;
 
 	template<class Value>
-	using FVO = octree::FullVoxelOctree<Value>;
+	using FVO = octree::FullVoxelOctree<Value>;*/
 
 
 	using math::Float;
@@ -32,6 +32,9 @@ namespace voxel
 	using primitive::AABB;
 	using primitive::RoundedTriangle;
 
+
+
+	/*
 	//Voxelizer. Traverses voxels belonging to some volume
 	namespace detail
 	{
@@ -388,4 +391,5 @@ namespace voxel
 	{
 		return detail::fvoVoxelize<Value>(mesh::indicesToTriangle(mesh), split, innerPoint, empty, interior, exterior);
 	}
+	*/
 }

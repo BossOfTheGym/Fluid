@@ -31,6 +31,8 @@
 
 #include <Visual/OctreeVisualization.h>
 
+#include <DataStructures/SVO.h>
+
 #include "voxelizer.h"
 
 
@@ -41,6 +43,7 @@ using math::Float;
 using math::Int32;
 using math::Vec3;
 using math::Mat4;
+using math::Vec3i32;
 
 using math::operator "" _FL;
 
@@ -67,32 +70,6 @@ auto testProfileMesh()
 
 	return mesh::constructMeshFromProfile(profile, -1.0_FL, +1.0_FL, 75);
 }
-
-auto testSVO()
-{
-	return vis::fromSVO(
-		voxel::svoVoxelize<Int32>(testProfileMesh(), 24)
-	);
-}
-
-auto testFVO()
-{
-	return vis::fromFVO
-	(
-		voxel::fvoVoxelize<Int32>
-		(
-			testProfileMesh()
-			, 32
-			, Vec3(0.0_FL)
-			, -1, -2, -3
-		)
-		, [] (const auto& value)
-		{
-			return value >= 0;
-		}
-	);
-}
-
 
 void serializeMesh(const mesh::IndicesMesh& mesh)
 {
@@ -133,33 +110,6 @@ void serializeMesh(const mesh::IndicesMesh& mesh)
 		output << 5 << std::endl;
 	}
 }
-
-auto svoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
-{
-	return vis::fromSVO(
-		voxel::svoVoxelize<Int32>(
-			mesh
-			, 128
-			)
-	);
-}
-
-auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
-{
-	return vis::fromFVO(
-		voxel::fvoVoxelize<Int32>(
-			mesh
-			, 128
-			, Vec3(0.0_FL, 0.0_FL, 0.0_FL)
-			, -1, -2, -3
-			)
-		, [] (const auto& value)
-		{
-			return value >= 0;
-		}
-	);
-}
-
 
 
 const int WIDTH  = 1024;
@@ -257,7 +207,7 @@ void test3MainLoop()
 	// vertex arrays
 	auto boxArray  = boxBuilder.buildShape();
 	auto quadArray = quadBuilder.buildShape();
-	auto [voxelArray, voxelData, voxelSize] = testSVO();
+	//auto [voxelArray, voxelData, voxelSize] = testSVO();
 	
 	//view params
 	Vec3 viewPos = Vec3(0.0_FL, 4.0_FL, 4.0_FL);
@@ -303,7 +253,7 @@ void test3MainLoop()
 			offScreen.clear(gl::ClearMask::ColorDepth);
 
 			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Fill);
-			voxelProgram.use();
+			/*voxelProgram.use();
 			voxelProgram.setUniformMat4(voxelPVMLoc, pvm);
 			voxelProgram.setUniformMat4(voxelPVLoc, pv);
 			voxelProgram.setUniformMat4(voxelVMLoc, vm);
@@ -314,7 +264,7 @@ void test3MainLoop()
 			voxelProgram.setUniformVec3(voxelSizeLoc, voxelSize);
 
 			voxelArray.bind();
-			voxelArray.draw();
+			voxelArray.draw();*/
 			//voxelArray.unbind();
 
 			//voxelProgram.unbind();
@@ -431,7 +381,8 @@ void test3()
 
 int main()
 {
-	test3();
+	//test3();
+
 
 	return 0;
 }
