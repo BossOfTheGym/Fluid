@@ -71,11 +71,15 @@ namespace octree
 		{
 			// TODO : some error processing?
 
-			auto [fc, sc] = space;
+			auto [fc, sc] = space.corners;
 			auto delta = sc - fc;
-			m_cellSize[0] = delta[0] / split[0];			
-			m_cellSize[1] = delta[1] / split[1];
-			m_cellSize[2] = delta[2] / split[2];
+
+			m_space = space;
+			m_split = split;
+
+			m_cellSize[0] = delta[0] / m_split[0];			
+			m_cellSize[1] = delta[1] / m_split[1];
+			m_cellSize[2] = delta[2] / m_split[2];
 			m_halfCellSize = m_cellSize / 2.0_FL;
 
 			Float min = std::min(std::min(m_cellSize[0], m_cellSize[1]), m_cellSize[2]);
@@ -89,12 +93,15 @@ namespace octree
 		{
 			// TODO : some error processing?
 
-			auto [fc, sc] = space;
+			auto [fc, sc] = space.corners;
 			auto delta = sc - fc;
 
-			m_split[0] = static_cast<Int32>(std::ceil(delta / cellSize[0]));
-			m_split[1] = static_cast<Int32>(std::ceil(delta / cellSize[1]));
-			m_split[2] = static_cast<Int32>(std::ceil(delta / cellSize[2]));
+			m_cellSize = cellSize;
+			m_halfCellSize = m_cellSize / 2.0_FL;
+
+			m_split[0] = static_cast<Int32>(std::ceil(delta / m_cellSize[0]));
+			m_split[1] = static_cast<Int32>(std::ceil(delta / m_cellSize[1]));
+			m_split[2] = static_cast<Int32>(std::ceil(delta / m_cellSize[2]));
 
 			m_space.sc[0] = m_space.fc[0] + m_cellSize[0] * m_split[0];
 			m_space.sc[1] = m_space.fc[1] + m_cellSize[1] * m_split[1];
@@ -658,6 +665,7 @@ namespace octree
 			auto [fc, sc] = space.corners;
 			auto delta = sc - fc;
 
+			m_space = space;
 			m_split = split;
 
 			m_cellSize[0] = delta[0] / m_split[0];			

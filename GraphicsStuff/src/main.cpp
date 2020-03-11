@@ -382,7 +382,15 @@ void test3()
 int main()
 {
 	//test3();
-
+	octree::SparseGrid<int> sg(primitive::AABB{Vec3{-1.0f}, Vec3{+1.0f}}, Vec3i32{10});
+	for (int i = 0; i < 25; i++)
+	{
+		sg[i] = i;
+	}
+	for (auto&[h, v] : sg)
+	{
+		std::cout << h << " " << v << std::endl;
+	}
 
 	return 0;
 }
