@@ -162,8 +162,8 @@ auto fvoVoxelizeIndicesMesh(const mesh::IndicesMesh& mesh)
 
 
 
-const int WIDTH  = 1280;
-const int HEIGHT = 720;
+const int WIDTH  = 1600;
+const int HEIGHT = 1000;
 
 void test3MainLoop()
 {
@@ -184,11 +184,11 @@ void test3MainLoop()
 	res::QuadBuilder quadBuilder;
 	res::ColorBufferBuilder f32FramebufferBuilder
 	(
-		  misc::rgbaf32TextureBuilder(WIDTH, HEIGHT)		
+		  misc::rgbaf16TextureBuilder(WIDTH, HEIGHT)		
 	);
 	res::NColorFBBuilder nColorFBBuilder
 	(
-		  misc::rgbaf32TextureBuilder(WIDTH, HEIGHT)
+		  misc::rgbaf16TextureBuilder(WIDTH, HEIGHT)
 		, misc::depthTextureBuilder(WIDTH, HEIGHT)
 		, res::value<2>{}
 	);
@@ -302,16 +302,6 @@ void test3MainLoop()
 			offScreen.clearDepth(1.0_FL);
 			offScreen.clear(gl::ClearMask::ColorDepth);
 
-			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Line);
-			boxProgram.use();
-			boxProgram.setUniformMat4(boxPvmLoc, pvm);
-
-			boxArray.bind();
-			boxArray.draw();	
-			boxArray.unbind();
-
-			boxProgram.unbind();
-
 			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Fill);
 			voxelProgram.use();
 			voxelProgram.setUniformMat4(voxelPVMLoc, pvm);
@@ -334,12 +324,6 @@ void test3MainLoop()
 		{
 			auto& [frame0, color0] = gaussFramebuffers.previous();
 			auto& [frame1, color1] = gaussFramebuffers.current();
-			frame0.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
-			frame0.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
-			frame0.clear(gl::ClearMask::Color);
-			frame1.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
-			frame1.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
-			frame1.clear(gl::ClearMask::Color);
 
 			// copy bloom output to gauss framebuffer
 			frame1.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
@@ -357,7 +341,7 @@ void test3MainLoop()
 			blurProgram.use();
 
 			quadArray.bind();
-			for (int k = 0; k < 2; k++)
+			for (int k = 0; k < 1; k++)
 			{
 				auto& [curr, currColor] = gaussFramebuffers.current();
 				auto& [prev, prevColor] = gaussFramebuffers.previous();
@@ -380,8 +364,6 @@ void test3MainLoop()
 		// 3. combine frag & bloom
 		{
 			mixed.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);
-			mixed.clearColor(0.0_FL, 0.0_FL, 0.0_FL, 1.0_FL);
-			mixed.clear(gl::ClearMask::Color);
 
 			auto& image1 = gaussFramebuffers.current().color;
 			auto& image2 = offColors[COLOR_TEXTURE];
@@ -403,8 +385,6 @@ void test3MainLoop()
 			gl::state::disable(gl::Capability::DepthTest);
 
 			defaultFB.bindFramebuffer(gl::FramebufferTarget::DrawFramebuffer);			
-			defaultFB.clearColor(0.05_FL, 0.05_FL, 0.05_FL, 1.0_FL);
-			defaultFB.clear(gl::ClearMask::Color);
 
 			hdrGammaProgram.use();
 			mixedColor.bindToUnit(HDR_GAMMA_FRAG_IMAGE);
