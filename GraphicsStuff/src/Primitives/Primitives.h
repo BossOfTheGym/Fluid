@@ -69,7 +69,6 @@ namespace primitive
 	RoundedTriangle roundedTriangleFromTriangleRadius(const Triangle& triangle, Float radius, Float height);
 
 
-
 	//volume checks
 	bool pointInCylinder(const Vec3& point, const Cylinder& cylinder);
 
@@ -80,4 +79,15 @@ namespace primitive
 	bool pointInRoundedTriangle(const Vec3& point, const RoundedTriangle& roundedTriangle);
 	
 	bool pointInAABB(const Vec3& point, const AABB& aabb);
+
+	// same name
+	bool pointInVolume(const Vec3& point, const Cylinder& cylinder);
+
+	bool pointInVolume(const Vec3& point, const Sphere& sphere);
+
+	bool pointInVolume(const Vec3& point, const Prism& prism);
+
+	bool pointInVolume(const Vec3& point, const RoundedTriangle& volume);
+
+	bool pointInVolume(const Vec3& point, const AABB& aabb);
 }

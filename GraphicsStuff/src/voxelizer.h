@@ -29,6 +29,7 @@ namespace voxel
 	using mesh::IndicesMesh;
 
 
+	using primitive::Triangle;
 	using primitive::AABB;
 	using primitive::RoundedTriangle;
 
@@ -41,10 +42,100 @@ namespace voxel
 
 	namespace detail
 	{
-		auto voxelizeMesh(int mesh, int )
+		// 1.
+		template<class Grid, class Volume>
+		auto traverseCells(const Grid& grid, const Volume& volume, const Triangle& tri)
 		{
-			return 0;
+			using Indices = typename Grid::Indices;
+			using Point   = typename Grid::Point;
+			using Hash    = typename Grid::Hash;
+			using Set     = std::set<Hash>;
+
+			// in fact not a queue(more like stack) as we do not care about the processing order
+			using Queue = std::vector<Hash>;
+
+			//add all neighbouring cells of triangle points
+			Queue cellQueue;
+			for (auto& p : tri.points)
+			{
+				auto indices = grid.index(p);
+
+				for (Hash i = -1; i < 2; i++)
+				for (Hash j = -1; j < 2; j++)
+				for (Hash k = -1; k < 2; k++)
+				{
+					auto neighbour = grid.clampToBoundaries(indices + Indices{i, j, k});
+
+					auto hash = grid.hash(neighbour);
+					cellQueue.push_back(hash);
+				}
+			}
+
+			//traverse all volume cells
+			Set traversedCells;
+			while (!cellQueue.empty())
+			{
+				auto hash    = cellQueue.back();
+				auto indices = grid.index(hash);
+				auto cell    = grid.cell(indices);
+				cellQueue.pop_back();
+
+				bool notTraversed = traversedCells.find(hash) == traversedCells.end(); 
+				if (notTraversed && primitive::pointInVolume(cell, volume))
+				{
+					traversedCells.insert(hash);
+
+					for (Hash i = -1; i < 2; i++)
+					for (Hash j = -1; j < 2; j++)
+					for (Hash k = -1; k < 2; k++)
+					{
+						auto neighbour = grid.clampToBoundaries(indices + Indices{i, j, k});
+
+						auto hash = grid.hash(neighbour);
+						if (traversedCells.find(hash) == traversedCells.end())
+						{
+							cellQueue.push_back(hash);
+						}
+					}
+				}
+			}
+
+			return traversedCells;
 		}
+
+		// 2. mark boundary
+		template<class Grid>
+		auto getBoundaryCells(const Grid& grid)
+		{
+			using Indices = typename Grid::Indices;
+			using Point   = typename Grid::Point;
+			using Hash    = typename Grid::Hash;
+			using Set     = std::set<Hash>;
+
+			Set prev; // cells traversed on the previous step(so we don't add them )
+			Set curr; // cells that we will traverse
+
+			// add grid bounds to begin
+			auto split = grid.split();
+			for (Hash i = 0; i < split[0])
+		}
+
+		// 3. remove inner cells
+		template<class Grid, class Boundary>
+		auto removeInnerCells(const Grid& grid, Boundary boundaryCells)
+		{
+			
+		}
+	}
+
+	// Mesh : mesh class
+	// Grid : grid class
+	// Handler : functor accepting Grid, Triangle, TriangleNumber, cellIndex,
+	// used to add some additional logic when adding new cell to grid
+	template<class Mesh, class Grid, class Handler>
+	auto meshToCells(Mesh&& mesh, Grid& grid, Handler handler)
+	{
+		return 0;
 	}
 
 	/*

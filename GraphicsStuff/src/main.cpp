@@ -382,7 +382,22 @@ void test3()
 int main()
 {
 	//test3();
-	
+	using T = primitive::Triangle;
+	using V = math::Vec3;
 
+	mesh::TriangleIndicesMesh m
+	(
+		  {V{-1.0}, V{+1.0}, V{+0.0}, V{-1.0, +1.0, -1.0}}
+		, {0, 1, 3, 1, 2, 3}
+		, Mat4{1.0f}
+	);
+	auto t = [](const auto& m)
+	{
+		for (auto t : m)
+		{
+			auto [p0, p1, p2] = t.points;
+		}
+	};
+	t(m);
 	return 0;
 }

@@ -882,6 +882,7 @@ namespace ds
 		}
 
 
+
 		Indices clampToBoundaries(const Indices& item) const
 		{
 			Indices inBoundaries = item;
@@ -1057,6 +1058,10 @@ namespace ds
 			for (Int32 i = 0; i < m_status.size(); i++)
 			{
 				m_status[i] = false;
+			}
+			for (Int32 i = 0; i < m_grid.size(); i++)
+			{
+				m_grid[i] = Value();
 			}
 		}
 

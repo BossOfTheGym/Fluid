@@ -77,15 +77,30 @@ namespace mesh
 
 
 	public:
-		auto begin();
+		auto begin()
+		{
+			return m_triangles.begin();
+		}
 
-		auto end();
+		auto end()
+		{
+			return m_triangles.end();
+		}
 
-		auto begin() const;
+		auto begin() const
+		{
+			return m_triangles.begin();
+		}
 
-		auto end() const;
+		auto end() const
+		{
+			return m_triangles.end();
+		}
 
-		auto size() const;
+		auto size() const
+		{
+			return m_triangles.size();
+		}
 
 
 	private:
@@ -353,15 +368,30 @@ namespace mesh
 
 
 	public:
-		auto begin();
+		auto begin()
+		{
+			return Iterator(this, 0);
+		}
 
-		auto end();
+		auto end()
+		{
+			return Iterator(this, m_indices.size());
+		}
 
-		auto begin() const;
+		auto begin() const
+		{
+			return ConstIterator(this, 0);
+		}
 
-		auto end() const;
+		auto end() const
+		{
+			return ConstIterator(this, m_indices.size());
+		}
 
-		auto size() const;
+		auto size() const
+		{
+			return m_indices.size() / 3;
+		}
 
 
 	private:

@@ -123,31 +123,6 @@ namespace mesh
 	}
 
 
-	auto TriangleMesh::begin()
-	{
-		return m_triangles.begin();
-	}
-
-	auto TriangleMesh::end()
-	{
-		return m_triangles.end();
-	}
-
-	auto TriangleMesh::begin() const
-	{
-		return m_triangles.begin();
-	}
-
-	auto TriangleMesh::end() const
-	{
-		return m_triangles.end();
-	}
-
-	auto TriangleMesh::size() const
-	{
-		return m_triangles.size();
-	}
-
 
 	// TringleIndicesMesh
 
@@ -229,31 +204,5 @@ namespace mesh
 	const AABB& TriangleIndicesMesh::getAABB() const
 	{
 		return m_aabb;
-	}
-
-
-	auto TriangleIndicesMesh::begin()
-	{
-		return Iterator(this, 0);
-	}
-
-	auto TriangleIndicesMesh::end()
-	{
-		return Iterator(this, m_indices.size());
-	}
-
-	auto TriangleIndicesMesh::begin() const
-	{
-		return ConstIterator(this, 0);
-	}
-
-	auto TriangleIndicesMesh::end() const
-	{
-		return ConstIterator(this, m_indices.size());
-	}
-
-	auto TriangleIndicesMesh::size() const
-	{
-		return m_indices.size() / 3;
 	}
 }

@@ -165,4 +165,26 @@ namespace primitive
 			&& fc[1] <= point[1] && point[1] <= sc[1]
 			&& fc[2] <= point[2] && point[2] <= sc[2];
 	}
+
+	// same name
+	bool pointInVolume(const Vec3& point, const Cylinder& cylinder)
+	{
+		return pointInCylinder(point, cylinder);
+	}
+	bool pointInVolume(const Vec3& point, const Sphere& sphere)
+	{
+		return pointInSphere(point, sphere);
+	}
+	bool pointInVolume(const Vec3& point, const Prism& prism)
+	{
+		return pointInPrism(point, prism);
+	}
+	bool pointInVolume(const Vec3& point, const RoundedTriangle& volume)
+	{
+		return pointInRoundedTriangle(point, volume);
+	}
+	bool pointInVolume(const Vec3& point, const AABB& aabb)
+	{
+		return pointInAABB(point, aabb);
+	}
 }
