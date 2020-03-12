@@ -8,7 +8,7 @@
 #include <utility>
 #include <iterator>
 
-namespace octree
+namespace ds
 {
 	using math::Vec3;
 	using math::Vec3i;
@@ -56,6 +56,7 @@ namespace octree
 	// TODO : move common part to base template class Grid<T>
 	// TODO : add smart SFINAE check for find() method
 	// TODO : bounds-safe methods
+	// TODO : add support for the case Value = void(so this thing will work like std::set)
 	template<class Value>
 	class SparseGrid
 	{
@@ -477,7 +478,8 @@ namespace octree
 		using Indices = Vec3i32;
 
 
-		class Iterator : public std::iterator<std::bidirectional_iterator_tag, std::pair<Hash, Value&>>
+		class Iterator 
+			: public std::iterator<std::bidirectional_iterator_tag, std::pair<Hash, std::reference_wrapper<Value>>>
 		{
 		public:
 			using Ret      = std::pair<Hash, std::reference_wrapper<Value>>;
@@ -491,6 +493,8 @@ namespace octree
 				: m_owner(owner)
 				, m_index(index)
 			{
+				m_index = std::max(m_index, -1);
+				m_index = std::min(m_index, m_owner->size());
 				while(m_index < m_owner->size() && !m_owner->has(m_index))
 				{
 					m_index++;
@@ -498,11 +502,13 @@ namespace octree
 			}
 
 		public:
-			Iterator()
-			{}
+			Iterator() = default;
 
 			Iterator(const Iterator& another) = default;
 			Iterator(Iterator&&)              = default;
+
+			~Iterator() = default;
+
 			Iterator& operator = (const Iterator&) = default;			
 			Iterator& operator = (Iterator&&)      = default;
 
@@ -568,11 +574,12 @@ namespace octree
 
 
 		private:
-			Int32 m_index{};
+			Int32 m_index{-1};
 			FullGrid* m_owner{};
 		};
 
-		class ConstIterator : public std::iterator<std::bidirectional_iterator_tag, std::pair<Hash, Value&>>
+		class ConstIterator 
+			: public std::iterator<std::bidirectional_iterator_tag, std::pair<Hash, std::reference_wrapper<const Value>>>
 		{
 		public:
 			using ConstRet = std::pair<Hash, std::reference_wrapper<const Value>>;
@@ -585,6 +592,8 @@ namespace octree
 				: m_owner(owner)
 				, m_index(index)
 			{
+				m_index = std::max(m_index, -1);
+				m_index = std::min(m_index, m_owner->size());
 				while(m_index < m_owner->size() && !m_owner->has(m_index))
 				{
 					m_index++;
@@ -592,11 +601,13 @@ namespace octree
 			}
 
 		public:
-			ConstIterator()
-			{}
+			ConstIterator() = default;
 
 			ConstIterator(const ConstIterator& another) = default;
 			ConstIterator(ConstIterator&&)              = default;
+
+			~ConstIterator() = default;
+
 			ConstIterator& operator = (const ConstIterator&) = default;			
 			ConstIterator& operator = (ConstIterator&&)      = default;
 
@@ -652,7 +663,7 @@ namespace octree
 
 
 		private:
-			Int32 m_index{};
+			Int32 m_index{-1};
 			const FullGrid* m_owner{};
 		};
 

@@ -32,7 +32,20 @@ namespace voxel
 	using primitive::AABB;
 	using primitive::RoundedTriangle;
 
+	template<class Value>
+	using SG = ds::SparseGrid<Value>;
 
+	template<class Value>
+	using FG = ds::FullGrid<Value>;
+
+
+	namespace detail
+	{
+		auto voxelizeMesh(int mesh, int )
+		{
+			return 0;
+		}
+	}
 
 	/*
 	//Voxelizer. Traverses voxels belonging to some volume
