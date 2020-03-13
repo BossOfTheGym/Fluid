@@ -9,44 +9,86 @@ namespace primitive
 	//utils
 	Vec3 triangleNormal(const Triangle& triangle)
 	{
-		auto& [p0, p1, p2] = triangle.points;
-
-		return glm::normalize(glm::cross(p1 - p0, p2 - p0));
+		return glm::normalize(triangleHeightVec(triangle));
 	}
 
-	Prism prismFromMiddleTriangleHeight(const Triangle& triangle, Float height)
+	std::tuple<Vec3, Float> triangleNormalLength(const Triangle& triangle)
+	{
+		auto heightVec = triangleHeightVec(triangle);
+		auto length    = glm::length(heightVec);
+		return {heightVec / length, length};
+	}
+
+	Vec3 triangleHeightVec(const Triangle& triangle)
+	{
+		auto& [p0, p1, p2] = triangle.points;
+
+		return glm::cross(p1 - p0, p2 - p0);
+	}
+
+
+	Prism prismFromExtrudedNormalTriangle(const Triangle& triangle, Float height)
 	{
 		Prism prism;
 
 		auto& [p0, p1, p2] = triangle.points;
-
-		Vec3 normal = triangleNormal(triangle);
-		Vec3 half = normal * height / 2.0f;
-
-		Vec3 p00 = p0 - half;
-		Vec3 p01 = p1 - half;
-		Vec3 p02 = p2 - half;
-		Vec3 p10 = p0 + half;
+		auto e01 = p1 - p0;
+		auto e12 = p2 - p1;
+		auto e02 = p2 - p0;
+		Vec3 normal = glm::normalize(glm::cross(e01, e02));
 
 		Vec3 normals[5];
 		normals[Prism::LowerPlane] = +normal;
 		normals[Prism::UpperPlane] = -normal;
-		normals[Prism::SidePlane0] = glm::normalize(glm::cross(normal, p01 - p00));
-		normals[Prism::SidePlane1] = glm::normalize(glm::cross(normal, p02 - p01));
-		normals[Prism::SidePlane2] = glm::normalize(glm::cross(normal, p00 - p02));
+		normals[Prism::SidePlane0] = glm::cross(normal, +e01);
+		normals[Prism::SidePlane1] = glm::cross(normal, +e12);
+		normals[Prism::SidePlane2] = glm::cross(normal, -e02);
 
-		prism.planes[Prism::LowerPlane] = Vec4(normals[Prism::LowerPlane], -glm::dot(normals[Prism::LowerPlane], p00));
-		prism.planes[Prism::UpperPlane] = Vec4(normals[Prism::UpperPlane], -glm::dot(normals[Prism::UpperPlane], p10));
-		prism.planes[Prism::SidePlane0] = Vec4(normals[Prism::SidePlane0], -glm::dot(normals[Prism::SidePlane0], p00));
-		prism.planes[Prism::SidePlane1] = Vec4(normals[Prism::SidePlane1], -glm::dot(normals[Prism::SidePlane1], p01));
-		prism.planes[Prism::SidePlane2] = Vec4(normals[Prism::SidePlane2], -glm::dot(normals[Prism::SidePlane2], p02));
+		Vec3 h = height * normal;
+		prism.planes[Prism::LowerPlane] = Vec4(normals[Prism::LowerPlane], -glm::dot(normals[Prism::LowerPlane], p0 - h));
+		prism.planes[Prism::UpperPlane] = Vec4(normals[Prism::UpperPlane], -glm::dot(normals[Prism::UpperPlane], p0 + h));
+		prism.planes[Prism::SidePlane0] = Vec4(normals[Prism::SidePlane0], -glm::dot(normals[Prism::SidePlane0], p0));
+		prism.planes[Prism::SidePlane1] = Vec4(normals[Prism::SidePlane1], -glm::dot(normals[Prism::SidePlane1], p1));
+		prism.planes[Prism::SidePlane2] = Vec4(normals[Prism::SidePlane2], -glm::dot(normals[Prism::SidePlane2], p2));
 
 		return prism;
 	}
 
-	// doesn't check if points are same
+	Prism prismFromExtrudedTriangleVec(const Triangle& triangle, const Vec3& dir)
+	{
+		Prism prism;
+
+		auto& [p0, p1, p2] = triangle.points;
+		auto e01 = p1 - p0;
+		auto e12 = p2 - p1;
+		auto e02 = p2 - p0;
+		Vec3 height = glm::cross(e01, e02);
+
+		Vec3 halfDir = dir / 2.0_FL;
+		if (glm::dot(height, halfDir) < 0)
+		{
+			halfDir *= -1.0_FL;
+		}
+		Vec3 normals[5];
+		normals[Prism::LowerPlane] = +height;
+		normals[Prism::UpperPlane] = -height;
+		normals[Prism::SidePlane0] = glm::cross(halfDir, +e01);
+		normals[Prism::SidePlane1] = glm::cross(halfDir, +e12);
+		normals[Prism::SidePlane2] = glm::cross(halfDir, -e02);
+
+		prism.planes[Prism::LowerPlane] = Vec4(normals[Prism::LowerPlane], -glm::dot(normals[Prism::LowerPlane], p0 - halfDir));
+		prism.planes[Prism::UpperPlane] = Vec4(normals[Prism::UpperPlane], -glm::dot(normals[Prism::UpperPlane], p0 + halfDir));
+		prism.planes[Prism::SidePlane0] = Vec4(normals[Prism::SidePlane0], -glm::dot(normals[Prism::SidePlane0], p0));
+		prism.planes[Prism::SidePlane1] = Vec4(normals[Prism::SidePlane1], -glm::dot(normals[Prism::SidePlane1], p1));
+		prism.planes[Prism::SidePlane2] = Vec4(normals[Prism::SidePlane2], -glm::dot(normals[Prism::SidePlane2], p2));
+
+		return prism;
+	}
+
 	Cylinder cylinderFromPoints(const Vec3& point0, const Vec3& point1, Float radius)
 	{
+		// doesn't check if points are same
+
 		Vec3  heightVec = point1 - point0;
 		Float height = glm::length(heightVec);
 
@@ -79,12 +121,42 @@ namespace primitive
 		return cylinder;
 	}
 
+	SECylinder SECylinderFromVecs(const Vec3& origin, const Vec3& height, const Vec3& apse, const Vec3& periapse)
+	{
+		SECylinder result;
+		result.origin = origin;
+		result.height      = glm::length(height);
+		result.heightVec   = height / result.height;
+		result.apse        = glm::length(apse);
+		result.apseVec     = apse / result.apse;
+		result.periapse    = glm::length(periapse);
+		result.periapseVec = periapse / result.periapse;
+
+		auto& u0 = result.apse;
+		auto& u1 = result.periapse;
+		auto& u2 = result.height;
+		auto& g  = result.gramm; 
+		auto u0u1 = glm::dot(u0, u1);
+		auto u1u2 = glm::dot(u1, u2);
+		auto u0u2 = glm::dot(u0, u2);
+		g[0][0] = 1.0_FL; g[1][0] = u0u1;   g[2][0] = u0u2;
+		g[0][1] = u0u1;   g[1][1] = 1.0_FL; g[2][1] = u1u2;
+		g[0][2] = u0u2;   g[1][2] = u1u2;   g[2][2] = 1.0_FL;
+		result.det = glm::determinant(g);
+		return result;
+	}
+
 	Sphere sphereFromCenterRadius(const Vec3& center, Float radius)
 	{
 		return Sphere{center, radius};
 	}
 
-	RoundedTriangle roundedTriangleFromTriangleRadius(const Triangle& triangle, Float radius, Float height)
+	AAEllipsoid AAEllipseFromCenterExtents(const Vec3& center, const Vec3& extents)
+	{
+		return AAEllipsoid{center, extents * extents};
+	}
+
+	RoundedTriangle roundedTriangleFromRadius(const Triangle& triangle, Float radius, Float height)
 	{
 		auto& [p0, p1, p2] = triangle.points;
 
@@ -96,11 +168,17 @@ namespace primitive
 		result.edges[0] = cylinderFromPoints(p0, p1, radius);
 		result.edges[1] = cylinderFromPoints(p1, p2, radius);
 		result.edges[2] = cylinderFromPoints(p2, p0, radius);
-		result.triangle = prismFromMiddleTriangleHeight(triangle, height);
+		result.triangle = prismFromExtrudedNormalTriangle(triangle, height);
 
 		return result;
 	}
 
+	ShearRoundedTriangle shearRoundedTriangleFromRadiusHeight(
+		const Triangle& triangle, Float radius, Float height, const Vec3& shear, const Vec3& rel
+	)
+	{
+		
+	}
 
 
 	//volume checks
@@ -116,11 +194,36 @@ namespace primitive
 		return 0.0_FL <= dh && dh <= cylinder.height && dr2 <= rr;
 	}
 
+	bool pointInSECylinder(const Vec3& point, const SECylinder& cylinder)
+	{
+		auto& g = cylinder.gramm;
+		auto& a = cylinder.apse;
+		auto& p = cylinder.periapse;
+
+		auto v = point - cylinder.origin;
+		auto ac = glm::dot(v   , glm::cross(g[1], g[2]));
+		auto pc = glm::dot(g[0], glm::cross(v   , g[2]));
+		auto hc = glm::dot(g[0], glm::cross(g[1], v   ));
+
+		return 0.0_FL <= hc && hc <= cylinder.height
+			&& ac * ac / (a * a) + pc * pc / (p * p) <= 1.0_FL;
+	}
+
 	bool pointInSphere(const Vec3& point, const Sphere& sphere)
 	{
 		Vec3 dr = point - sphere.center;
 
 		return glm::dot(dr, dr) <= sphere.radius * sphere.radius;
+	}
+
+	bool pointinAAEllipse(const Vec3& point, const AAEllipsoid& ellipse)
+	{
+		auto& [c, abcSq] = ellipse;
+		auto p = point - c;
+
+		auto check = p * p / abcSq;
+
+		return check[0] + check[1] + check[2] == 1.0_FL;
 	}
 
 	bool pointInPrism(const Vec3& point, const Prism& prism)
@@ -171,18 +274,32 @@ namespace primitive
 	{
 		return pointInCylinder(point, cylinder);
 	}
+
+	bool pointInVolume(const Vec3& point, const SECylinder& cylinder)
+	{
+		return pointInSECylinder(point, cylinder);
+	}
+
 	bool pointInVolume(const Vec3& point, const Sphere& sphere)
 	{
 		return pointInSphere(point, sphere);
 	}
+
+	bool pointInVolume(const Vec3& point, const AAEllipsoid& aaEllipse)
+	{
+		return pointinAAEllipse(point, aaEllipse);
+	}
+
 	bool pointInVolume(const Vec3& point, const Prism& prism)
 	{
 		return pointInPrism(point, prism);
 	}
+
 	bool pointInVolume(const Vec3& point, const RoundedTriangle& volume)
 	{
 		return pointInRoundedTriangle(point, volume);
 	}
+
 	bool pointInVolume(const Vec3& point, const AABB& aabb)
 	{
 		return pointInAABB(point, aabb);

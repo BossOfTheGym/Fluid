@@ -42,7 +42,7 @@ namespace voxel
 
 	namespace detail
 	{
-		// 1.
+		// 1
 		template<class Grid, class Volume>
 		auto traverseCells(const Grid& grid, const Volume& volume, const Triangle& tri)
 		{
@@ -112,19 +112,137 @@ namespace voxel
 			using Hash    = typename Grid::Hash;
 			using Set     = std::set<Hash>;
 
+			static const Indices NEIGHBOURS[] = 
+			{
+				  Indices{+1,  0,  0}
+				, Indices{-1,  0,  0}
+				, Indices{ 0, +1,  0}
+				, Indices{ 0, -1,  0}
+				, Indices{ 0,  0, +1}
+				, Indices{ 0,  0, -1}
+			};
+
+
 			Set prev; // cells traversed on the previous step(so we don't add them )
-			Set curr; // cells that we will traverse
+			Set curr; // cells that we will traverse to find ones we will traverse next
+			Set next; // cells that we will traverse
+			Set boundary; // boundary cells
 
 			// add grid bounds to begin
+			auto insertConditionally = [&] (auto condition, auto value, auto& set1, auto& set2)
+			{
+				if (condition)
+				{
+					set1.insert(value);
+				}
+				else
+				{
+					set2.insert(value);
+				}
+			};
+			
 			auto split = grid.split();
-			for (Hash i = 0; i < split[0])
+			for (Hash i = 0; i < split[0]; i++)
+			for (Hash j = 0; j < split[1]; j++)
+			{
+				auto hash = grid.hash(Indices{i, j, 0});
+				insertConditionally(!grid.has(hash), hash, prev, boundary);
+
+				hash = grid.hash(Indices{i, j, split[2] - 1});
+				insertConditionally(!grid.has(hash), hash, prev, boundary);
+			}
+
+			for (Hash j = 0; j < split[1]; j++)
+			for (Hash k = 0; k < split[2]; k++)
+			{
+				auto hash = grid.hash(Indices{0, j, k});
+				insertConditionally(!grid.has(hash), hash, prev, boundary);
+
+				hash = grid.hash(Indices{split[0] - 1, j, k});
+				insertConditionally(!grid.has(hash), hash, prev, boundary);
+			}
+
+			for (Hash i = 0; i < split[0]; i++)
+			for (Hash k = 0; k < split[2]; k++)
+			{
+				auto hash = grid.hash(Indices{i, 0, k});
+				insertConditionally(!grid.has(hash), hash, prev, boundary);
+
+				hash = grid.hash(Indices{i, split[1] - 1, k});
+				insertConditionally(!grid.has(hash), hash, prev, boundary);
+			}
+
+			// initialize curr cells set
+			auto inSet = [&] (auto value, auto& set)
+			{
+				return set.find(value) != set.end();
+			};
+			for (auto& hash : prev)
+			{
+				auto indices = grid.index(hash);
+				for (auto& n : NEIGHBOURS)
+				{
+					auto ni = grid.clampToBoundaries(indices + n);
+					auto nh = grid.hash(neighbour);
+
+					if (!inSet(nh, prev) && !grid.has(nh))
+					{
+						curr.insert(nh);
+					}
+				}
+			}
+
+			// traverse grid
+			while(!curr.empty())
+			{
+				for (auto& ch : curr)
+				{
+					// traverse neighbours of each cell
+					auto indices = grid.index(ch);
+					for (auto& n : NEIGHBOURS)
+					{
+						auto ni = grid.clampToBoundaries(indices + n);
+						auto nh = grid.hash(neighbour);
+
+						auto inPrevSet = inSet(nh, prev);
+						auto inGrid    = grid.has(nh);
+						if (!inPrevSet && !inGrid)
+						{
+							next.insert(nh);
+						}
+						if (inGrid)
+						{
+							boundary.insert(nh);
+						}
+					}
+				}
+
+				std::swap(prev, curr); // prev <- curr
+				std::swap(curr, next); // curr <- next
+				next.clear();
+			}
+
+			return boundary;
 		}
 
 		// 3. remove inner cells
 		template<class Grid, class Boundary>
-		auto removeInnerCells(const Grid& grid, Boundary boundaryCells)
+		auto getInnerCells(const Grid& grid, Boundary boundaryCells)
 		{
-			
+			using Indices = typename Grid::Indices;
+			using Point   = typename Grid::Point;
+			using Hash    = typename Grid::Hash;
+			using Set     = std::set<Hash>;
+
+			Set innerCells;
+			for (auto& [hash, value] : grid)
+			{
+				if (boundaryCells.find(hash) == boundaryCells.end())
+				{
+					innerCells.insert(hash);
+				}
+			}
+			return innerCells;
 		}
 	}
 
@@ -135,6 +253,10 @@ namespace voxel
 	template<class Mesh, class Grid, class Handler>
 	auto meshToCells(Mesh&& mesh, Grid& grid, Handler handler)
 	{
+		for(auto& triangle : mesh)
+		{
+			
+		}
 		return 0;
 	}
 

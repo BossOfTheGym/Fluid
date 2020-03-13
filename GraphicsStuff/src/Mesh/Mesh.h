@@ -118,139 +118,11 @@ namespace mesh
 
 		friend class Iterator;
 
-		template<bool Const = true>
-		struct TriangleView
-		{
-			using Ref  = std::conditional_t<
-				  Const
-				, std::reference_wrapper<const Vec3>
-				, std::reference_wrapper<Vec3>
-			>;
-			using Refs = std::array<Ref, 3>;
 
-			Refs points;
-		};
-
-		class Iterator : std::iterator<std::bidirectional_iterator_tag, TriangleView<false>>
+		class ConstIterator : std::iterator<std::bidirectional_iterator_tag, Triangle>
 		{
 		public:
-			using Ret      = TriangleView<false>;
-			using ConstRet = TriangleView<true>;
-
-			friend class TriangleIndicesMesh;
-
-		private:
-			Iterator(TriangleIndicesMesh* owner, Int32 index)
-				: m_owner(owner)
-			{
-				m_index = index - (index % 3);
-				m_index = std::min(m_index, static_cast<Int32>(m_owner->m_indices.size()));
-				m_index = std::max(m_index, -1);
-			}
-
-
-		public:
-			Iterator()  = default;
-
-			Iterator(const Iterator&) = default;
-			Iterator(Iterator&&)      = default;
-
-			~Iterator() = default;
-
-			Iterator& operator = (const Iterator&) = default;
-			Iterator& operator = (Iterator&&)      = default;
-
-
-		public:
-			bool operator == (const Iterator& another) const
-			{
-				return m_owner == another.m_owner && m_index == another.m_index;
-			}
-
-			bool operator != (const Iterator& another) const
-			{
-				return !(*this == another);
-			}
-
-
-			Ret operator * ()
-			{
-				return Ret
-				{
-					{
-						  m_owner->m_points[m_owner->m_indices[m_index    ]]
-						, m_owner->m_points[m_owner->m_indices[m_index + 1]]
-						, m_owner->m_points[m_owner->m_indices[m_index + 2]]
-					}
-				};
-			}
-
-			ConstRet operator * () const
-			{
-				return ConstRet
-				{
-					{
-						  m_owner->m_points[m_owner->m_indices[m_index    ]]
-						, m_owner->m_points[m_owner->m_indices[m_index + 1]]
-						, m_owner->m_points[m_owner->m_indices[m_index + 2]]
-					}
-				};
-			}
-
-			Ret operator -> ()
-			{
-				return Ret
-				{
-					{
-						  m_owner->m_points[m_index    ]
-						, m_owner->m_points[m_index + 1]
-						, m_owner->m_points[m_index + 2]
-					}
-				};
-			}
-
-			ConstRet operator -> () const
-			{
-				return ConstRet
-				{
-					{
-						  m_owner->m_points[m_index    ]
-						, m_owner->m_points[m_index + 1]
-						, m_owner->m_points[m_index + 2]
-					}
-				};
-			}
-
-
-			Iterator& operator ++ ()
-			{
-				if (m_index < m_owner->m_indices.size())
-				{
-					m_index += 3;
-					m_index = std::min(m_index, static_cast<Int32>(m_owner->m_indices.size()));
-				}
-				return *this;
-			}
-
-			Iterator& operator -- ()
-			{
-				if (m_index >= 0)
-				{
-					m_index -= 3;
-					m_index = std::max(m_index, -1);
-				}
-				return *this;
-			}
-
-		private:
-			TriangleIndicesMesh* m_owner{};
-			Int32 m_index{-1};
-		};
-
-		class ConstIterator : std::iterator<std::bidirectional_iterator_tag, TriangleView<true>>
-		{
-		public:
-			using ConstRet = TriangleView<true>;
+			using ConstRet = Triangle;
 
 			friend class TriangleIndicesMesh;
 
@@ -293,9 +165,9 @@ namespace mesh
 				return ConstRet
 				{
 					{
-						m_owner->m_points[m_owner->m_indices[m_index    ]]
+						  m_owner->m_points[m_owner->m_indices[m_index    ]]
 						, m_owner->m_points[m_owner->m_indices[m_index + 1]]
-					, m_owner->m_points[m_owner->m_indices[m_index + 2]]
+					    , m_owner->m_points[m_owner->m_indices[m_index + 2]]
 					}
 				};
 			}
@@ -305,9 +177,9 @@ namespace mesh
 				return ConstRet
 				{
 					{
-						m_owner->m_points[m_index    ]
+						  m_owner->m_points[m_index    ]
 						, m_owner->m_points[m_index + 1]
-					, m_owner->m_points[m_index + 2]
+					    , m_owner->m_points[m_index + 2]
 					}
 				};
 			}
@@ -337,7 +209,6 @@ namespace mesh
 			const TriangleIndicesMesh* m_owner{};
 			Int32 m_index{-1};
 		};
-
 
 	private:
 		AABB computeAABB();
@@ -370,12 +241,12 @@ namespace mesh
 	public:
 		auto begin()
 		{
-			return Iterator(this, 0);
+			return ConstIterator(this, 0);
 		}
 
 		auto end()
 		{
-			return Iterator(this, m_indices.size());
+			return ConstIterator(this, m_indices.size());
 		}
 
 		auto begin() const
