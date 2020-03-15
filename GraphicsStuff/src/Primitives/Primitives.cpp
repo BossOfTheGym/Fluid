@@ -1,7 +1,7 @@
 #include "Primitives.h"
 
 // TODO : make all comparisons EPS-correct
-
+// TODO : rework little bit cylinder construction & pointInCylinder check
 namespace primitive
 {
 	using math::operator "" _FL;
@@ -156,18 +156,18 @@ namespace primitive
 		return AAEllipsoid{center, extents * extents};
 	}
 
-	RoundedTriangle roundedTriangleFromRadius(const Triangle& triangle, Float radius, Float height)
+	RoundedTriangle roundedTriangleFromRadius(const Triangle& triangle,  Float vertexRadius, Float edgeRadius, Float height)
 	{
 		auto& [p0, p1, p2] = triangle.points;
 
 		RoundedTriangle result;
 
-		result.vertices[0] = sphereFromCenterRadius(p0, radius);
-		result.vertices[1] = sphereFromCenterRadius(p1, radius);
-		result.vertices[2] = sphereFromCenterRadius(p2, radius);
-		result.edges[0] = cylinderFromPoints(p0, p1, radius);
-		result.edges[1] = cylinderFromPoints(p1, p2, radius);
-		result.edges[2] = cylinderFromPoints(p2, p0, radius);
+		result.vertices[0] = sphereFromCenterRadius(p0, vertexRadius);
+		result.vertices[1] = sphereFromCenterRadius(p1, vertexRadius);
+		result.vertices[2] = sphereFromCenterRadius(p2, vertexRadius);
+		result.edges[0] = cylinderFromPoints(p0, p1, edgeRadius);
+		result.edges[1] = cylinderFromPoints(p1, p2, edgeRadius);
+		result.edges[2] = cylinderFromPoints(p2, p0, edgeRadius);
 		result.triangle = prismFromExtrudedNormalTriangle(triangle, height);
 
 		return result;
@@ -177,7 +177,29 @@ namespace primitive
 		const Triangle& triangle, Float radius, Float height, const Vec3& shear, const Vec3& rel
 	)
 	{
-		
+		//Vec3 p0 = triangle.points[0] - rel;
+		//Vec3 p1 = triangle.points[1] - rel;
+		//Vec3 p2 = triangle.points[2] - rel;
+
+		//auto e01 = p1 - p0;
+		//auto e12 = p2 - p1;
+		//auto e20 = p0 - p2;
+
+		//auto getAP = [&] (const auto& dir)
+		//{
+		//	// get apse periapse
+		//	if (dir.z != 0.0_FL)
+		//	{
+		//		auto v1 = Vec3(dir.y, -dir.x, 0.0_FL);
+		//		auto v2 = glm::cross();
+		//	}
+		//	return std::make_tuple();
+		//};
+
+		//{
+		//	
+		//}
+		return {};
 	}
 
 
@@ -238,7 +260,7 @@ namespace primitive
 			auto& z0 = plane[2];
 			auto& w0 = plane[3];
 
-			float check = x * x0 + y * y0 + z * z0 + w0;
+			Float check = x * x0 + y * y0 + z * z0 + w0;
 			if (check < 0.0_FL)
 			{
 				return false;

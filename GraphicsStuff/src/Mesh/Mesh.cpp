@@ -5,6 +5,8 @@ namespace mesh
 {
 	using math::operator "" _FL;
 
+
+	// TODO : remove
 	Mesh indicesToTriangle(const IndicesMesh& indicesMesh)
 	{
 		Mesh result;
@@ -30,6 +32,7 @@ namespace mesh
 		return result;
 	}
 
+	// TODO : remove
 	Mesh testMesh()
 	{
 		Mesh mesh;
@@ -43,7 +46,7 @@ namespace mesh
 		return mesh;
 	}
 
-
+	// TODO : computeAABB doesn't apply transformation
 	// TriangleMesh
 	AABB TriangleMesh::computeAABB()
 	{
@@ -124,8 +127,8 @@ namespace mesh
 
 
 
+	// TODO : computeAABB doesn't apply transformation
 	// TringleIndicesMesh
-
 	AABB TriangleIndicesMesh::computeAABB()
 	{
 		AABB aabb{};

@@ -21,7 +21,7 @@ const vec3 ambientColor = vec3(1.0f, 1.0f, 1.0f);
 const vec3 kA  = vec3(0.0215f, 0.1745f, 0.0215f);
 const vec3 kD  = vec3(0.07568f, 0.61424f, 0.07568f);
 const vec3 kSp = vec3(0.633f, 0.727811f, 0.633f);
-const vec3 kE  = vec3(0.6f, 0.1f, 0.8f); // not emerald :P
+const vec3 kE  = vec3(0.45f, 0.2f, 0.8f); // not emerald :P
 
 const float kSh = 0.6f * 128;
 
@@ -56,7 +56,7 @@ void main()
 	if (bc.y <= eps || bc.z <= eps)
 	{
 		color = vec3(0.0f);
-		bloom = 12.0f * kE;
+		//bloom = 10.0f * kE;
 	}
 
 	// bloom, color

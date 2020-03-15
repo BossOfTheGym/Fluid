@@ -180,9 +180,9 @@ namespace ds
 		Point point(const Indices& item) const
 		{
 			Point temp(m_space.corners[0]);
-			temp[0] += item[0] * m_spaceDelta[0];
-			temp[1] += item[1] * m_spaceDelta[1];
-			temp[2] += item[2] * m_spaceDelta[2];
+			temp[0] += item[0] * m_cellSize[0];
+			temp[1] += item[1] * m_cellSize[1];
+			temp[2] += item[2] * m_cellSize[2];
 			return temp;
 		}
 
@@ -339,17 +339,17 @@ namespace ds
 		}
 
 
-		void add(const Point& item, const Value& value)
+		void add(const Point& item, const Value& value = Value())
 		{
 			m_grid[hash(item)] = value;
 		}
 
-		void add(const Hash& item, const Value& value)
+		void add(const Hash& item, const Value& value = Value())
 		{
 			m_grid[hash(item)] = value;
 		}
 
-		void add(const Indices& item, const Value& value)
+		void add(const Indices& item, const Value& value = Value())
 		{
 			m_grid[hash(item)] = value;
 		}
@@ -479,11 +479,11 @@ namespace ds
 
 
 		class Iterator 
-			: public std::iterator<std::bidirectional_iterator_tag, std::pair<Hash, std::reference_wrapper<Value>>>
+			: public std::iterator<std::bidirectional_iterator_tag, std::tuple<Hash, Value&>>
 		{
 		public:
-			using Ret      = std::pair<Hash, std::reference_wrapper<Value>>;
-			using ConstRet = std::pair<Hash, std::reference_wrapper<const Value>>;
+			using Ret      = std::tuple<Hash, Value&>;
+			using ConstRet = Ret;//std::tuple<Hash, const Value&>;
 
 			friend class FullGrid;
 
@@ -493,8 +493,8 @@ namespace ds
 				: m_owner(owner)
 				, m_index(index)
 			{
-				m_index = std::max(m_index, -1);
-				m_index = std::min(m_index, m_owner->size());
+				m_index = std::max(m_index, static_cast<Int32>(-1));
+				m_index = std::min(m_index, static_cast<Int32>(m_owner->size()));
 				while(m_index < m_owner->size() && !m_owner->has(m_index))
 				{
 					m_index++;
@@ -579,10 +579,10 @@ namespace ds
 		};
 
 		class ConstIterator 
-			: public std::iterator<std::bidirectional_iterator_tag, std::pair<Hash, std::reference_wrapper<const Value>>>
+			: public std::iterator<std::bidirectional_iterator_tag, std::tuple<Hash, const Value&>>
 		{
 		public:
-			using ConstRet = std::pair<Hash, std::reference_wrapper<const Value>>;
+			using ConstRet = std::tuple<Hash, const Value&>;
 
 			friend class FullGrid;
 
@@ -592,8 +592,8 @@ namespace ds
 				: m_owner(owner)
 				, m_index(index)
 			{
-				m_index = std::max(m_index, -1);
-				m_index = std::min(m_index, m_owner->size());
+				m_index = std::max(m_index, static_cast<Int32>(-1));
+				m_index = std::min(m_index, static_cast<Int32>(m_owner->size()));
 				while(m_index < m_owner->size() && !m_owner->has(m_index))
 				{
 					m_index++;
@@ -764,7 +764,7 @@ namespace ds
 
 			Indices result;
 			result[0] = hash / m_biasYZ; hash %= m_biasYZ;
-			result[1] = hash / m_biasZ;	hash %= m_biasZ;
+			result[1] = hash / m_biasZ;	 hash %= m_biasZ;
 			result[2] = hash;
 			return result;
 		}
@@ -788,9 +788,9 @@ namespace ds
 		Point point(const Indices& item) const
 		{
 			Point temp(m_space.corners[0]);
-			temp[0] += item[0] * m_spaceDelta[0];
-			temp[1] += item[1] * m_spaceDelta[1];
-			temp[2] += item[2] * m_spaceDelta[2];
+			temp[0] += item[0] * m_cellSize[0];
+			temp[1] += item[1] * m_cellSize[1];
+			temp[2] += item[2] * m_cellSize[2];
 			return temp;
 		}
 
@@ -954,21 +954,21 @@ namespace ds
 		}
 
 
-		void add(const Point& item, const Value& value)
+		void add(const Point& item, const Value& value = Value())
 		{
 			auto h = hash(item);
 			m_status[h] = true;
 			m_grid[h] = value;
 		}
 
-		void add(const Hash& item, const Value& value)
+		void add(const Hash& item, const Value& value = Value())
 		{
 			auto h = hash(item);
 			m_status[h] = true;
 			m_grid[h] = value;
 		}
 
-		void add(const Indices& item, const Value& value)
+		void add(const Indices& item, const Value& value = Value())
 		{
 			auto h = hash(item);
 			m_status[h] = true;
@@ -1015,7 +1015,9 @@ namespace ds
 
 		void remove(const Hash& item)
 		{
-			m_status[hash(item)] = false;
+			auto h = hash(item);
+			m_status[h] = false;
+			m_grid[h]   = Value();
 		}
 
 		void remove(const Indices& indices)

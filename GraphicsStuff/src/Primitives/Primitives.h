@@ -10,6 +10,12 @@ namespace primitive
 	using math::Vec4;
 	using math::Mat3;
 
+	// TODO : add structure binding support for every primitive
+	// to make it's usage common
+	// ex.:         auto [p0, p1, p2] = triangle 
+	// (instead of) auto [p0, p1, p2] = triangle.points 
+	// p0, p1, p2 - appropriate points of triangle
+
 	struct Triangle
 	{
 		//triangle points' order is ccw
@@ -105,14 +111,19 @@ namespace primitive
 	// doesn't check if points are same
 	Cylinder cylinderFromPoints(const Vec3& point0, const Vec3& point1, Float radius);
 
+	// TODO : mb remove
 	SECylinder SECylinderFromVecs(const Vec3& origin, const Vec3& height, const Vec3& apse, const Vec3& periapse);
 
 	Sphere sphereFromCenterRadius(const Vec3& center, Float radius);
 
+	// TODO : mb remove
 	AAEllipsoid AAEllipseFromCenterExtents(const Vec3& center, const Vec3& extents);
 
-	RoundedTriangle roundedTriangleFromRadius(const Triangle& triangle, Float radius, Float height);
+	RoundedTriangle roundedTriangleFromRadius(const Triangle& triangle, Float vertexRadius, Float edgeRadius, Float height);
 
+	// TODO : mb remove
+	// shear : vector of coefficients of stretching along the xyz axes
+	// rel   : point relative to we stretch
 	ShearRoundedTriangle shearRoundedTriangleFromRadiusHeight(
 		const Triangle& triangle, Float radius, Float height, const Vec3& shear, const Vec3& rel
 	);
@@ -120,10 +131,12 @@ namespace primitive
 	//volume checks
 	bool pointInCylinder(const Vec3& point, const Cylinder& cylinder);
 
+	// TODO : mb remove
 	bool pointInSECylinder(const Vec3& point, const SECylinder& cylinder);
 
 	bool pointInSphere(const Vec3& point, const Sphere& sphere);
 
+	// TOOD : mb remove
 	bool pointinAAEllipse(const Vec3& point, const AAEllipsoid& ellipse);
 
 	bool pointInPrism(const Vec3& point, const Prism& prism);
@@ -135,10 +148,13 @@ namespace primitive
 	// same name
 	bool pointInVolume(const Vec3& point, const Cylinder& cylinder);
 
+
+	// TODO : mb remove
 	bool pointInVolume(const Vec3& point, const SECylinder& cylinder);
 
 	bool pointInVolume(const Vec3& point, const Sphere& sphere);
 
+	// TODO : mb remove
 	bool pointInVolume(const Vec3& point, const AAEllipsoid& aaEllipse);
 
 	bool pointInVolume(const Vec3& point, const Prism& prism);

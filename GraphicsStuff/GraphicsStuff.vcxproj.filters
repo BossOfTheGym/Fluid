@@ -112,9 +112,6 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\SVO.h">
-      <Filter>DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="src\Miscellanious\SomeTextureBuilders.h">
       <Filter>Miscellanious</Filter>
     </ClInclude>
@@ -123,9 +120,6 @@
     </ClInclude>
     <ClInclude Include="src\Miscellanious\PingPongBufer.h">
       <Filter>Miscellanious</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Visual\OctreeVisualization.h">
-      <Filter>Visual</Filter>
     </ClInclude>
     <ClInclude Include="src\Mesh\Mesh.h">
       <Filter>Mesh</Filter>
@@ -153,6 +147,12 @@
     </ClInclude>
     <ClInclude Include="src\ResourceLoaders\FramebufferBuilders\ColorBufferBuilder.h">
       <Filter>ResourceLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataStructures\Grid.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visual\GridArrayBuilder.h">
+      <Filter>Visual</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

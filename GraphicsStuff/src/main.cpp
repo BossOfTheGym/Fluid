@@ -24,14 +24,13 @@
 
 #include <Miscellanious/SomeTextureBuilders.h>
 #include <Miscellanious/PingPongBufer.h>
-
 #include <Miscellanious/ArrowHead.h>
 
 #include <Mesh/Profile.h>
 
-#include <Visual/OctreeVisualization.h>
+#include <Visual/GridArrayBuilder.h>
 
-#include <DataStructures/SVO.h>
+#include <DataStructures/Grid.h>
 
 #include "voxelizer.h"
 
@@ -50,7 +49,7 @@ using math::operator "" _FL;
 
 auto testProfileMesh()
 {
-	const int COUNT = 15;
+	const int COUNT = 50;
 
 	mesh::Profile profile;
 
@@ -68,7 +67,7 @@ auto testProfileMesh()
 		profile.vals.push_back(val);
 	}
 
-	return mesh::constructMeshFromProfile(profile, -1.0_FL, +1.0_FL, 75);
+	return mesh::constructMeshFromProfile(profile, -1.0_FL, +1.0_FL, 250);
 }
 
 void serializeMesh(const mesh::IndicesMesh& mesh)
@@ -112,8 +111,8 @@ void serializeMesh(const mesh::IndicesMesh& mesh)
 }
 
 
-const int WIDTH  = 1024;
-const int HEIGHT = 1024;
+const int WIDTH  = 1500;
+const int HEIGHT = 1000;
 
 void test3MainLoop()
 {
@@ -132,7 +131,7 @@ void test3MainLoop()
 	res::ShaderProgramBuilder programBuilder;
 	res::BoxBuilder boxBuilder;
 	res::QuadBuilder quadBuilder;
-	res::ColorBufferBuilder f32FramebufferBuilder
+	res::ColorBufferBuilder f16FramebufferBuilder
 	(
 		  misc::rgbaf16TextureBuilder(WIDTH, HEIGHT)		
 	);
@@ -142,6 +141,33 @@ void test3MainLoop()
 		, misc::depthTextureBuilder(WIDTH, HEIGHT)
 		, res::value<2>{}
 	);
+
+
+	// TEST
+	using Vi   = math::Vec3i32;
+	using AABB = primitive::AABB;
+
+	mesh::TriangleIndicesMesh mmmm
+	(
+		{
+			  Vec3{+1.0_FL, +1.0_FL, +1.0_FL}
+			, Vec3{+1.0_FL, +1.0_FL, -1.0_FL}
+			, Vec3{-1.0_FL, -1.0_FL, -1.0_FL}
+
+			, Vec3{+1.0_FL, +1.0_FL, +1.0_FL}
+			, Vec3{+1.0_FL, -1.0_FL, +1.0_FL}
+			, Vec3{-1.0_FL, +1.0_FL, +1.0_FL}
+		}
+		, {3, 4, 5, 0, 1, 2}
+		, Mat4{1.0f}
+	);
+	auto tm = testProfileMesh().triangles;
+	ds::FullGrid<int> g(AABB{Vec3{-1.0_FL}, Vec3{+1.0_FL}}, Vec3i32{192});
+	
+	voxel::meshToCells(tm, g);
+	auto [cellsArray, cellsBuffer, cellSize] = vis::buildCellData(g);
+	// END TEST
+
 
 	// shaders and programs
 	gl::Shader quadVert = shaderLoader.loadShader(gl::ShaderType::Vertex  , "assets/shaders/quad.vert");
@@ -171,11 +197,11 @@ void test3MainLoop()
 	const int COLOR_TEXTURE = 0;
 	const int BLOOM_TEXTURE = 1;
 	auto [offScreen, offColors, offDepth] = nColorFBBuilder.buildFramebuffer();
-	auto [mixed, mixedColor] = f32FramebufferBuilder.buildFramebuffer();
+	auto [mixed, mixedColor] = f16FramebufferBuilder.buildFramebuffer();
 	misc::PingPongBuffer gaussFramebuffers
 	(
-		  f32FramebufferBuilder.buildFramebuffer()
-		, f32FramebufferBuilder.buildFramebuffer()
+		  f16FramebufferBuilder.buildFramebuffer()
+		, f16FramebufferBuilder.buildFramebuffer()
 	);
 
 	// shader locations & binding points
@@ -232,7 +258,7 @@ void test3MainLoop()
 		auto cost = static_cast<float>(std::cos(t));
 		auto sint = static_cast<float>(std::sin(t));
 
-		viewPosUpdated = Vec3(1.5_FL, 3.0_FL + 5.0_FL * sint, 1.5_FL);
+		viewPosUpdated = Vec3(3.0_FL, 2.0_FL, 3.0_FL);
 		v = glm::lookAt(viewPosUpdated, Vec3(0.0_FL), Vec3(0.0_FL, 1.0_FL, 0.0_FL));
 
 		m = r * m;
@@ -252,8 +278,18 @@ void test3MainLoop()
 			offScreen.clearDepth(1.0_FL);
 			offScreen.clear(gl::ClearMask::ColorDepth);
 
+			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Line);
+			boxProgram.use();
+			boxProgram.setUniformMat4(boxPvmLoc, pvm);
+
+			boxArray.bind();
+			boxArray.draw();
+			boxArray.unbind();
+
+			boxProgram.unbind();
+
 			gl::state::polygonMode(gl::Face::FrontAndBack, gl::PolygonMode::Fill);
-			/*voxelProgram.use();
+			voxelProgram.use();
 			voxelProgram.setUniformMat4(voxelPVMLoc, pvm);
 			voxelProgram.setUniformMat4(voxelPVLoc, pv);
 			voxelProgram.setUniformMat4(voxelVMLoc, vm);
@@ -261,13 +297,13 @@ void test3MainLoop()
 			voxelProgram.setUniformMat4(voxelVLoc, v);
 			voxelProgram.setUniformMat4(voxelMLoc, m);
 			voxelProgram.setUniformVec3(voxelViewPos, viewPosUpdated);
-			voxelProgram.setUniformVec3(voxelSizeLoc, voxelSize);
+			voxelProgram.setUniformVec3(voxelSizeLoc, cellSize);
 
-			voxelArray.bind();
-			voxelArray.draw();*/
-			//voxelArray.unbind();
+			cellsArray.bind();
+			cellsArray.draw();
+			cellsArray.unbind();
 
-			//voxelProgram.unbind();
+			voxelProgram.unbind();
 		}
 
 		// 2. gaussian blur
@@ -381,23 +417,7 @@ void test3()
 
 int main()
 {
-	//test3();
-	using T = primitive::Triangle;
-	using V = math::Vec3;
-
-	mesh::TriangleIndicesMesh m
-	(
-		  {V{-1.0}, V{+1.0}, V{+0.0}, V{-1.0, +1.0, -1.0}}
-		, {0, 1, 3, 1, 2, 3}
-		, Mat4{1.0f}
-	);
-	auto t = [](const auto& m)
-	{
-		for (auto t : m)
-		{
-			auto [p0, p1, p2] = t.points;
-		}
-	};
-	t(m);
+	test3();
+	
 	return 0;
 }
