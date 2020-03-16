@@ -90,9 +90,6 @@ namespace primitive
 		// doesn't check if points are same
 
 		Vec3  heightVec = point1 - point0;
-		Float height = glm::length(heightVec);
-
-		heightVec /= height;
 
 		int i = 0;
 		while (i < 3 && std::abs(heightVec[i]) < math::EPS)
@@ -109,15 +106,14 @@ namespace primitive
 		Vec3 radiusVec{};
 		radiusVec[i] = +heightVec[j];
 		radiusVec[j] = -heightVec[i];
-		radiusVec /= glm::length(radiusVec);
 
 		Cylinder cylinder{};
-		cylinder.height = height;
-		cylinder.heightVec = heightVec;
 		cylinder.origin = point0;
-		cylinder.radius = radius;
-		cylinder.radiusVecs[0] = radiusVec;
-		cylinder.radiusVecs[1] = glm::normalize(glm::cross(radiusVec, heightVec));
+		cylinder.hh = glm::dot(heightVec, heightVec);
+		cylinder.rr = radius * radius;
+		cylinder.heightVec = heightVec;
+		cylinder.radiusVecs[0] = radius * glm::normalize(radiusVec);
+		cylinder.radiusVecs[1] = radius * glm::normalize(glm::cross(radiusVec, heightVec));
 		return cylinder;
 	}
 
@@ -206,14 +202,19 @@ namespace primitive
 	//volume checks
 	bool pointInCylinder(const Vec3& point, const Cylinder& cylinder)
 	{
-		Vec3 delta = point - cylinder.origin;
-		Float dh = glm::dot(delta, cylinder.heightVec);
-		Float dr0 = glm::dot(delta, cylinder.radiusVecs[0]);
-		Float dr1 = glm::dot(delta, cylinder.radiusVecs[1]);
-		Float dr2 = dr0 * dr0 + dr1 * dr1;
-		Float rr = (cylinder.radius * cylinder.radius);
+		auto& r0 = cylinder.radiusVecs[0];
+		auto& r1 = cylinder.radiusVecs[1];
+		auto& h  = cylinder.heightVec;
+		auto& rr = cylinder.rr;
+		auto& hh = cylinder.hh;
 
-		return 0.0_FL <= dh && dh <= cylinder.height && dr2 <= rr;
+		auto d = point - cylinder.origin;
+
+		auto r0c = glm::dot(d, r0) / rr;
+		auto r1c = glm::dot(d, r1) / rr;
+		auto hc  = glm::dot(d, h)  / hh;
+
+		return 0.0_FL <= hc && hc <= 1.0_FL && r0c * r0c + r1c * r1c <= 1.0_FL;
 	}
 
 	bool pointInSECylinder(const Vec3& point, const SECylinder& cylinder)
@@ -221,11 +222,13 @@ namespace primitive
 		auto& g = cylinder.gramm;
 		auto& a = cylinder.apse;
 		auto& p = cylinder.periapse;
+		auto& det = cylinder.det;
 
-		auto v = point - cylinder.origin;
-		auto ac = glm::dot(v   , glm::cross(g[1], g[2]));
-		auto pc = glm::dot(g[0], glm::cross(v   , g[2]));
-		auto hc = glm::dot(g[0], glm::cross(g[1], v   ));
+		auto d = point - cylinder.origin;
+		auto v = Vec3(glm::dot(d, g[0]), glm::dot(d, g[1]), glm::dot(d, g[2]));
+		auto ac = glm::dot(v   , glm::cross(g[1], g[2])) / det;
+		auto pc = glm::dot(g[0], glm::cross(v   , g[2])) / det;
+		auto hc = glm::dot(g[0], glm::cross(g[1], v   )) / det;
 
 		return 0.0_FL <= hc && hc <= cylinder.height
 			&& ac * ac / (a * a) + pc * pc / (p * p) <= 1.0_FL;

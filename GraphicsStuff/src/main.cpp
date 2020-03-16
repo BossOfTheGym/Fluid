@@ -61,7 +61,7 @@ auto testProfileMesh()
 	for (int i = 1; i <= COUNT; i++)
 	{
 		auto arg = -1.0_FL + i * h;
-		auto val = std::abs(0.5 * std::sin(3 * arg)) + 0.2;
+		auto val = 0.5 * std::sin(6 * arg);
 
 		profile.args.push_back(arg);
 		profile.vals.push_back(val);
@@ -162,7 +162,7 @@ void test3MainLoop()
 		, Mat4{1.0f}
 	);
 	auto tm = testProfileMesh().triangles;
-	ds::FullGrid<int> g(AABB{Vec3{-1.0_FL}, Vec3{+1.0_FL}}, Vec3i32{192});
+	ds::FullGrid<int> g(AABB{Vec3{-1.0_FL}, Vec3{+1.0_FL}}, Vec3i32{128});
 	
 	voxel::meshToCells(tm, g);
 	auto [cellsArray, cellsBuffer, cellSize] = vis::buildCellData(g);
@@ -258,7 +258,7 @@ void test3MainLoop()
 		auto cost = static_cast<float>(std::cos(t));
 		auto sint = static_cast<float>(std::sin(t));
 
-		viewPosUpdated = Vec3(3.0_FL, 2.0_FL, 3.0_FL);
+		viewPosUpdated = Vec3(2.0_FL, 2.0_FL, 2.0_FL);
 		v = glm::lookAt(viewPosUpdated, Vec3(0.0_FL), Vec3(0.0_FL, 1.0_FL, 0.0_FL));
 
 		m = r * m;

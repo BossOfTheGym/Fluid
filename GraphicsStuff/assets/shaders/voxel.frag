@@ -55,7 +55,7 @@ void main()
 	vec3 bloom = vec3(0.0f);
 	if (bc.y <= eps || bc.z <= eps)
 	{
-		color = vec3(0.0f);
+		//color = vec3(0.0f);
 		//bloom = 10.0f * kE;
 	}
 

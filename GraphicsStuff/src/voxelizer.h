@@ -321,7 +321,7 @@ namespace voxel
 		{
 			auto [normal, length] = primitive::triangleNormalLength(triangle);
 
-			auto proj = getLargestProjection(normal);
+			auto proj = getLargestProjection(normal) * (1.0_FL - math::EPS);
 
 			auto volume = primitive::roundedTriangleFromRadius(triangle, radius, radius, radius);
 

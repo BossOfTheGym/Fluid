@@ -25,20 +25,20 @@ namespace primitive
 	struct Cylinder
 	{
 		// round as a base and heightVec orthogonal to base
-		Vec3 heightVec     = {}; // normalized
-		Vec3 radiusVecs[2] = {}; // normalized
+		Vec3 radiusVecs[2] = {};
+		Vec3 heightVec     = {};
 		Vec3 origin  = {};
-		Float height = {};
-		Float radius = {};
+		Float hh{};
+		Float rr{};
 	};
 
 	struct SECylinder
 	{
 		// SECylinder : shear elliptical cylinder
 		// has ellipse as base and heightVec is not orthogonal to base
-		Vec3 heightVec{};   // normalized
 		Vec3 apseVec{};     // normalized
 		Vec3 periapseVec{}; // normalized
+		Vec3 heightVec{};   // normalized
 		Vec3 origin{};
 
 		Mat3 gramm{}; // gramm matrix of basis dot products, basis(apseVec, periapseVec, heightVec)
